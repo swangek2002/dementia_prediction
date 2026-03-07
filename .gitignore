@@ -1,0 +1,107 @@
+# ===========================================
+# Git 版本管理 - 只追踪代码，忽略数据和模型
+# ===========================================
+
+# ----- 数据文件 -----
+*.parquet
+*.db
+*.sqlite
+*.sqlite3
+*.csv
+*.tsv
+*.pickle
+*.pkl
+*.h5
+*.hdf5
+*.feather
+
+# ----- 模型权重和 checkpoint -----
+*.ckpt
+*.pt
+*.pth
+*.bin
+*.safetensors
+
+# ----- 输出目录 -----
+output/
+outputs/
+out/
+checkpoints/
+checkpoints_*/
+wandb/
+lightning_logs/
+results/
+
+# ----- 数据目录（按项目结构） -----
+CPRD/data/
+CPRD/output/
+CPRD/examples/data/
+CPRD/examples/modelling/SurvivEHR/outputs/
+CPRD/examples/modelling/SurvivEHR/data/
+CPRD/SurvivEHR/
+**/data/FoundationalModel/
+**/PreTrain_BACKUP/
+
+# ----- 虚拟环境和 conda -----
+.venv/
+venv/
+env/
+ENV/
+conda_envs/
+*.sif
+*.img
+*.squashfs
+
+# ----- Python 缓存 -----
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyo
+.ipynb_checkpoints/
+.pytest_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+
+# ----- 压缩包和大文件 -----
+*.tar.gz
+*.tar
+*.zip
+*.rar
+*.7z
+
+# ----- IDE 和编辑器 -----
+.idea/
+.vscode/
+*.swp
+*.swo
+*.bak
+*.orig
+
+# ----- 日志 -----
+*.log
+tmux_logs/
+
+# ----- 系统文件 -----
+.DS_Store
+Thumbs.db
+
+# ----- 其他 -----
+wheelhouse/
+uv-cache/
+tmp/
+*.out
+*.stats
+
+# ----- 项目特定 -----
+# SurvivEHR 符号链接（指向当前目录，避免循环）
+CPRD/SurvivEHR
+# 生成的可视化输出
+**/figs/generation/
+**/generation/*.csv
+**/generation/*.png
+**/generation/*.txt
+# 根目录日志
+train_log.txt
+# FastEHR 嵌套 git 仓库（单独管理）
+FastEHR/
