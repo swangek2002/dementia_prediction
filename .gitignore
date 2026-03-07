@@ -103,5 +103,4 @@ CPRD/SurvivEHR
 **/generation/*.txt
 # 根目录日志
 train_log.txt
-# FastEHR 嵌套 git 仓库（单独管理）
-FastEHR/
+# FastEHR 已纳入本仓库管理
