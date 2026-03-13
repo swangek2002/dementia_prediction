@@ -155,31 +155,36 @@ class GaussianRegressionLayer(torch.nn.Module):
             assert target_values is not None
             assert attention_mask is not None
             
+            # Pre-compute shifted tensors once (avoids redundant slicing on every loop iteration)
+            shifted_target_tokens = target_tokens[:, 1:]
+            shifted_target_values = target_values[:, 1:]
+            shifted_hidden = hidden_states[:, :-1, :]
+            value_mask = torch.where(shifted_target_values.isnan(), 0, 1)
+            atn_mask = attention_mask[:, 1:] if attention_mask is not None else torch.ones_like(shifted_target_tokens)
+            
             # initialise loss
             loss = 0
             for token in self.measurement_tokens:
 
-                # create empty value dist - not all of these will be filled (such as when the target is a diagnosis)
-                value_dist = torch.distributions.normal.Normal(loc=torch.zeros_like(target_tokens[:, 1:]), 
-                                                               scale=torch.ones_like(target_tokens[:, 1:]))  
-
                 # Mask based on whether this token belongs to this layer head 
-                token_mask = torch.where(target_tokens[:, 1:] == token, 1, 0)                
-                # And add in value mask for missing (or removed in the case of outliers) values
-                value_mask = torch.where(target_values[:, 1:].isnan(), 0, 1)
-                # Add in attention mask (this is redundant but here for code clarity)                
-                atn_mask = attention_mask[:, 1:] if attention_mask is not None else torch.ones_like(target_tokens[:, 1:])
-                # combine
-                mask = token_mask & value_mask & atn_mask
+                token_mask = torch.where(shifted_target_tokens == token, 1, 0)
                 
-                # if mask.sum().item() < 1:
-                #     logging.info("Ran value layer predict with no observed values")
+                # Skip tokens not present in this batch — their loss contribution is exactly zero.
+                # (Same principle as the DeSurv sparse ODE optimization for uncensored branch.)
+                if not token_mask.any():
+                    continue
+
+                # create empty value dist - not all of these will be filled (such as when the target is a diagnosis)
+                value_dist = torch.distributions.normal.Normal(loc=torch.zeros_like(shifted_target_tokens), 
+                                                               scale=torch.ones_like(shifted_target_tokens))  
+
+                # Combine token mask with value mask (NaN / outlier) and attention mask
+                mask = token_mask & value_mask & atn_mask
                 
                 # Pass the first N-1 hidden states through the token specific regression layer. 
                 # We do not need the last hidden state as there is no target
-                # TODO: We pass everything, even if it is later masked - this can be significantly optimised but kept like this for readability.
                 # gives: Normal(mean: torch.Size([bsz, seq_len-1]), std: torch.Size([bsz, seq_len-1])) object
-                token_value_dist = self(hidden_states[:, :-1, :], token_key=self.token_key(token))
+                token_value_dist = self(shifted_hidden, token_key=self.token_key(token))
                 
                 # update value_dist with token's entries
                 value_dist.loc = torch.where(mask == 1, token_value_dist.loc, value_dist.loc)
@@ -187,7 +192,7 @@ class GaussianRegressionLayer(torch.nn.Module):
                 
                 # set target values that were masked or do not belong to current looped token to zero. 
                 # They are masked in the loss, this just lets us pass the entire tensor through
-                token_values = torch.where(mask == 1, target_values[:, 1:], 0) 
+                token_values = torch.where(mask == 1, shifted_target_values, 0) 
 
                 # Calculate loss, including on masked values which were set to zero just to avoid errors
                 log_prob = value_dist.log_prob(token_values)                 # shape: torch.Size([bsz, seq_len - 1])               
@@ -197,13 +202,16 @@ class GaussianRegressionLayer(torch.nn.Module):
                 #  the denominator to avoid division by zero for sequences containing none of looped token.
                 #  in those cases the numerator is also zero due to all entries being masked and so the ll is also zero
                 token_ll_per_patient = (log_prob * token_mask.float()).sum(-1) / (token_mask.float().sum(-1) + 1e-5)  # shape: torch.Size([bsz])
-                # print(token_ll_per_patient.shape)
                 
                 # average/sum across batch
-                # loss += -token_ll_per_patient.sum() 
                 loss += -token_ll_per_patient.mean() 
                 
-            # loss /= len(self.measurement_tokens)
+            # DDP requires all parameters to have gradients after backward().
+            # Skipped per-token regression heads have no gradient path, which would
+            # cause DDP to deadlock waiting for their gradient sync. This zero-valued
+            # term puts every parameter into the computation graph at negligible cost.
+            all_reg_param_sum = sum(p.sum() for p in self.regression_layers.parameters())
+            loss = loss + 0.0 * all_reg_param_sum
 
         else:  
 
@@ -274,5 +282,13 @@ class GaussianRegressionLayer(torch.nn.Module):
         # by the smallest possible positive value permissible given the type of `T`.
         Z_std = torch.nn.functional.elu(Z[..., 1::2]) + 1 + torch.finfo(hidden_states.dtype).tiny
         Z_std = Z_std.squeeze(dim=-1)
-        
-        return torch.distributions.normal.Normal(loc=Z_mean, scale=Z_std)        
+
+        with torch.amp.autocast('cuda', enabled=False):
+            Z_mean = Z_mean.float()
+            Z_std = Z_std.float()
+
+            return torch.distributions.normal.Normal(
+                loc=Z_mean,
+                scale=Z_std,
+                validate_args=False
+            )

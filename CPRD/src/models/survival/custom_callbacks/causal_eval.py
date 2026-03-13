@@ -261,8 +261,9 @@ class PerformanceMetrics(Callback):
         if transitions == 0:
             return
 
-        # Push through module
-        outputs, _, _ = pl_module(batch, is_generation=False, return_loss=False, return_generation=True)
+        # Push through module (no gradients needed at test time — halves peak GPU memory)
+        with torch.no_grad():
+            outputs, _, _ = pl_module(batch, is_generation=False, return_loss=False, return_generation=True)
 
         if self.log_concordance:
             self.run_concordance_callback(outputs=outputs, batch=batch, log_prefix="Test:")

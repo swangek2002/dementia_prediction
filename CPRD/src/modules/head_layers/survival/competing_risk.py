@@ -165,8 +165,10 @@ class ODESurvCompetingRiskLayer(nn.Module):
         t_test = torch.tensor(np.concatenate([self.t_eval] * hidden_states.shape[0], 0), dtype=torch.float32, device=self.device) 
         H_test = hidden_states.repeat_interleave(self.t_eval.size, 0).to(self.device, torch.float32)
 
-        # Batched predict: Cannot make all predictions at once due to memory constraints
-        pred_bsz = 512                                                        # Predict in batches
+        # Batched predict: Cannot make all predictions at once due to memory constraints.
+        # With 108K output dims and n=15 quadrature points, each element expands to
+        # pred_bsz * 15 * 108K floats inside the ODE. 64 keeps peak alloc under ~200 MiB.
+        pred_bsz = 64
         pred = []
         pi = []
         for H_test_batched, t_test_batched in zip(torch.split(H_test, pred_bsz), torch.split(t_test, pred_bsz)):

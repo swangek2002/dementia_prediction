@@ -87,10 +87,38 @@ class CausalExperiment(pl.LightningModule):
                           )
 
     def training_step(self, batch, batch_idx):
-        _, loss_dict, _ = self(batch)        
+        try:
+            _, loss_dict, _ = self(batch)
+            loss = loss_dict['loss']
+        except torch.cuda.OutOfMemoryError:
+            print(f"\n[WARNING] OOM at batch {batch_idx}. Clearing cache and skipping this batch.")
+            torch.cuda.empty_cache()
+            
+            # Since we are in DDP, we must ensure all ranks return None if any rank OOMs
+            # to prevent deadlocks during gradient synchronization.
+            oom_tensor = torch.tensor(1, device=self.device, dtype=torch.long)
+            if torch.distributed.is_initialized():
+                torch.distributed.all_reduce(oom_tensor, op=torch.distributed.ReduceOp.SUM)
+            return None
+
+        # Check for OOM on other ranks even if this rank didn't OOM
+        oom_tensor = torch.tensor(0, device=self.device, dtype=torch.long)
+        if torch.distributed.is_initialized():
+            torch.distributed.all_reduce(oom_tensor, op=torch.distributed.ReduceOp.SUM)
+        if oom_tensor.item() > 0:
+            return None
+
+        # Sync NaN across ranks: if any rank has NaN, all must return None to avoid DDP deadlock.
+        is_nan = (torch.isnan(loss) | torch.isinf(loss)).item()
+        nan_tensor = torch.tensor(1 if is_nan else 0, device=loss.device, dtype=torch.long)
+        if torch.distributed.is_initialized():
+            torch.distributed.all_reduce(nan_tensor, op=torch.distributed.ReduceOp.SUM)
+        if nan_tensor.item() > 0:
+            return None
+
         for _key in loss_dict.keys():
             self.log(f"train_" + _key, loss_dict[_key], prog_bar=False, logger=True, sync_dist=True)
-        return loss_dict['loss'] 
+        return loss
 
     def validation_step(self, batch, batch_idx):
         _, loss_dict, _ = self(batch)        
@@ -105,7 +133,7 @@ class CausalExperiment(pl.LightningModule):
         return loss_dict['loss'] 
 
     def configure_optimizers(self):
-        optimizer = torch.optim.AdamW(self.parameters(), lr=self.cfg.optim.learning_rate)
+        optimizer = torch.optim.AdamW(self.parameters(), lr=self.cfg.optim.learning_rate, fused=True)
 
         schedulers = []
         milestones = []
