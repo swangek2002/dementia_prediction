@@ -1,0 +1,878 @@
+/Data0/swangek_data/conda_envs/survivehr/lib/python3.10/site-packages/lightning_fabric/__init__.py:40: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.
+[2026-03-19 17:26:44,011][root][INFO] - Running cr on 48 CPUs and 4 GPUs
+[2026-03-19 17:26:44,017][root][INFO] - ====================================================================================================
+[2026-03-19 17:26:44,017][root][INFO] - # Loading DataModule for dataset /Data0/swangek_data/991/CPRD/data/FoundationalModel/PreTrain/. This will be loaded in causal form.
+[2026-03-19 17:26:44,017][root][INFO] - ====================================================================================================
+[2026-03-19 17:27:15,339][root][INFO] - Using meta information from /Data0/swangek_data/991/CPRD/data/FoundationalModel/PreTrain/meta_information_custom.pickle
+[2026-03-19 17:27:15,340][root][INFO] - Using train file-row count dict from /Data0/swangek_data/991/CPRD/data/FoundationalModel/PreTrain/file_row_count_dict_train.pickle
+[2026-03-19 17:27:15,340][root][INFO] - Using test file-row count dict from /Data0/swangek_data/991/CPRD/data/FoundationalModel/PreTrain/file_row_count_dict_test.pickle
+[2026-03-19 17:27:15,340][root][INFO] - Using val file-row count dict from /Data0/swangek_data/991/CPRD/data/FoundationalModel/PreTrain/file_row_count_dict_val.pickle
+[2026-03-19 17:27:15,385][root][INFO] - Tokenzier created based on 373,927,777 tokens
+[2026-03-19 17:27:15,492][root][INFO] - Using tabular tokenizer, created from meta information and containing 108118 tokens
+[2026-03-19 17:27:15,492][root][INFO] - Set seed to 1337
+[2026-03-19 17:27:15,493][root][INFO] - Loaded /Data0/swangek_data/991/CPRD/data/FoundationalModel/PreTrain/split=train/ dataset
+[2026-03-19 17:27:15,493][root][INFO] - Pre-loading 1807 parquet files into memory...
+[2026-03-19 17:27:46,479][root][INFO] - Pre-loaded 1807 files into memory
+[2026-03-19 17:27:46,480][root][INFO] - with 448,572 samples
+[2026-03-19 17:27:47,018][root][INFO] - Set seed to 42
+[2026-03-19 17:27:47,018][root][INFO] - Loaded /Data0/swangek_data/991/CPRD/data/FoundationalModel/PreTrain/split=test/ dataset
+[2026-03-19 17:27:47,018][root][INFO] - Pre-loading 113 parquet files into memory...
+[2026-03-19 17:27:49,113][root][INFO] - Pre-loaded 113 files into memory
+[2026-03-19 17:27:49,113][root][INFO] - with 28,182 samples
+[2026-03-19 17:27:49,640][root][INFO] - Set seed to 42
+[2026-03-19 17:27:49,640][root][INFO] - Loaded /Data0/swangek_data/991/CPRD/data/FoundationalModel/PreTrain/split=val/ dataset
+[2026-03-19 17:27:49,640][root][INFO] - Pre-loading 102 parquet files into memory...
+[2026-03-19 17:27:50,871][root][INFO] - Pre-loaded 102 files into memory
+[2026-03-19 17:27:50,871][root][INFO] - with 25,136 samples
+[2026-03-19 17:27:51,432][root][INFO] - Creating unsupervised collator for DataModule
+[2026-03-19 17:27:55,861][root][INFO] - is_decoder: true
+data:
+  batch_size: 8
+  unk_freq_threshold: 0.0
+  min_workers: 12
+  global_diagnoses: false
+  repeating_events: true
+  path_to_db: /Data0/swangek_data/991/CPRD/data/example_exercise_database.db
+  path_to_ds: /Data0/swangek_data/991/CPRD/data/FoundationalModel/PreTrain/
+  meta_information_path: /Data0/swangek_data/991/CPRD/data/FoundationalModel/PreTrain/meta_information_custom.pickle
+  subsample_training: null
+  num_static_covariates: 27
+experiment:
+  type: pre-train
+  project_name: SurvivEHR
+  run_id: crPreTrain_small_1337
+  fine_tune_id: null
+  notes: null
+  tags: null
+  train: false
+  test: true
+  verbose: true
+  seed: 1337
+  log: true
+  log_dir: /Data0/swangek_data/991/CPRD/output/
+  ckpt_dir: /Data0/swangek_data/991/CPRD/output/checkpoints/
+fine_tuning:
+  fine_tune_outcomes: null
+  custom_outcome_method:
+    _target_: null
+  custom_stratification_method:
+    _target_: null
+  use_callbacks:
+    hidden_embedding:
+      num_batches: 0
+      mask_static: false
+      mask_value: false
+    performance_metrics: true
+    rmst: false
+  compression_layer: false
+  llrd: null
+  PEFT:
+    method: null
+    adapter_dim: 8
+  backbone:
+    linear_probe_epochs: 0
+    unfreeze_top_k: null
+  head:
+    surv_weight: 1
+    value_weight: 0
+    learning_rate: 0.0005
+optim:
+  num_epochs: 1
+  learning_rate: 0.0003
+  scheduler_warmup: true
+  scheduler: decaycawarmrestarts
+  scheduler_periods: 10000
+  learning_rate_decay: 0.8
+  val_check_interval: 1000
+  early_stop: true
+  early_stop_patience: 30
+  log_every_n_steps: 20
+  limit_val_batches: 0.025
+  limit_test_batches: null
+  accumulate_grad_batches: 1
+transformer:
+  block_type: Neo
+  block_size: 256
+  n_layer: 6
+  n_head: 6
+  n_embd: 384
+  layer_norm_bias: false
+  attention_type: global
+  bias: true
+  dropout: 0.0
+  attention_dropout: 0.0
+  resid_dropout: 0.0
+  private_heads: 0
+head:
+  SurvLayer: cr
+  surv_weight: 1
+  tokens_for_univariate_regression: <9247 token IDs omitted>
+  value_weight: 0.1
+
+[2026-03-19 17:27:55,863][root][INFO] - ====================================================================================================
+[2026-03-19 17:27:55,863][root][INFO] - # Pre-training experiment
+[2026-03-19 17:27:55,863][root][INFO] - ====================================================================================================
+[2026-03-19 17:27:55,863][root][INFO] - Loading a pre-trained model with the checkpoint path /Data0/swangek_data/991/CPRD/output/checkpoints/crPreTrain_small_1337.ckpt.
+[2026-03-19 17:28:08,494][torch.distributed.nn.jit.instantiator][INFO] - Created a temporary directory at /tmp/tmp0t8ojvut
+[2026-03-19 17:28:08,495][torch.distributed.nn.jit.instantiator][INFO] - Writing /tmp/tmp0t8ojvut/_remote_module_non_scriptable.py
+[2026-03-19 17:28:08,852][root][INFO] - Using Temporal Positional Encoding. This module uses the patient's age at an event within their time series.
+[2026-03-19 17:28:10,027][root][INFO] - Using a DeSurv Competing-Risk head.
+[2026-03-19 17:28:10,027][root][INFO] - 	With concurrent strategy=add_noise for handling simultaneous events.
+[2026-03-19 17:28:10,028][root][INFO] - 	Evaluating on a time grid between [0.0, 1.0] with 1000 intervals
+[2026-03-19 17:29:15,886][root][INFO] - Created PerformanceMetrics callback for causal self-supervised tasks.
+[2026-03-19 17:29:15,887][root][INFO] - 	 
+[2026-03-19 17:29:15,887][root][INFO] - GPu job
+[2026-03-19 17:29:15,887][root][INFO] - Using ddp strategy
+Using 16bit Automatic Mixed Precision (AMP)
+GPU available: True (cuda), used: True
+TPU available: False, using: 0 TPU cores
+IPU available: False, using: 0 IPUs
+HPU available: False, using: 0 HPUs
+[2026-03-19 17:29:15,903][root][INFO] - Re-loading from best cached checkpoint /Data0/swangek_data/991/CPRD/output/checkpoints/crPreTrain_small_1337.ckpt
+[2026-03-19 17:29:28,307][root][INFO] - Using Temporal Positional Encoding. This module uses the patient's age at an event within their time series.
+[2026-03-19 17:29:29,371][root][INFO] - Using a DeSurv Competing-Risk head.
+[2026-03-19 17:29:29,371][root][INFO] - 	With concurrent strategy=add_noise for handling simultaneous events.
+[2026-03-19 17:29:29,371][root][INFO] - 	Evaluating on a time grid between [0.0, 1.0] with 1000 intervals
+[2026-03-19 17:30:31,864][root][INFO] - Testing model.
+Initializing distributed: GLOBAL_RANK: 0, MEMBER: 1/4
+/Data0/swangek_data/conda_envs/survivehr/lib/python3.10/site-packages/lightning_fabric/__init__.py:40: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.
+/Data0/swangek_data/conda_envs/survivehr/lib/python3.10/site-packages/lightning_fabric/__init__.py:40: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.
+/Data0/swangek_data/conda_envs/survivehr/lib/python3.10/site-packages/lightning_fabric/__init__.py:40: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.
+[2026-03-19 17:30:47,828][root][INFO] - Running cr on 48 CPUs and 4 GPUs
+[2026-03-19 17:30:47,833][root][INFO] - ====================================================================================================
+[2026-03-19 17:30:47,833][root][INFO] - # Loading DataModule for dataset /Data0/swangek_data/991/CPRD/data/FoundationalModel/PreTrain/. This will be loaded in causal form.
+[2026-03-19 17:30:47,833][root][INFO] - ====================================================================================================
+[2026-03-19 17:30:47,936][root][INFO] - Running cr on 48 CPUs and 4 GPUs
+[2026-03-19 17:30:47,941][root][INFO] - ====================================================================================================
+[2026-03-19 17:30:47,941][root][INFO] - # Loading DataModule for dataset /Data0/swangek_data/991/CPRD/data/FoundationalModel/PreTrain/. This will be loaded in causal form.
+[2026-03-19 17:30:47,941][root][INFO] - ====================================================================================================
+[2026-03-19 17:30:48,035][root][INFO] - Running cr on 48 CPUs and 4 GPUs
+[2026-03-19 17:30:48,040][root][INFO] - ====================================================================================================
+[2026-03-19 17:30:48,040][root][INFO] - # Loading DataModule for dataset /Data0/swangek_data/991/CPRD/data/FoundationalModel/PreTrain/. This will be loaded in causal form.
+[2026-03-19 17:30:48,040][root][INFO] - ====================================================================================================
+[2026-03-19 17:31:18,720][root][INFO] - Using meta information from /Data0/swangek_data/991/CPRD/data/FoundationalModel/PreTrain/meta_information_custom.pickle
+[2026-03-19 17:31:18,721][root][INFO] - Using train file-row count dict from /Data0/swangek_data/991/CPRD/data/FoundationalModel/PreTrain/file_row_count_dict_train.pickle
+[2026-03-19 17:31:18,721][root][INFO] - Using test file-row count dict from /Data0/swangek_data/991/CPRD/data/FoundationalModel/PreTrain/file_row_count_dict_test.pickle
+[2026-03-19 17:31:18,722][root][INFO] - Using val file-row count dict from /Data0/swangek_data/991/CPRD/data/FoundationalModel/PreTrain/file_row_count_dict_val.pickle
+[2026-03-19 17:31:18,759][root][INFO] - Tokenzier created based on 373,927,777 tokens
+[2026-03-19 17:31:18,842][root][INFO] - Using tabular tokenizer, created from meta information and containing 108118 tokens
+[2026-03-19 17:31:18,842][root][INFO] - Set seed to 1337
+[2026-03-19 17:31:18,842][root][INFO] - Loaded /Data0/swangek_data/991/CPRD/data/FoundationalModel/PreTrain/split=train/ dataset
+[2026-03-19 17:31:18,843][root][INFO] - Pre-loading 1807 parquet files into memory...
+[2026-03-19 17:31:20,878][root][INFO] - Using meta information from /Data0/swangek_data/991/CPRD/data/FoundationalModel/PreTrain/meta_information_custom.pickle
+[2026-03-19 17:31:20,879][root][INFO] - Using train file-row count dict from /Data0/swangek_data/991/CPRD/data/FoundationalModel/PreTrain/file_row_count_dict_train.pickle
+[2026-03-19 17:31:20,879][root][INFO] - Using test file-row count dict from /Data0/swangek_data/991/CPRD/data/FoundationalModel/PreTrain/file_row_count_dict_test.pickle
+[2026-03-19 17:31:20,879][root][INFO] - Using val file-row count dict from /Data0/swangek_data/991/CPRD/data/FoundationalModel/PreTrain/file_row_count_dict_val.pickle
+[2026-03-19 17:31:20,920][root][INFO] - Tokenzier created based on 373,927,777 tokens
+[2026-03-19 17:31:20,968][root][INFO] - Using meta information from /Data0/swangek_data/991/CPRD/data/FoundationalModel/PreTrain/meta_information_custom.pickle
+[2026-03-19 17:31:20,969][root][INFO] - Using train file-row count dict from /Data0/swangek_data/991/CPRD/data/FoundationalModel/PreTrain/file_row_count_dict_train.pickle
+[2026-03-19 17:31:20,969][root][INFO] - Using test file-row count dict from /Data0/swangek_data/991/CPRD/data/FoundationalModel/PreTrain/file_row_count_dict_test.pickle
+[2026-03-19 17:31:20,970][root][INFO] - Using val file-row count dict from /Data0/swangek_data/991/CPRD/data/FoundationalModel/PreTrain/file_row_count_dict_val.pickle
+[2026-03-19 17:31:20,986][root][INFO] - Using tabular tokenizer, created from meta information and containing 108118 tokens
+[2026-03-19 17:31:20,986][root][INFO] - Set seed to 1337
+[2026-03-19 17:31:20,987][root][INFO] - Loaded /Data0/swangek_data/991/CPRD/data/FoundationalModel/PreTrain/split=train/ dataset
+[2026-03-19 17:31:20,987][root][INFO] - Pre-loading 1807 parquet files into memory...
+[2026-03-19 17:31:21,011][root][INFO] - Tokenzier created based on 373,927,777 tokens
+[2026-03-19 17:31:21,093][root][INFO] - Using tabular tokenizer, created from meta information and containing 108118 tokens
+[2026-03-19 17:31:21,093][root][INFO] - Set seed to 1337
+[2026-03-19 17:31:21,094][root][INFO] - Loaded /Data0/swangek_data/991/CPRD/data/FoundationalModel/PreTrain/split=train/ dataset
+[2026-03-19 17:31:21,094][root][INFO] - Pre-loading 1807 parquet files into memory...
+[2026-03-19 17:31:50,111][root][INFO] - Pre-loaded 1807 files into memory
+[2026-03-19 17:31:50,112][root][INFO] - with 448,572 samples
+[2026-03-19 17:31:50,705][root][INFO] - Set seed to 42
+[2026-03-19 17:31:50,706][root][INFO] - Loaded /Data0/swangek_data/991/CPRD/data/FoundationalModel/PreTrain/split=test/ dataset
+[2026-03-19 17:31:50,706][root][INFO] - Pre-loading 113 parquet files into memory...
+[2026-03-19 17:31:52,832][root][INFO] - Pre-loaded 113 files into memory
+[2026-03-19 17:31:52,833][root][INFO] - with 28,182 samples
+[2026-03-19 17:31:53,352][root][INFO] - Set seed to 42
+[2026-03-19 17:31:53,352][root][INFO] - Loaded /Data0/swangek_data/991/CPRD/data/FoundationalModel/PreTrain/split=val/ dataset
+[2026-03-19 17:31:53,352][root][INFO] - Pre-loading 102 parquet files into memory...
+[2026-03-19 17:31:54,585][root][INFO] - Pre-loaded 102 files into memory
+[2026-03-19 17:31:54,586][root][INFO] - with 25,136 samples
+[2026-03-19 17:31:55,123][root][INFO] - Creating unsupervised collator for DataModule
+[2026-03-19 17:31:57,845][root][INFO] - Pre-loaded 1807 files into memory
+[2026-03-19 17:31:57,845][root][INFO] - with 448,572 samples
+[2026-03-19 17:31:58,187][root][INFO] - Pre-loaded 1807 files into memory
+[2026-03-19 17:31:58,188][root][INFO] - with 448,572 samples
+[2026-03-19 17:31:58,541][root][INFO] - Set seed to 42
+[2026-03-19 17:31:58,541][root][INFO] - Loaded /Data0/swangek_data/991/CPRD/data/FoundationalModel/PreTrain/split=test/ dataset
+[2026-03-19 17:31:58,541][root][INFO] - Pre-loading 113 parquet files into memory...
+[2026-03-19 17:31:58,797][root][INFO] - Set seed to 42
+[2026-03-19 17:31:58,797][root][INFO] - Loaded /Data0/swangek_data/991/CPRD/data/FoundationalModel/PreTrain/split=test/ dataset
+[2026-03-19 17:31:58,797][root][INFO] - Pre-loading 113 parquet files into memory...
+[2026-03-19 17:31:59,213][root][INFO] - is_decoder: true
+data:
+  batch_size: 8
+  unk_freq_threshold: 0.0
+  min_workers: 12
+  global_diagnoses: false
+  repeating_events: true
+  path_to_db: /Data0/swangek_data/991/CPRD/data/example_exercise_database.db
+  path_to_ds: /Data0/swangek_data/991/CPRD/data/FoundationalModel/PreTrain/
+  meta_information_path: /Data0/swangek_data/991/CPRD/data/FoundationalModel/PreTrain/meta_information_custom.pickle
+  subsample_training: null
+  num_static_covariates: 27
+experiment:
+  type: pre-train
+  project_name: SurvivEHR
+  run_id: crPreTrain_small_1337
+  fine_tune_id: null
+  notes: null
+  tags: null
+  train: false
+  test: true
+  verbose: true
+  seed: 1337
+  log: true
+  log_dir: /Data0/swangek_data/991/CPRD/output/
+  ckpt_dir: /Data0/swangek_data/991/CPRD/output/checkpoints/
+fine_tuning:
+  fine_tune_outcomes: null
+  custom_outcome_method:
+    _target_: null
+  custom_stratification_method:
+    _target_: null
+  use_callbacks:
+    hidden_embedding:
+      num_batches: 0
+      mask_static: false
+      mask_value: false
+    performance_metrics: true
+    rmst: false
+  compression_layer: false
+  llrd: null
+  PEFT:
+    method: null
+    adapter_dim: 8
+  backbone:
+    linear_probe_epochs: 0
+    unfreeze_top_k: null
+  head:
+    surv_weight: 1
+    value_weight: 0
+    learning_rate: 0.0005
+optim:
+  num_epochs: 1
+  learning_rate: 0.0003
+  scheduler_warmup: true
+  scheduler: decaycawarmrestarts
+  scheduler_periods: 10000
+  learning_rate_decay: 0.8
+  val_check_interval: 1000
+  early_stop: true
+  early_stop_patience: 30
+  log_every_n_steps: 20
+  limit_val_batches: 0.025
+  limit_test_batches: null
+  accumulate_grad_batches: 1
+transformer:
+  block_type: Neo
+  block_size: 256
+  n_layer: 6
+  n_head: 6
+  n_embd: 384
+  layer_norm_bias: false
+  attention_type: global
+  bias: true
+  dropout: 0.0
+  attention_dropout: 0.0
+  resid_dropout: 0.0
+  private_heads: 0
+head:
+  SurvLayer: cr
+  surv_weight: 1
+  tokens_for_univariate_regression: <9247 token IDs omitted>
+  value_weight: 0.1
+
+[2026-03-19 17:31:59,214][root][INFO] - ====================================================================================================
+[2026-03-19 17:31:59,214][root][INFO] - # Pre-training experiment
+[2026-03-19 17:31:59,215][root][INFO] - ====================================================================================================
+[2026-03-19 17:31:59,215][root][INFO] - Loading a pre-trained model with the checkpoint path /Data0/swangek_data/991/CPRD/output/checkpoints/crPreTrain_small_1337.ckpt.
+[2026-03-19 17:32:00,941][root][INFO] - Pre-loaded 113 files into memory
+[2026-03-19 17:32:00,942][root][INFO] - with 28,182 samples
+[2026-03-19 17:32:01,239][root][INFO] - Pre-loaded 113 files into memory
+[2026-03-19 17:32:01,239][root][INFO] - with 28,182 samples
+[2026-03-19 17:32:01,594][root][INFO] - Set seed to 42
+[2026-03-19 17:32:01,595][root][INFO] - Loaded /Data0/swangek_data/991/CPRD/data/FoundationalModel/PreTrain/split=val/ dataset
+[2026-03-19 17:32:01,595][root][INFO] - Pre-loading 102 parquet files into memory...
+[2026-03-19 17:32:01,893][root][INFO] - Set seed to 42
+[2026-03-19 17:32:01,893][root][INFO] - Loaded /Data0/swangek_data/991/CPRD/data/FoundationalModel/PreTrain/split=val/ dataset
+[2026-03-19 17:32:01,893][root][INFO] - Pre-loading 102 parquet files into memory...
+[2026-03-19 17:32:02,962][root][INFO] - Pre-loaded 102 files into memory
+[2026-03-19 17:32:02,962][root][INFO] - with 25,136 samples
+[2026-03-19 17:32:03,287][root][INFO] - Pre-loaded 102 files into memory
+[2026-03-19 17:32:03,288][root][INFO] - with 25,136 samples
+[2026-03-19 17:32:03,628][root][INFO] - Creating unsupervised collator for DataModule
+[2026-03-19 17:32:03,852][root][INFO] - Creating unsupervised collator for DataModule
+[2026-03-19 17:32:08,221][root][INFO] - is_decoder: true
+data:
+  batch_size: 8
+  unk_freq_threshold: 0.0
+  min_workers: 12
+  global_diagnoses: false
+  repeating_events: true
+  path_to_db: /Data0/swangek_data/991/CPRD/data/example_exercise_database.db
+  path_to_ds: /Data0/swangek_data/991/CPRD/data/FoundationalModel/PreTrain/
+  meta_information_path: /Data0/swangek_data/991/CPRD/data/FoundationalModel/PreTrain/meta_information_custom.pickle
+  subsample_training: null
+  num_static_covariates: 27
+experiment:
+  type: pre-train
+  project_name: SurvivEHR
+  run_id: crPreTrain_small_1337
+  fine_tune_id: null
+  notes: null
+  tags: null
+  train: false
+  test: true
+  verbose: true
+  seed: 1337
+  log: true
+  log_dir: /Data0/swangek_data/991/CPRD/output/
+  ckpt_dir: /Data0/swangek_data/991/CPRD/output/checkpoints/
+fine_tuning:
+  fine_tune_outcomes: null
+  custom_outcome_method:
+    _target_: null
+  custom_stratification_method:
+    _target_: null
+  use_callbacks:
+    hidden_embedding:
+      num_batches: 0
+      mask_static: false
+      mask_value: false
+    performance_metrics: true
+    rmst: false
+  compression_layer: false
+  llrd: null
+  PEFT:
+    method: null
+    adapter_dim: 8
+  backbone:
+    linear_probe_epochs: 0
+    unfreeze_top_k: null
+  head:
+    surv_weight: 1
+    value_weight: 0
+    learning_rate: 0.0005
+optim:
+  num_epochs: 1
+  learning_rate: 0.0003
+  scheduler_warmup: true
+  scheduler: decaycawarmrestarts
+  scheduler_periods: 10000
+  learning_rate_decay: 0.8
+  val_check_interval: 1000
+  early_stop: true
+  early_stop_patience: 30
+  log_every_n_steps: 20
+  limit_val_batches: 0.025
+  limit_test_batches: null
+  accumulate_grad_batches: 1
+transformer:
+  block_type: Neo
+  block_size: 256
+  n_layer: 6
+  n_head: 6
+  n_embd: 384
+  layer_norm_bias: false
+  attention_type: global
+  bias: true
+  dropout: 0.0
+  attention_dropout: 0.0
+  resid_dropout: 0.0
+  private_heads: 0
+head:
+  SurvLayer: cr
+  surv_weight: 1
+  tokens_for_univariate_regression: <9247 token IDs omitted>
+  value_weight: 0.1
+
+[2026-03-19 17:32:08,223][root][INFO] - ====================================================================================================
+[2026-03-19 17:32:08,223][root][INFO] - # Pre-training experiment
+[2026-03-19 17:32:08,223][root][INFO] - ====================================================================================================
+[2026-03-19 17:32:08,223][root][INFO] - Loading a pre-trained model with the checkpoint path /Data0/swangek_data/991/CPRD/output/checkpoints/crPreTrain_small_1337.ckpt.
+[2026-03-19 17:32:08,289][root][INFO] - is_decoder: true
+data:
+  batch_size: 8
+  unk_freq_threshold: 0.0
+  min_workers: 12
+  global_diagnoses: false
+  repeating_events: true
+  path_to_db: /Data0/swangek_data/991/CPRD/data/example_exercise_database.db
+  path_to_ds: /Data0/swangek_data/991/CPRD/data/FoundationalModel/PreTrain/
+  meta_information_path: /Data0/swangek_data/991/CPRD/data/FoundationalModel/PreTrain/meta_information_custom.pickle
+  subsample_training: null
+  num_static_covariates: 27
+experiment:
+  type: pre-train
+  project_name: SurvivEHR
+  run_id: crPreTrain_small_1337
+  fine_tune_id: null
+  notes: null
+  tags: null
+  train: false
+  test: true
+  verbose: true
+  seed: 1337
+  log: true
+  log_dir: /Data0/swangek_data/991/CPRD/output/
+  ckpt_dir: /Data0/swangek_data/991/CPRD/output/checkpoints/
+fine_tuning:
+  fine_tune_outcomes: null
+  custom_outcome_method:
+    _target_: null
+  custom_stratification_method:
+    _target_: null
+  use_callbacks:
+    hidden_embedding:
+      num_batches: 0
+      mask_static: false
+      mask_value: false
+    performance_metrics: true
+    rmst: false
+  compression_layer: false
+  llrd: null
+  PEFT:
+    method: null
+    adapter_dim: 8
+  backbone:
+    linear_probe_epochs: 0
+    unfreeze_top_k: null
+  head:
+    surv_weight: 1
+    value_weight: 0
+    learning_rate: 0.0005
+optim:
+  num_epochs: 1
+  learning_rate: 0.0003
+  scheduler_warmup: true
+  scheduler: decaycawarmrestarts
+  scheduler_periods: 10000
+  learning_rate_decay: 0.8
+  val_check_interval: 1000
+  early_stop: true
+  early_stop_patience: 30
+  log_every_n_steps: 20
+  limit_val_batches: 0.025
+  limit_test_batches: null
+  accumulate_grad_batches: 1
+transformer:
+  block_type: Neo
+  block_size: 256
+  n_layer: 6
+  n_head: 6
+  n_embd: 384
+  layer_norm_bias: false
+  attention_type: global
+  bias: true
+  dropout: 0.0
+  attention_dropout: 0.0
+  resid_dropout: 0.0
+  private_heads: 0
+head:
+  SurvLayer: cr
+  surv_weight: 1
+  tokens_for_univariate_regression: <9247 token IDs omitted>
+  value_weight: 0.1
+
+[2026-03-19 17:32:08,291][root][INFO] - ====================================================================================================
+[2026-03-19 17:32:08,291][root][INFO] - # Pre-training experiment
+[2026-03-19 17:32:08,291][root][INFO] - ====================================================================================================
+[2026-03-19 17:32:08,291][root][INFO] - Loading a pre-trained model with the checkpoint path /Data0/swangek_data/991/CPRD/output/checkpoints/crPreTrain_small_1337.ckpt.
+[2026-03-19 17:32:16,655][torch.distributed.nn.jit.instantiator][INFO] - Created a temporary directory at /tmp/tmpg53_w45r
+[2026-03-19 17:32:16,656][torch.distributed.nn.jit.instantiator][INFO] - Writing /tmp/tmpg53_w45r/_remote_module_non_scriptable.py
+[2026-03-19 17:32:17,024][root][INFO] - Using Temporal Positional Encoding. This module uses the patient's age at an event within their time series.
+[2026-03-19 17:32:18,178][root][INFO] - Using a DeSurv Competing-Risk head.
+[2026-03-19 17:32:18,179][root][INFO] - 	With concurrent strategy=add_noise for handling simultaneous events.
+[2026-03-19 17:32:18,179][root][INFO] - 	Evaluating on a time grid between [0.0, 1.0] with 1000 intervals
+[2026-03-19 17:32:30,623][torch.distributed.nn.jit.instantiator][INFO] - Created a temporary directory at /tmp/tmpdd0c9_eo
+[2026-03-19 17:32:30,624][torch.distributed.nn.jit.instantiator][INFO] - Writing /tmp/tmpdd0c9_eo/_remote_module_non_scriptable.py
+[2026-03-19 17:32:30,853][torch.distributed.nn.jit.instantiator][INFO] - Created a temporary directory at /tmp/tmp71qnwdrx
+[2026-03-19 17:32:30,854][torch.distributed.nn.jit.instantiator][INFO] - Writing /tmp/tmp71qnwdrx/_remote_module_non_scriptable.py
+[2026-03-19 17:32:30,997][root][INFO] - Using Temporal Positional Encoding. This module uses the patient's age at an event within their time series.
+[2026-03-19 17:32:31,234][root][INFO] - Using Temporal Positional Encoding. This module uses the patient's age at an event within their time series.
+[2026-03-19 17:32:32,182][root][INFO] - Using a DeSurv Competing-Risk head.
+[2026-03-19 17:32:32,182][root][INFO] - 	With concurrent strategy=add_noise for handling simultaneous events.
+[2026-03-19 17:32:32,182][root][INFO] - 	Evaluating on a time grid between [0.0, 1.0] with 1000 intervals
+[2026-03-19 17:32:32,464][root][INFO] - Using a DeSurv Competing-Risk head.
+[2026-03-19 17:32:32,465][root][INFO] - 	With concurrent strategy=add_noise for handling simultaneous events.
+[2026-03-19 17:32:32,465][root][INFO] - 	Evaluating on a time grid between [0.0, 1.0] with 1000 intervals
+[2026-03-19 17:33:23,489][root][INFO] - Created PerformanceMetrics callback for causal self-supervised tasks.
+[2026-03-19 17:33:23,489][root][INFO] - 	 
+[2026-03-19 17:33:23,490][root][INFO] - GPu job
+[2026-03-19 17:33:23,490][root][INFO] - Using ddp strategy
+[2026-03-19 17:33:23,530][root][INFO] - Re-loading from best cached checkpoint /Data0/swangek_data/991/CPRD/output/checkpoints/crPreTrain_small_1337.ckpt
+[2026-03-19 17:33:35,850][root][INFO] - Using Temporal Positional Encoding. This module uses the patient's age at an event within their time series.
+[2026-03-19 17:33:36,911][root][INFO] - Using a DeSurv Competing-Risk head.
+[2026-03-19 17:33:36,911][root][INFO] - 	With concurrent strategy=add_noise for handling simultaneous events.
+[2026-03-19 17:33:36,912][root][INFO] - 	Evaluating on a time grid between [0.0, 1.0] with 1000 intervals
+[2026-03-19 17:33:43,972][root][INFO] - Created PerformanceMetrics callback for causal self-supervised tasks.
+[2026-03-19 17:33:43,973][root][INFO] - 	 
+[2026-03-19 17:33:43,973][root][INFO] - GPu job
+[2026-03-19 17:33:43,973][root][INFO] - Using ddp strategy
+[2026-03-19 17:33:43,990][root][INFO] - Re-loading from best cached checkpoint /Data0/swangek_data/991/CPRD/output/checkpoints/crPreTrain_small_1337.ckpt
+[2026-03-19 17:33:46,417][root][INFO] - Created PerformanceMetrics callback for causal self-supervised tasks.
+[2026-03-19 17:33:46,417][root][INFO] - 	 
+[2026-03-19 17:33:46,417][root][INFO] - GPu job
+[2026-03-19 17:33:46,417][root][INFO] - Using ddp strategy
+[2026-03-19 17:33:46,435][root][INFO] - Re-loading from best cached checkpoint /Data0/swangek_data/991/CPRD/output/checkpoints/crPreTrain_small_1337.ckpt
+[2026-03-19 17:34:03,895][root][INFO] - Using Temporal Positional Encoding. This module uses the patient's age at an event within their time series.
+[2026-03-19 17:34:05,035][root][INFO] - Using a DeSurv Competing-Risk head.
+[2026-03-19 17:34:05,035][root][INFO] - 	With concurrent strategy=add_noise for handling simultaneous events.
+[2026-03-19 17:34:05,035][root][INFO] - 	Evaluating on a time grid between [0.0, 1.0] with 1000 intervals
+[2026-03-19 17:34:05,657][root][INFO] - Using Temporal Positional Encoding. This module uses the patient's age at an event within their time series.
+[2026-03-19 17:34:06,786][root][INFO] - Using a DeSurv Competing-Risk head.
+[2026-03-19 17:34:06,786][root][INFO] - 	With concurrent strategy=add_noise for handling simultaneous events.
+[2026-03-19 17:34:06,786][root][INFO] - 	Evaluating on a time grid between [0.0, 1.0] with 1000 intervals
+[2026-03-19 17:34:39,823][root][INFO] - Testing model.
+Initializing distributed: GLOBAL_RANK: 3, MEMBER: 4/4
+[2026-03-19 17:34:40,057][torch.distributed.distributed_c10d][INFO] - Added key: store_based_barrier_key:1 to store for rank: 3
+[2026-03-19 17:34:50,058][torch.distributed.distributed_c10d][INFO] - Waiting in store based barrier to initialize process group for rank: 3, key: store_based_barrier_key:1 (world_size=4, worker_count=1, timeout=0:30:00)
+[2026-03-19 17:35:00,065][torch.distributed.distributed_c10d][INFO] - Waiting in store based barrier to initialize process group for rank: 3, key: store_based_barrier_key:1 (world_size=4, worker_count=1, timeout=0:30:00)
+[2026-03-19 17:35:10,066][torch.distributed.distributed_c10d][INFO] - Waiting in store based barrier to initialize process group for rank: 3, key: store_based_barrier_key:1 (world_size=4, worker_count=1, timeout=0:30:00)
+[2026-03-19 17:35:16,022][root][INFO] - Testing model.
+Initializing distributed: GLOBAL_RANK: 1, MEMBER: 2/4
+[2026-03-19 17:35:16,285][torch.distributed.distributed_c10d][INFO] - Added key: store_based_barrier_key:1 to store for rank: 1
+[2026-03-19 17:35:20,076][torch.distributed.distributed_c10d][INFO] - Waiting in store based barrier to initialize process group for rank: 3, key: store_based_barrier_key:1 (world_size=4, worker_count=2, timeout=0:30:00)
+[2026-03-19 17:35:20,446][root][INFO] - Testing model.
+Initializing distributed: GLOBAL_RANK: 2, MEMBER: 3/4
+[2026-03-19 17:35:20,683][torch.distributed.distributed_c10d][INFO] - Added key: store_based_barrier_key:1 to store for rank: 2
+[2026-03-19 17:35:20,690][torch.distributed.distributed_c10d][INFO] - Added key: store_based_barrier_key:1 to store for rank: 0
+[2026-03-19 17:35:20,693][torch.distributed.distributed_c10d][INFO] - Rank 0: Completed store-based barrier for key:store_based_barrier_key:1 with 4 nodes.
+----------------------------------------------------------------------------------------------------
+distributed_backend=nccl
+All distributed processes registered. Starting with 4 processes
+----------------------------------------------------------------------------------------------------
+
+[2026-03-19 17:35:20,693][torch.distributed.distributed_c10d][INFO] - Rank 2: Completed store-based barrier for key:store_based_barrier_key:1 with 4 nodes.
+[2026-03-19 17:35:20,698][torch.distributed.distributed_c10d][INFO] - Rank 3: Completed store-based barrier for key:store_based_barrier_key:1 with 4 nodes.
+[2026-03-19 17:35:20,699][torch.distributed.distributed_c10d][INFO] - Rank 1: Completed store-based barrier for key:store_based_barrier_key:1 with 4 nodes.
+wandb: WARNING The anonymous setting has no effect and will be removed in a future version.
+wandb: [wandb.login()] Loaded credentials for https://api.wandb.ai from /home/swangek/.netrc.
+wandb: Currently logged in as: swangek2002 (swangek2002-hong-kong-university-of-science-and-technology) to https://api.wandb.ai. Use `wandb login --relogin` to force relogin
+wandb: setting up run cxz00gq1
+wandb: Tracking run with wandb version 0.25.0
+wandb: Run data is saved locally in /Data0/swangek_data/991/CPRD/output/wandb/run-20260319_173522-cxz00gq1
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run crPreTrain_small_1337
+wandb: ⭐️ View project at https://wandb.ai/swangek2002-hong-kong-university-of-science-and-technology/SurvivEHR
+wandb: 🚀 View run at https://wandb.ai/swangek2002-hong-kong-university-of-science-and-technology/SurvivEHR/runs/cxz00gq1
+LOCAL_RANK: 2 - CUDA_VISIBLE_DEVICES: [0,1,2,3]
+LOCAL_RANK: 0 - CUDA_VISIBLE_DEVICES: [0,1,2,3]
+LOCAL_RANK: 3 - CUDA_VISIBLE_DEVICES: [0,1,2,3]
+LOCAL_RANK: 1 - CUDA_VISIBLE_DEVICES: [0,1,2,3]
+/Data0/swangek_data/conda_envs/survivehr/lib/python3.10/site-packages/pytorch_lightning/trainer/connectors/data_connector.py:232: Using `DistributedSampler` with the dataloaders. During `trainer.test()`, it is recommended to use `Trainer(devices=1, num_nodes=1)` to ensure each sample/batch gets evaluated exactly once. Otherwise, multi-device settings use `DistributedSampler` that replicates some samples to make sure all devices have same batch size in case of uneven inputs.
+Testing: |          | 0/? [00:00<?, ?it/s]Testing:   0%|          | 0/881 [00:00<?, ?it/s]Testing DataLoader 0:   0%|          | 0/881 [00:00<?, ?it/s]Error executing job with overrides: ['experiment.train=False', 'experiment.test=True', 'data.batch_size=8']
+Traceback (most recent call last):
+  File "/Data0/swangek_data/991/CPRD/examples/modelling/SurvivEHR/run_experiment.py", line 307, in <module>
+    run()
+  File "/Data0/swangek_data/conda_envs/survivehr/lib/python3.10/site-packages/hydra/main.py", line 94, in decorated_main
+    _run_hydra(
+  File "/Data0/swangek_data/conda_envs/survivehr/lib/python3.10/site-packages/hydra/_internal/utils.py", line 394, in _run_hydra
+    _run_app(
+  File "/Data0/swangek_data/conda_envs/survivehr/lib/python3.10/site-packages/hydra/_internal/utils.py", line 457, in _run_app
+    run_and_report(
+  File "/Data0/swangek_data/conda_envs/survivehr/lib/python3.10/site-packages/hydra/_internal/utils.py", line 223, in run_and_report
+    raise ex
+  File "/Data0/swangek_data/conda_envs/survivehr/lib/python3.10/site-packages/hydra/_internal/utils.py", line 220, in run_and_report
+    return func()
+  File "/Data0/swangek_data/conda_envs/survivehr/lib/python3.10/site-packages/hydra/_internal/utils.py", line 458, in <lambda>
+    lambda: hydra.run(
+  File "/Data0/swangek_data/conda_envs/survivehr/lib/python3.10/site-packages/hydra/_internal/hydra.py", line 132, in run
+    _ = ret.return_value
+  File "/Data0/swangek_data/conda_envs/survivehr/lib/python3.10/site-packages/hydra/core/utils.py", line 260, in return_value
+    raise self._return_value
+  File "/Data0/swangek_data/conda_envs/survivehr/lib/python3.10/site-packages/hydra/core/utils.py", line 186, in run_job
+    ret.return_value = task_function(task_cfg)
+  File "/Data0/swangek_data/991/CPRD/examples/modelling/SurvivEHR/run_experiment.py", line 302, in run
+    trainer.test(experiment_instance, dataloaders=dm.test_dataloader())
+  File "/Data0/swangek_data/conda_envs/survivehr/lib/python3.10/site-packages/pytorch_lightning/trainer/trainer.py", line 755, in test
+    return call._call_and_handle_interrupt(
+  File "/Data0/swangek_data/conda_envs/survivehr/lib/python3.10/site-packages/pytorch_lightning/trainer/call.py", line 43, in _call_and_handle_interrupt
+    return trainer.strategy.launcher.launch(trainer_fn, *args, trainer=trainer, **kwargs)
+  File "/Data0/swangek_data/conda_envs/survivehr/lib/python3.10/site-packages/pytorch_lightning/strategies/launchers/subprocess_script.py", line 102, in launch
+    return function(*args, **kwargs)
+  File "/Data0/swangek_data/conda_envs/survivehr/lib/python3.10/site-packages/pytorch_lightning/trainer/trainer.py", line 795, in _test_impl
+    results = self._run(model, ckpt_path=ckpt_path)
+  File "/Data0/swangek_data/conda_envs/survivehr/lib/python3.10/site-packages/pytorch_lightning/trainer/trainer.py", line 990, in _run
+    results = self._run_stage()
+  File "/Data0/swangek_data/conda_envs/survivehr/lib/python3.10/site-packages/pytorch_lightning/trainer/trainer.py", line 1029, in _run_stage
+    return self._evaluation_loop.run()
+  File "/Data0/swangek_data/conda_envs/survivehr/lib/python3.10/site-packages/pytorch_lightning/loops/utilities.py", line 181, in _decorator
+    return loop_run(self, *args, **kwargs)
+  File "/Data0/swangek_data/conda_envs/survivehr/lib/python3.10/site-packages/pytorch_lightning/loops/evaluation_loop.py", line 134, in run
+    self._evaluation_step(batch, batch_idx, dataloader_idx, dataloader_iter)
+  File "/Data0/swangek_data/conda_envs/survivehr/lib/python3.10/site-packages/pytorch_lightning/loops/evaluation_loop.py", line 405, in _evaluation_step
+    call._call_callback_hooks(trainer, hook_name, output, *hook_kwargs.values())
+  File "/Data0/swangek_data/conda_envs/survivehr/lib/python3.10/site-packages/pytorch_lightning/trainer/call.py", line 208, in _call_callback_hooks
+    fn(trainer, trainer.lightning_module, *args, **kwargs)
+  File "/Data0/swangek_data/991/CPRD/SurvivEHR/src/models/survival/custom_callbacks/causal_eval.py", line 266, in on_test_batch_end
+    outputs, _, _ = pl_module(batch, is_generation=False, return_loss=False, return_generation=True)
+  File "/Data0/swangek_data/conda_envs/survivehr/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1501, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/Data0/swangek_data/991/CPRD/SurvivEHR/examples/modelling/SurvivEHR/setup_causal_experiment.py", line 81, in forward
+    return self.model(tokens,
+  File "/Data0/swangek_data/conda_envs/survivehr/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1501, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/Data0/swangek_data/991/CPRD/SurvivEHR/src/models/survival/task_heads/causal.py", line 133, in forward
+    surv_dict, losses_desurv = self.surv_layer.predict(hidden_states[:,:,:self.n_embd - self.n_embd_private],
+  File "/Data0/swangek_data/991/CPRD/SurvivEHR/src/modules/head_layers/survival/competing_risk.py", line 117, in predict
+    preds, pis = self._predict_cdf(in_hidden_state.reshape((-1,in_hidden_state.shape[-1]))) 
+  File "/Data0/swangek_data/991/CPRD/SurvivEHR/src/modules/head_layers/survival/competing_risk.py", line 175, in _predict_cdf
+    _pred, _pi = self.sr_ode(H_test_batched, t_test_batched)
+  File "/Data0/swangek_data/conda_envs/survivehr/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1501, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/Data0/swangek_data/991/CPRD/SurvivEHR/src/modules/head_layers/survival/desurv.py", line 259, in forward
+    pi = self.get_pi(x)
+  File "/Data0/swangek_data/991/CPRD/SurvivEHR/src/modules/head_layers/survival/desurv.py", line 254, in get_pi
+    return self.pinet(x)
+  File "/Data0/swangek_data/conda_envs/survivehr/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1501, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/Data0/swangek_data/991/CPRD/SurvivEHR/src/modules/head_layers/survival/desurv.py", line 42, in forward
+    return self.mapping(x)
+  File "/Data0/swangek_data/conda_envs/survivehr/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1501, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/Data0/swangek_data/conda_envs/survivehr/lib/python3.10/site-packages/torch/nn/modules/container.py", line 217, in forward
+    input = module(input)
+  File "/Data0/swangek_data/conda_envs/survivehr/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1501, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/Data0/swangek_data/conda_envs/survivehr/lib/python3.10/site-packages/torch/nn/modules/linear.py", line 114, in forward
+    return F.linear(input, self.weight, self.bias)
+torch.cuda.OutOfMemoryError: CUDA out of memory. Tried to allocate 2.00 MiB (GPU 3; 23.46 GiB total capacity; 19.22 GiB already allocated; 3.00 MiB free; 23.18 GiB reserved in total by PyTorch) If reserved memory is >> allocated memory try setting max_split_size_mb to avoid fragmentation.  See documentation for Memory Management and PYTORCH_CUDA_ALLOC_CONF
+Error executing job with overrides: ['experiment.train=False', 'experiment.test=True', 'data.batch_size=8']
+Traceback (most recent call last):
+  File "/Data0/swangek_data/991/CPRD/examples/modelling/SurvivEHR/run_experiment.py", line 307, in <module>
+    run()
+  File "/Data0/swangek_data/conda_envs/survivehr/lib/python3.10/site-packages/hydra/main.py", line 94, in decorated_main
+    _run_hydra(
+  File "/Data0/swangek_data/conda_envs/survivehr/lib/python3.10/site-packages/hydra/_internal/utils.py", line 394, in _run_hydra
+    _run_app(
+  File "/Data0/swangek_data/conda_envs/survivehr/lib/python3.10/site-packages/hydra/_internal/utils.py", line 457, in _run_app
+    run_and_report(
+  File "/Data0/swangek_data/conda_envs/survivehr/lib/python3.10/site-packages/hydra/_internal/utils.py", line 223, in run_and_report
+    raise ex
+  File "/Data0/swangek_data/conda_envs/survivehr/lib/python3.10/site-packages/hydra/_internal/utils.py", line 220, in run_and_report
+    return func()
+  File "/Data0/swangek_data/conda_envs/survivehr/lib/python3.10/site-packages/hydra/_internal/utils.py", line 458, in <lambda>
+    lambda: hydra.run(
+  File "/Data0/swangek_data/conda_envs/survivehr/lib/python3.10/site-packages/hydra/_internal/hydra.py", line 132, in run
+    _ = ret.return_value
+  File "/Data0/swangek_data/conda_envs/survivehr/lib/python3.10/site-packages/hydra/core/utils.py", line 260, in return_value
+    raise self._return_value
+  File "/Data0/swangek_data/conda_envs/survivehr/lib/python3.10/site-packages/hydra/core/utils.py", line 186, in run_job
+    ret.return_value = task_function(task_cfg)
+  File "/Data0/swangek_data/991/CPRD/examples/modelling/SurvivEHR/run_experiment.py", line 302, in run
+    trainer.test(experiment_instance, dataloaders=dm.test_dataloader())
+  File "/Data0/swangek_data/conda_envs/survivehr/lib/python3.10/site-packages/pytorch_lightning/trainer/trainer.py", line 755, in test
+    return call._call_and_handle_interrupt(
+  File "/Data0/swangek_data/conda_envs/survivehr/lib/python3.10/site-packages/pytorch_lightning/trainer/call.py", line 43, in _call_and_handle_interrupt
+    return trainer.strategy.launcher.launch(trainer_fn, *args, trainer=trainer, **kwargs)
+  File "/Data0/swangek_data/conda_envs/survivehr/lib/python3.10/site-packages/pytorch_lightning/strategies/launchers/subprocess_script.py", line 102, in launch
+    return function(*args, **kwargs)
+  File "/Data0/swangek_data/conda_envs/survivehr/lib/python3.10/site-packages/pytorch_lightning/trainer/trainer.py", line 795, in _test_impl
+    results = self._run(model, ckpt_path=ckpt_path)
+  File "/Data0/swangek_data/conda_envs/survivehr/lib/python3.10/site-packages/pytorch_lightning/trainer/trainer.py", line 990, in _run
+    results = self._run_stage()
+  File "/Data0/swangek_data/conda_envs/survivehr/lib/python3.10/site-packages/pytorch_lightning/trainer/trainer.py", line 1029, in _run_stage
+    return self._evaluation_loop.run()
+  File "/Data0/swangek_data/conda_envs/survivehr/lib/python3.10/site-packages/pytorch_lightning/loops/utilities.py", line 181, in _decorator
+    return loop_run(self, *args, **kwargs)
+  File "/Data0/swangek_data/conda_envs/survivehr/lib/python3.10/site-packages/pytorch_lightning/loops/evaluation_loop.py", line 134, in run
+    self._evaluation_step(batch, batch_idx, dataloader_idx, dataloader_iter)
+  File "/Data0/swangek_data/conda_envs/survivehr/lib/python3.10/site-packages/pytorch_lightning/loops/evaluation_loop.py", line 405, in _evaluation_step
+    call._call_callback_hooks(trainer, hook_name, output, *hook_kwargs.values())
+  File "/Data0/swangek_data/conda_envs/survivehr/lib/python3.10/site-packages/pytorch_lightning/trainer/call.py", line 208, in _call_callback_hooks
+    fn(trainer, trainer.lightning_module, *args, **kwargs)
+  File "/Data0/swangek_data/991/CPRD/SurvivEHR/src/models/survival/custom_callbacks/causal_eval.py", line 266, in on_test_batch_end
+    outputs, _, _ = pl_module(batch, is_generation=False, return_loss=False, return_generation=True)
+  File "/Data0/swangek_data/conda_envs/survivehr/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1501, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/Data0/swangek_data/991/CPRD/SurvivEHR/examples/modelling/SurvivEHR/setup_causal_experiment.py", line 81, in forward
+    return self.model(tokens,
+  File "/Data0/swangek_data/conda_envs/survivehr/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1501, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/Data0/swangek_data/991/CPRD/SurvivEHR/src/models/survival/task_heads/causal.py", line 133, in forward
+    surv_dict, losses_desurv = self.surv_layer.predict(hidden_states[:,:,:self.n_embd - self.n_embd_private],
+  File "/Data0/swangek_data/991/CPRD/SurvivEHR/src/modules/head_layers/survival/competing_risk.py", line 117, in predict
+    preds, pis = self._predict_cdf(in_hidden_state.reshape((-1,in_hidden_state.shape[-1])))
+  File "/Data0/swangek_data/991/CPRD/SurvivEHR/src/modules/head_layers/survival/competing_risk.py", line 175, in _predict_cdf
+    _pred, _pi = self.sr_ode(H_test_batched, t_test_batched)
+  File "/Data0/swangek_data/conda_envs/survivehr/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1501, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/Data0/swangek_data/991/CPRD/SurvivEHR/src/modules/head_layers/survival/desurv.py", line 260, in forward
+    preds = pi * self.odenet.forward(x, t)
+  File "/Data0/swangek_data/991/CPRD/SurvivEHR/src/modules/head_layers/survival/desurv.py", line 110, in forward
+    dudt = self.ode_mapping(reppedx, tau_)
+  File "/Data0/swangek_data/991/CPRD/SurvivEHR/src/modules/head_layers/survival/desurv.py", line 68, in ode_mapping
+    return self.BaseNet(z)
+  File "/Data0/swangek_data/conda_envs/survivehr/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1501, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/Data0/swangek_data/991/CPRD/SurvivEHR/src/modules/head_layers/survival/desurv.py", line 42, in forward
+    return self.mapping(x)
+  File "/Data0/swangek_data/conda_envs/survivehr/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1501, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/Data0/swangek_data/conda_envs/survivehr/lib/python3.10/site-packages/torch/nn/modules/container.py", line 217, in forward
+    input = module(input)
+  File "/Data0/swangek_data/conda_envs/survivehr/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1501, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/Data0/swangek_data/conda_envs/survivehr/lib/python3.10/site-packages/torch/nn/modules/linear.py", line 114, in forward
+    return F.linear(input, self.weight, self.bias)
+torch.cuda.OutOfMemoryError: CUDA out of memory. Tried to allocate 2.00 MiB (GPU 0; 23.46 GiB total capacity; 18.79 GiB already allocated; 1.56 MiB free; 22.69 GiB reserved in total by PyTorch) If reserved memory is >> allocated memory try setting max_split_size_mb to avoid fragmentation.  See documentation for Memory Management and PYTORCH_CUDA_ALLOC_CONF
+Error executing job with overrides: ['experiment.train=False', 'experiment.test=True', 'data.batch_size=8']
+Traceback (most recent call last):
+  File "/Data0/swangek_data/991/CPRD/examples/modelling/SurvivEHR/run_experiment.py", line 307, in <module>
+    run()
+  File "/Data0/swangek_data/conda_envs/survivehr/lib/python3.10/site-packages/hydra/main.py", line 94, in decorated_main
+    _run_hydra(
+  File "/Data0/swangek_data/conda_envs/survivehr/lib/python3.10/site-packages/hydra/_internal/utils.py", line 394, in _run_hydra
+    _run_app(
+  File "/Data0/swangek_data/conda_envs/survivehr/lib/python3.10/site-packages/hydra/_internal/utils.py", line 457, in _run_app
+    run_and_report(
+  File "/Data0/swangek_data/conda_envs/survivehr/lib/python3.10/site-packages/hydra/_internal/utils.py", line 223, in run_and_report
+    raise ex
+  File "/Data0/swangek_data/conda_envs/survivehr/lib/python3.10/site-packages/hydra/_internal/utils.py", line 220, in run_and_report
+    return func()
+  File "/Data0/swangek_data/conda_envs/survivehr/lib/python3.10/site-packages/hydra/_internal/utils.py", line 458, in <lambda>
+    lambda: hydra.run(
+  File "/Data0/swangek_data/conda_envs/survivehr/lib/python3.10/site-packages/hydra/_internal/hydra.py", line 132, in run
+    _ = ret.return_value
+  File "/Data0/swangek_data/conda_envs/survivehr/lib/python3.10/site-packages/hydra/core/utils.py", line 260, in return_value
+    raise self._return_value
+  File "/Data0/swangek_data/conda_envs/survivehr/lib/python3.10/site-packages/hydra/core/utils.py", line 186, in run_job
+    ret.return_value = task_function(task_cfg)
+  File "/Data0/swangek_data/991/CPRD/examples/modelling/SurvivEHR/run_experiment.py", line 302, in run
+    trainer.test(experiment_instance, dataloaders=dm.test_dataloader())
+  File "/Data0/swangek_data/conda_envs/survivehr/lib/python3.10/site-packages/pytorch_lightning/trainer/trainer.py", line 755, in test
+    return call._call_and_handle_interrupt(
+  File "/Data0/swangek_data/conda_envs/survivehr/lib/python3.10/site-packages/pytorch_lightning/trainer/call.py", line 43, in _call_and_handle_interrupt
+    return trainer.strategy.launcher.launch(trainer_fn, *args, trainer=trainer, **kwargs)
+  File "/Data0/swangek_data/conda_envs/survivehr/lib/python3.10/site-packages/pytorch_lightning/strategies/launchers/subprocess_script.py", line 102, in launch
+    return function(*args, **kwargs)
+  File "/Data0/swangek_data/conda_envs/survivehr/lib/python3.10/site-packages/pytorch_lightning/trainer/trainer.py", line 795, in _test_impl
+    results = self._run(model, ckpt_path=ckpt_path)
+  File "/Data0/swangek_data/conda_envs/survivehr/lib/python3.10/site-packages/pytorch_lightning/trainer/trainer.py", line 990, in _run
+    results = self._run_stage()
+  File "/Data0/swangek_data/conda_envs/survivehr/lib/python3.10/site-packages/pytorch_lightning/trainer/trainer.py", line 1029, in _run_stage
+    return self._evaluation_loop.run()
+  File "/Data0/swangek_data/conda_envs/survivehr/lib/python3.10/site-packages/pytorch_lightning/loops/utilities.py", line 181, in _decorator
+    return loop_run(self, *args, **kwargs)
+  File "/Data0/swangek_data/conda_envs/survivehr/lib/python3.10/site-packages/pytorch_lightning/loops/evaluation_loop.py", line 134, in run
+    self._evaluation_step(batch, batch_idx, dataloader_idx, dataloader_iter)
+  File "/Data0/swangek_data/conda_envs/survivehr/lib/python3.10/site-packages/pytorch_lightning/loops/evaluation_loop.py", line 405, in _evaluation_step
+    call._call_callback_hooks(trainer, hook_name, output, *hook_kwargs.values())
+  File "/Data0/swangek_data/conda_envs/survivehr/lib/python3.10/site-packages/pytorch_lightning/trainer/call.py", line 208, in _call_callback_hooks
+    fn(trainer, trainer.lightning_module, *args, **kwargs)
+  File "/Data0/swangek_data/991/CPRD/SurvivEHR/src/models/survival/custom_callbacks/causal_eval.py", line 266, in on_test_batch_end
+    outputs, _, _ = pl_module(batch, is_generation=False, return_loss=False, return_generation=True)
+  File "/Data0/swangek_data/conda_envs/survivehr/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1501, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/Data0/swangek_data/991/CPRD/SurvivEHR/examples/modelling/SurvivEHR/setup_causal_experiment.py", line 81, in forward
+    return self.model(tokens,
+  File "/Data0/swangek_data/conda_envs/survivehr/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1501, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/Data0/swangek_data/991/CPRD/SurvivEHR/src/models/survival/task_heads/causal.py", line 133, in forward
+    surv_dict, losses_desurv = self.surv_layer.predict(hidden_states[:,:,:self.n_embd - self.n_embd_private],
+  File "/Data0/swangek_data/991/CPRD/SurvivEHR/src/modules/head_layers/survival/competing_risk.py", line 117, in predict
+    preds, pis = self._predict_cdf(in_hidden_state.reshape((-1,in_hidden_state.shape[-1]))) 
+  File "/Data0/swangek_data/991/CPRD/SurvivEHR/src/modules/head_layers/survival/competing_risk.py", line 175, in _predict_cdf
+    _pred, _pi = self.sr_ode(H_test_batched, t_test_batched)
+  File "/Data0/swangek_data/conda_envs/survivehr/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1501, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/Data0/swangek_data/991/CPRD/SurvivEHR/src/modules/head_layers/survival/desurv.py", line 259, in forward
+    pi = self.get_pi(x)
+  File "/Data0/swangek_data/991/CPRD/SurvivEHR/src/modules/head_layers/survival/desurv.py", line 254, in get_pi
+    return self.pinet(x)
+  File "/Data0/swangek_data/conda_envs/survivehr/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1501, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/Data0/swangek_data/991/CPRD/SurvivEHR/src/modules/head_layers/survival/desurv.py", line 42, in forward
+    return self.mapping(x)
+  File "/Data0/swangek_data/conda_envs/survivehr/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1501, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/Data0/swangek_data/conda_envs/survivehr/lib/python3.10/site-packages/torch/nn/modules/container.py", line 217, in forward
+    input = module(input)
+  File "/Data0/swangek_data/conda_envs/survivehr/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1501, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/Data0/swangek_data/conda_envs/survivehr/lib/python3.10/site-packages/torch/nn/modules/linear.py", line 114, in forward
+    return F.linear(input, self.weight, self.bias)
+torch.cuda.OutOfMemoryError: CUDA out of memory. Tried to allocate 2.00 MiB (GPU 2; 23.46 GiB total capacity; 19.22 GiB already allocated; 3.00 MiB free; 23.18 GiB reserved in total by PyTorch) If reserved memory is >> allocated memory try setting max_split_size_mb to avoid fragmentation.  See documentation for Memory Management and PYTORCH_CUDA_ALLOC_CONF
+Error executing job with overrides: ['experiment.train=False', 'experiment.test=True', 'data.batch_size=8']
+Traceback (most recent call last):
+  File "/Data0/swangek_data/991/CPRD/examples/modelling/SurvivEHR/run_experiment.py", line 307, in <module>
+    run()
+  File "/Data0/swangek_data/conda_envs/survivehr/lib/python3.10/site-packages/hydra/main.py", line 94, in decorated_main
+    _run_hydra(
+  File "/Data0/swangek_data/conda_envs/survivehr/lib/python3.10/site-packages/hydra/_internal/utils.py", line 394, in _run_hydra
+    _run_app(
+  File "/Data0/swangek_data/conda_envs/survivehr/lib/python3.10/site-packages/hydra/_internal/utils.py", line 457, in _run_app
+    run_and_report(
+  File "/Data0/swangek_data/conda_envs/survivehr/lib/python3.10/site-packages/hydra/_internal/utils.py", line 223, in run_and_report
+    raise ex
+  File "/Data0/swangek_data/conda_envs/survivehr/lib/python3.10/site-packages/hydra/_internal/utils.py", line 220, in run_and_report
+    return func()
+  File "/Data0/swangek_data/conda_envs/survivehr/lib/python3.10/site-packages/hydra/_internal/utils.py", line 458, in <lambda>
+    lambda: hydra.run(
+  File "/Data0/swangek_data/conda_envs/survivehr/lib/python3.10/site-packages/hydra/_internal/hydra.py", line 132, in run
+    _ = ret.return_value
+  File "/Data0/swangek_data/conda_envs/survivehr/lib/python3.10/site-packages/hydra/core/utils.py", line 260, in return_value
+    raise self._return_value
+  File "/Data0/swangek_data/conda_envs/survivehr/lib/python3.10/site-packages/hydra/core/utils.py", line 186, in run_job
+    ret.return_value = task_function(task_cfg)
+  File "/Data0/swangek_data/991/CPRD/examples/modelling/SurvivEHR/run_experiment.py", line 302, in run
+    trainer.test(experiment_instance, dataloaders=dm.test_dataloader())
+  File "/Data0/swangek_data/conda_envs/survivehr/lib/python3.10/site-packages/pytorch_lightning/trainer/trainer.py", line 755, in test
+    return call._call_and_handle_interrupt(
+  File "/Data0/swangek_data/conda_envs/survivehr/lib/python3.10/site-packages/pytorch_lightning/trainer/call.py", line 43, in _call_and_handle_interrupt
+    return trainer.strategy.launcher.launch(trainer_fn, *args, trainer=trainer, **kwargs)
+  File "/Data0/swangek_data/conda_envs/survivehr/lib/python3.10/site-packages/pytorch_lightning/strategies/launchers/subprocess_script.py", line 102, in launch
+    return function(*args, **kwargs)
+  File "/Data0/swangek_data/conda_envs/survivehr/lib/python3.10/site-packages/pytorch_lightning/trainer/trainer.py", line 795, in _test_impl
+    results = self._run(model, ckpt_path=ckpt_path)
+  File "/Data0/swangek_data/conda_envs/survivehr/lib/python3.10/site-packages/pytorch_lightning/trainer/trainer.py", line 990, in _run
+    results = self._run_stage()
+  File "/Data0/swangek_data/conda_envs/survivehr/lib/python3.10/site-packages/pytorch_lightning/trainer/trainer.py", line 1029, in _run_stage
+    return self._evaluation_loop.run()
+  File "/Data0/swangek_data/conda_envs/survivehr/lib/python3.10/site-packages/pytorch_lightning/loops/utilities.py", line 181, in _decorator
+    return loop_run(self, *args, **kwargs)
+  File "/Data0/swangek_data/conda_envs/survivehr/lib/python3.10/site-packages/pytorch_lightning/loops/evaluation_loop.py", line 134, in run
+    self._evaluation_step(batch, batch_idx, dataloader_idx, dataloader_iter)
+  File "/Data0/swangek_data/conda_envs/survivehr/lib/python3.10/site-packages/pytorch_lightning/loops/evaluation_loop.py", line 405, in _evaluation_step
+    call._call_callback_hooks(trainer, hook_name, output, *hook_kwargs.values())
+  File "/Data0/swangek_data/conda_envs/survivehr/lib/python3.10/site-packages/pytorch_lightning/trainer/call.py", line 208, in _call_callback_hooks
+    fn(trainer, trainer.lightning_module, *args, **kwargs)
+  File "/Data0/swangek_data/991/CPRD/SurvivEHR/src/models/survival/custom_callbacks/causal_eval.py", line 266, in on_test_batch_end
+    outputs, _, _ = pl_module(batch, is_generation=False, return_loss=False, return_generation=True)
+  File "/Data0/swangek_data/conda_envs/survivehr/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1501, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/Data0/swangek_data/991/CPRD/SurvivEHR/examples/modelling/SurvivEHR/setup_causal_experiment.py", line 81, in forward
+    return self.model(tokens,
+  File "/Data0/swangek_data/conda_envs/survivehr/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1501, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/Data0/swangek_data/991/CPRD/SurvivEHR/src/models/survival/task_heads/causal.py", line 133, in forward
+    surv_dict, losses_desurv = self.surv_layer.predict(hidden_states[:,:,:self.n_embd - self.n_embd_private],
+  File "/Data0/swangek_data/991/CPRD/SurvivEHR/src/modules/head_layers/survival/competing_risk.py", line 117, in predict
+    preds, pis = self._predict_cdf(in_hidden_state.reshape((-1,in_hidden_state.shape[-1]))) 
+  File "/Data0/swangek_data/991/CPRD/SurvivEHR/src/modules/head_layers/survival/competing_risk.py", line 175, in _predict_cdf
+    _pred, _pi = self.sr_ode(H_test_batched, t_test_batched)
+  File "/Data0/swangek_data/conda_envs/survivehr/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1501, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/Data0/swangek_data/991/CPRD/SurvivEHR/src/modules/head_layers/survival/desurv.py", line 259, in forward
+    pi = self.get_pi(x)
+  File "/Data0/swangek_data/991/CPRD/SurvivEHR/src/modules/head_layers/survival/desurv.py", line 254, in get_pi
+    return self.pinet(x)
+  File "/Data0/swangek_data/conda_envs/survivehr/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1501, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/Data0/swangek_data/991/CPRD/SurvivEHR/src/modules/head_layers/survival/desurv.py", line 42, in forward
+    return self.mapping(x)
+  File "/Data0/swangek_data/conda_envs/survivehr/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1501, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/Data0/swangek_data/conda_envs/survivehr/lib/python3.10/site-packages/torch/nn/modules/container.py", line 217, in forward
+    input = module(input)
+  File "/Data0/swangek_data/conda_envs/survivehr/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1501, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/Data0/swangek_data/conda_envs/survivehr/lib/python3.10/site-packages/torch/nn/modules/linear.py", line 114, in forward
+    return F.linear(input, self.weight, self.bias)
+torch.cuda.OutOfMemoryError: CUDA out of memory. Tried to allocate 2.00 MiB (GPU 1; 23.46 GiB total capacity; 19.22 GiB already allocated; 3.00 MiB free; 23.18 GiB reserved in total by PyTorch) If reserved memory is >> allocated memory try setting max_split_size_mb to avoid fragmentation.  See documentation for Memory Management and PYTORCH_CUDA_ALLOC_CONF
+[1;34mwandb[0m: 
+[1;34mwandb[0m: 🚀 View run [33mcrPreTrain_small_1337[0m at: [34mhttps://wandb.ai/swangek2002-hong-kong-university-of-science-and-technology/SurvivEHR/runs/cxz00gq1[0m
+[1;34mwandb[0m: Find logs at: [1;35m../../../output/wandb/run-20260319_173522-cxz00gq1/logs[0m

@@ -7,6 +7,7 @@ import importlib
 import functools
 import math
 from itertools import islice
+from typing import Optional
 
 from SurvivEHR.src.models.base_callback import Embedding
 from SurvivEHR.src.models.survival.custom_callbacks.clinical_prediction_model import PerformanceMetrics
@@ -18,6 +19,33 @@ from SurvivEHR.src.modules.head_layers.value_layers import GaussianRegressionLay
 from SurvivEHR.examples.modelling.SurvivEHR.optimizers_fine_tuning import ConfigureFTOptimizers
 
 
+def compute_sparsity_aware_weights(
+    observation_times: torch.Tensor,
+    tau: float,
+    alpha: float,
+) -> torch.Tensor:
+    """Compute per-sample weights using SurvDiff's sparsity-aware scheme.
+
+    Adapted from SurvDiff (Yan et al., 2024) Equation 11 for use with
+    DeSurv NLL loss.  Samples with observation time <= tau receive full
+    weight; later samples are exponentially down-weighted to stabilise
+    gradients in the sparse tail of the survival distribution.
+
+    Args:
+        observation_times: (M,) tensor of event/censoring times.
+        tau: Threshold time; samples with t <= tau get weight 1.
+        alpha: Exponential decay rate for t > tau.
+
+    Returns:
+        (M,) tensor of non-negative weights.
+    """
+    weights = torch.ones_like(observation_times)
+    late_mask = observation_times > tau
+    if late_mask.any():
+        weights[late_mask] = torch.exp(-alpha * (observation_times[late_mask] - tau))
+    return weights
+
+
 class FineTuneExperiment(pl.LightningModule):
 
     def __init__(self,
@@ -25,22 +53,28 @@ class FineTuneExperiment(pl.LightningModule):
                  outcome_tokens,
                  risk_model,         # 'single-risk', 'competing-risk', or (TODO) False (for case of predicting value but not survival risk)
                  vocab_size=265,
+                 outcome_token_groups=None,
                 ):
         
         super().__init__()
         self.save_hyperparameters()        
         self.cfg = cfg
 
-        # self.PEFT = 
-        # self.probe_epochs = int(getattr(self.cfg.fine_tuning.backbone, "linear_probe_epochs", 0))
-        # self.unfreeze_top_k = getattr(self.cfg.fine_tuning.backbone, "unfreeze_top_k", 1e6)
+        # Sparsity-Aware Weighting (SurvDiff, Yan et al. 2024)
+        saw_cfg = getattr(cfg.fine_tuning, "sparsity_aware", None)
+        self.saw_enabled = getattr(saw_cfg, "enabled", False) if saw_cfg is not None else False
+        self.saw_tau = float(getattr(saw_cfg, "tau", 0.5)) if self.saw_enabled else 0.0
+        self.saw_alpha = float(getattr(saw_cfg, "alpha", 2.0)) if self.saw_enabled else 0.0
+        if self.saw_enabled:
+            logging.info(f"Sparsity-Aware Weighting enabled: tau={self.saw_tau}, alpha={self.saw_alpha}")
         
         ###################################
         # Load the pre-trained Transformer
         #  and remove previous causal heads
         ###################################
         adapter_dim = getattr(cfg.fine_tuning.PEFT, "adapter_dim", 8) if cfg.fine_tuning.PEFT.method == "adapter" else False
-        self.model = SurvStreamGPTForCausalModelling(cfg, vocab_size, use_adapter=adapter_dim)
+        self.model = SurvStreamGPTForCausalModelling(cfg, vocab_size, use_adapter=adapter_dim,
+                                                     num_static_covariates=cfg.data.num_static_covariates)
         self.model.surv_layer, self.model.value_layer = None, None
 
         # Initial block-wise freezing
@@ -92,11 +126,22 @@ class FineTuneExperiment(pl.LightningModule):
                     self.reduce_to_outcomes = lambda target_token: target_token
                     
                 case "competingrisk" | "cr":
-                    # Treat each risk as a competing risk
-                    self.surv_layer = ODESurvCompetingRiskLayer(hidden_dimensions, [32, 32], num_risks=len(outcome_tokens), device=desurv_device)
-                    # Create a method which reduces batch["tokens"] from the causal k={1,2,3,4,5,...\vocab_size} form to the competing risk 
-                    #    form k={1,2,3,..., K} that surv_layer is expecting
-                    self.reduce_to_outcomes = lambda target_token: sum([torch.where(target_token==i, idx+1, 0) for idx, i in enumerate(outcome_tokens)])
+                    if outcome_token_groups is not None:
+                        num_risks = len(outcome_token_groups)
+                        frozen_groups = [list(g) for g in outcome_token_groups]
+                        def _grouped_reduce(target_token, _groups=frozen_groups):
+                            result = torch.zeros_like(target_token)
+                            for gidx, group in enumerate(_groups):
+                                for tid in group:
+                                    result = torch.where(target_token == tid, gidx + 1, result)
+                            return result
+                        self.reduce_to_outcomes = _grouped_reduce
+                        logging.info(f"Competing-risk with {num_risks} grouped risks")
+                    else:
+                        num_risks = len(outcome_tokens)
+                        self.reduce_to_outcomes = lambda target_token: sum([torch.where(target_token==i, idx+1, 0) for idx, i in enumerate(outcome_tokens)])
+                        logging.info(f"Competing-risk with {num_risks} individual token risks")
+                    self.surv_layer = ODESurvCompetingRiskLayer(hidden_dimensions, [32, 32], num_risks=num_risks, device=desurv_device)
     
                 case _:
                     raise ValueError(f"Survival head must be either 'single-risk' or 'competing-risk'")
@@ -175,6 +220,15 @@ class FineTuneExperiment(pl.LightningModule):
         # Attention matrix. As we have reduced to only the transition of last seen input to sequence target, nothing is masked
         target_attention_mask = torch.ones_like(target_tokens, device=self.device) == 1
 
+        # Compute sparsity-aware sample weights from observation times
+        _sample_weights = None
+        if self.saw_enabled and return_loss:
+            _sample_weights = compute_sparsity_aware_weights(
+                target_age_delta.reshape(-1),
+                tau=self.saw_tau,
+                alpha=self.saw_alpha,
+            )
+
         # survival time to event head (survival curve until next token)
         if self.surv_weight > 0:
             surv_dict, losses_desurv = self.surv_layer.predict(in_hidden_state,
@@ -184,6 +238,7 @@ class FineTuneExperiment(pl.LightningModule):
                                                                is_generation=is_generation,
                                                                return_loss=return_loss,
                                                                return_cdf=return_generation,
+                                                               sample_weights=_sample_weights,
                                                                )
         else:
             surv_dict = None
@@ -334,7 +389,7 @@ class FineTuneExperiment(pl.LightningModule):
     #         # No gradual, no linear probe
     #         pass
             
-def setup_finetune_experiment(cfg, dm, mode, risk_model, checkpoint=None, logger=None, **kwargs):
+def setup_finetune_experiment(cfg, dm, mode, risk_model, checkpoint=None, logger=None, vocab_size=None, **kwargs):
     """
     Set up the fine-tuning experiment module, trainer, and callbacks for training or evaluation.
 
@@ -373,21 +428,32 @@ def setup_finetune_experiment(cfg, dm, mode, risk_model, checkpoint=None, logger
     #    In the fine-tuning setting these are used to construct a new head which can be fine-tuned.
     #    TODO: a new clinical prediction model callback then needs to be made (or existing one editted) for this new case
     if cfg.fine_tuning.fine_tune_outcomes is not None:
-        # Use outcomes provided directly
         outcomes = cfg.fine_tuning.fine_tune_outcomes
         logging.info("Setting outcome list based on cfg.fine_tuning.fine_tune_outcomes")
     elif cfg.fine_tuning.custom_outcome_method._target_ is not None:
-        # Use outcomes decided by some custom criteria
         module_name, function_name = cfg.fine_tuning.custom_outcome_method._target_.rsplit(".", 1)
         outcome_method = getattr(importlib.import_module(module_name), function_name)
         outcomes = outcome_method(dm)
         logging.info("Setting outcome list based on cfg.fine_tuning.custom_outcome_method._target_")
     else:
-        # As this is a supervised CPM experiment, we require there to be some outcomes.
         raise NotImplementedError
-    outcome_tokens = dm.encode(outcomes)
-    outcome_dict = {_key: _value for _key, _value in zip(outcomes, outcome_tokens)}
-    logging.info(f"Running {risk_model} fine-tuning experiment with outcomes {outcome_dict}")
+
+    outcome_token_groups = None
+    first_el = outcomes[0] if outcomes else None
+    is_grouped = first_el is not None and hasattr(first_el, '__iter__') and not isinstance(first_el, str)
+    if is_grouped:
+        outcome_token_groups = [dm.encode(list(g)) for g in outcomes]
+        all_outcome_codes = [code for g in outcomes for code in g]
+        outcome_tokens = [t for g in outcome_token_groups for t in g]
+        logging.info(f"Grouped outcomes: {len(outcome_token_groups)} groups, "
+                     f"{[len(g) for g in outcome_token_groups]} codes each")
+        for gidx, (group_codes, group_tokens) in enumerate(zip(outcomes, outcome_token_groups)):
+            logging.info(f"  Group {gidx+1}: {group_codes[:3]}... -> tokens {group_tokens[:3]}... ({len(group_tokens)} total)")
+    else:
+        outcome_tokens = dm.encode(outcomes)
+        outcome_dict = {_key: _value for _key, _value in zip(outcomes, outcome_tokens)}
+        logging.info(f"Flat outcomes: {outcome_dict}")
+    logging.info(f"Running {risk_model} fine-tuning experiment")
 
     #########################################################
     # Load pre-trained model,                               #
@@ -397,16 +463,17 @@ def setup_finetune_experiment(cfg, dm, mode, risk_model, checkpoint=None, logger
         case "load_from_finetune":
             assert checkpoint is not None
             logging.info(f"Loading fine-tuned checkpoint from {checkpoint}")
-            finetune_experiment = FineTuneExperiment.load_from_checkpoint(checkpoint, cfg=cfg, outcome_tokens=outcome_tokens, risk_model=risk_model)
+            finetune_experiment = FineTuneExperiment.load_from_checkpoint(checkpoint, cfg=cfg, outcome_tokens=outcome_tokens, risk_model=risk_model, outcome_token_groups=outcome_token_groups)
             
         case "load_from_pretrain":
             assert checkpoint is not None
             logging.info(f"Loading pre-trained model from checkpoint from {checkpoint}.")
-            finetune_experiment = FineTuneExperiment.load_from_checkpoint(checkpoint, cfg=cfg, outcome_tokens=outcome_tokens, risk_model=risk_model, strict=False)
+            finetune_experiment = FineTuneExperiment.load_from_checkpoint(checkpoint, cfg=cfg, outcome_tokens=outcome_tokens, risk_model=risk_model, outcome_token_groups=outcome_token_groups, strict=False)
         case "no_load":
             assert cfg.fine_tuning.PEFT.method is None, "If fine-tuning from scratch do not use any PEFT such as the adapter module."
-            logging.info(f"Fine-tuning from scratch")
-            finetune_experiment = FineTuneExperiment(cfg, outcome_tokens, risk_model=risk_model) 
+            assert vocab_size is not None, "vocab_size must be provided when training from scratch (no_load)"
+            logging.info(f"Fine-tuning from scratch with vocab_size={vocab_size}")
+            finetune_experiment = FineTuneExperiment(cfg, outcome_tokens, risk_model=risk_model, outcome_token_groups=outcome_token_groups, vocab_size=vocab_size) 
         case _:
             raise NotImplementedError
 
@@ -508,11 +575,17 @@ def setup_finetune_experiment(cfg, dm, mode, risk_model, checkpoint=None, logger
         if risk_model == "single-risk":
             outcome_token_to_desurv_output_index = {token: 0 for token_idx, token in enumerate(outcome_tokens)}
         if risk_model == "competing-risk":
-            outcome_token_to_desurv_output_index = {token: token_idx for token_idx, token in enumerate(outcome_tokens)}
+            if outcome_token_groups is not None:
+                outcome_token_to_desurv_output_index = {}
+                for gidx, group in enumerate(outcome_token_groups):
+                    for token in group:
+                        outcome_token_to_desurv_output_index[token] = gidx
+            else:
+                outcome_token_to_desurv_output_index = {token: token_idx for token_idx, token in enumerate(outcome_tokens)}
         # Construct callback
         metric_callback = PerformanceMetrics(outcome_token_to_desurv_output_index=outcome_token_to_desurv_output_index,
                                              log_combined=True,
-                                             log_individual=False if risk_model == "single-risk" else False,
+                                             log_individual=True,
                                              log_ctd=True, 
                                              log_ibs=True,
                                              log_inbll=True)
@@ -533,17 +606,28 @@ def setup_finetune_experiment(cfg, dm, mode, risk_model, checkpoint=None, logger
     ######################
     # Set up the Trainer #
     ######################
-    if  torch.cuda.is_available():
-        if torch.cuda.is_bf16_supported():
-            precision = "bf16-mixed"
-        else:
-            precision = "16-mixed"
+    from helpers import is_interactive
+    USE_GPU = torch.cuda.is_available()
+    test_only = not cfg.experiment.train and cfg.experiment.test
+    if test_only:
+        strategy = "auto"
+        logging.info("Test-only mode — using single device to avoid DistributedSampler duplication")
+    elif is_interactive():
+        strategy = "auto"
+        logging.info("Interactive job — using auto strategy")
+    elif USE_GPU:
+        strategy = "ddp"
+        logging.info(f"GPU job — using DDP strategy on {torch.cuda.device_count()} GPU(s)")
     else:
-        precision = 32
+        strategy = "auto"
+        logging.info("CPU job — using auto strategy")
+
+    precision = 32
         
     _trainer = pl.Trainer(
         logger=logger,
-        # precision=precision,
+        precision=precision,
+        strategy=strategy,
         callbacks=callbacks,
         max_epochs=cfg.optim.num_epochs,
         log_every_n_steps=cfg.optim.log_every_n_steps,
@@ -551,8 +635,7 @@ def setup_finetune_experiment(cfg, dm, mode, risk_model, checkpoint=None, logger
         limit_val_batches=cfg.optim.limit_val_batches,
         limit_test_batches=cfg.optim.limit_test_batches,
         accumulate_grad_batches=cfg.optim.accumulate_grad_batches,
-        # gradient_clip_val=1.0,
-        # gradient_clip_algorithm="norm",
+        gradient_clip_val=1.0,
     )
 
     return finetune_experiment, FineTuneExperiment, _trainer

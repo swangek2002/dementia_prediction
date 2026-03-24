@@ -1,0 +1,290 @@
+/Data0/swangek_data/conda_envs/survivehr/lib/python3.10/site-packages/lightning_fabric/__init__.py:40: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.
+INFO:root:Building Polars datasets and saving to /Data0/swangek_data/991/CPRD/data/FoundationalModel/FineTune_Dementia_CR/
+INFO:root:Using train/test/val splits from /Data0/swangek_data/991/CPRD/data/FoundationalModel/PreTrain/practice_id_splits.pickle
+INFO:root:Processing test split...
+======================================================================
+  Building Dementia Competing-Risk Fine-Tuning Dataset
+======================================================================
+  Database:       /Data0/swangek_data/991/CPRD/data/example_exercise_database.db
+  Output:         /Data0/swangek_data/991/CPRD/data/FoundationalModel/FineTune_Dementia_CR/
+  Index on age:   65
+  Dementia codes: 41
+  Death codes:    ['DEATH']
+  Total outcomes: 42 codes
+  Study period:   ['1998-01-01', '2019-12-31']
+
+Thread generating parquet for 6 practices:   0%|          | 0/6 [00:00<?, ?it/s]/Data0/swangek_data/991/FastEHR/FastEHR/database/collector.py:581: PerformanceWarning: Determining the column names of a LazyFrame requires resolving its schema, which is a potentially expensive operation. Use `LazyFrame.collect_schema().names()` to get the column names without this warning.
+  .select(lazy_combined_frame.columns)
+Thread generating parquet for 6 practices:  17%|█▋        | 1/6 [00:32<02:41, 32.28s/it]/Data0/swangek_data/991/FastEHR/FastEHR/database/collector.py:581: PerformanceWarning: Determining the column names of a LazyFrame requires resolving its schema, which is a potentially expensive operation. Use `LazyFrame.collect_schema().names()` to get the column names without this warning.
+  .select(lazy_combined_frame.columns)
+Thread generating parquet for 6 practices:  33%|███▎      | 2/6 [00:54<01:45, 26.49s/it]/Data0/swangek_data/991/FastEHR/FastEHR/database/collector.py:581: PerformanceWarning: Determining the column names of a LazyFrame requires resolving its schema, which is a potentially expensive operation. Use `LazyFrame.collect_schema().names()` to get the column names without this warning.
+  .select(lazy_combined_frame.columns)
+Thread generating parquet for 6 practices:  50%|█████     | 3/6 [01:24<01:24, 28.21s/it]/Data0/swangek_data/991/FastEHR/FastEHR/database/collector.py:581: PerformanceWarning: Determining the column names of a LazyFrame requires resolving its schema, which is a potentially expensive operation. Use `LazyFrame.collect_schema().names()` to get the column names without this warning.
+  .select(lazy_combined_frame.columns)
+Thread generating parquet for 6 practices:  67%|██████▋   | 4/6 [01:45<00:50, 25.24s/it]/Data0/swangek_data/991/FastEHR/FastEHR/database/collector.py:581: PerformanceWarning: Determining the column names of a LazyFrame requires resolving its schema, which is a potentially expensive operation. Use `LazyFrame.collect_schema().names()` to get the column names without this warning.
+  .select(lazy_combined_frame.columns)
+Thread generating parquet for 6 practices:  83%|████████▎ | 5/6 [02:14<00:26, 26.52s/it]/Data0/swangek_data/991/FastEHR/FastEHR/database/collector.py:581: PerformanceWarning: Determining the column names of a LazyFrame requires resolving its schema, which is a potentially expensive operation. Use `LazyFrame.collect_schema().names()` to get the column names without this warning.
+  .select(lazy_combined_frame.columns)
+Thread generating parquet for 6 practices: 100%|██████████| 6/6 [02:35<00:00, 24.80s/it]Thread generating parquet for 6 practices: 100%|██████████| 6/6 [02:35<00:00, 25.99s/it]
+INFO:root:Created dataset at /Data0/swangek_data/991/CPRD/data/FoundationalModel/FineTune_Dementia_CR/split=test with 12524 number of samples
+Getting file row counts. This allows the creation of an index to file map, increasing read efficiency: 0it [00:00, ?it/s]Getting file row counts. This allows the creation of an index to file map, increasing read efficiency: 53it [00:00, 2665.16it/s]
+INFO:root:	 Obtained with a total of 12524 samples
+INFO:root:Processing train split...
+Thread generating parquet for 102 practices:   0%|          | 0/102 [00:00<?, ?it/s]/Data0/swangek_data/991/FastEHR/FastEHR/database/collector.py:581: PerformanceWarning: Determining the column names of a LazyFrame requires resolving its schema, which is a potentially expensive operation. Use `LazyFrame.collect_schema().names()` to get the column names without this warning.
+  .select(lazy_combined_frame.columns)
+Thread generating parquet for 102 practices:   1%|          | 1/102 [00:27<47:04, 27.97s/it]/Data0/swangek_data/991/FastEHR/FastEHR/database/collector.py:581: PerformanceWarning: Determining the column names of a LazyFrame requires resolving its schema, which is a potentially expensive operation. Use `LazyFrame.collect_schema().names()` to get the column names without this warning.
+  .select(lazy_combined_frame.columns)
+Thread generating parquet for 102 practices:   2%|▏         | 2/102 [00:59<50:09, 30.09s/it]/Data0/swangek_data/991/FastEHR/FastEHR/database/collector.py:581: PerformanceWarning: Determining the column names of a LazyFrame requires resolving its schema, which is a potentially expensive operation. Use `LazyFrame.collect_schema().names()` to get the column names without this warning.
+  .select(lazy_combined_frame.columns)
+Thread generating parquet for 102 practices:   3%|▎         | 3/102 [01:22<44:15, 26.82s/it]/Data0/swangek_data/991/FastEHR/FastEHR/database/collector.py:581: PerformanceWarning: Determining the column names of a LazyFrame requires resolving its schema, which is a potentially expensive operation. Use `LazyFrame.collect_schema().names()` to get the column names without this warning.
+  .select(lazy_combined_frame.columns)
+Thread generating parquet for 102 practices:   4%|▍         | 4/102 [01:46<41:46, 25.57s/it]/Data0/swangek_data/991/FastEHR/FastEHR/database/collector.py:581: PerformanceWarning: Determining the column names of a LazyFrame requires resolving its schema, which is a potentially expensive operation. Use `LazyFrame.collect_schema().names()` to get the column names without this warning.
+  .select(lazy_combined_frame.columns)
+Thread generating parquet for 102 practices:   5%|▍         | 5/102 [02:16<43:56, 27.18s/it]/Data0/swangek_data/991/FastEHR/FastEHR/database/collector.py:581: PerformanceWarning: Determining the column names of a LazyFrame requires resolving its schema, which is a potentially expensive operation. Use `LazyFrame.collect_schema().names()` to get the column names without this warning.
+  .select(lazy_combined_frame.columns)
+Thread generating parquet for 102 practices:   6%|▌         | 6/102 [02:51<47:41, 29.80s/it]/Data0/swangek_data/991/FastEHR/FastEHR/database/collector.py:581: PerformanceWarning: Determining the column names of a LazyFrame requires resolving its schema, which is a potentially expensive operation. Use `LazyFrame.collect_schema().names()` to get the column names without this warning.
+  .select(lazy_combined_frame.columns)
+Thread generating parquet for 102 practices:   7%|▋         | 7/102 [03:22<48:03, 30.36s/it]/Data0/swangek_data/991/FastEHR/FastEHR/database/collector.py:581: PerformanceWarning: Determining the column names of a LazyFrame requires resolving its schema, which is a potentially expensive operation. Use `LazyFrame.collect_schema().names()` to get the column names without this warning.
+  .select(lazy_combined_frame.columns)
+Thread generating parquet for 102 practices:   8%|▊         | 8/102 [03:50<46:16, 29.53s/it]/Data0/swangek_data/991/FastEHR/FastEHR/database/collector.py:581: PerformanceWarning: Determining the column names of a LazyFrame requires resolving its schema, which is a potentially expensive operation. Use `LazyFrame.collect_schema().names()` to get the column names without this warning.
+  .select(lazy_combined_frame.columns)
+Thread generating parquet for 102 practices:   9%|▉         | 9/102 [04:08<40:27, 26.11s/it]/Data0/swangek_data/991/FastEHR/FastEHR/database/collector.py:581: PerformanceWarning: Determining the column names of a LazyFrame requires resolving its schema, which is a potentially expensive operation. Use `LazyFrame.collect_schema().names()` to get the column names without this warning.
+  .select(lazy_combined_frame.columns)
+Thread generating parquet for 102 practices:  10%|▉         | 10/102 [04:31<38:28, 25.10s/it]/Data0/swangek_data/991/FastEHR/FastEHR/database/collector.py:581: PerformanceWarning: Determining the column names of a LazyFrame requires resolving its schema, which is a potentially expensive operation. Use `LazyFrame.collect_schema().names()` to get the column names without this warning.
+  .select(lazy_combined_frame.columns)
+Thread generating parquet for 102 practices:  11%|█         | 11/102 [05:03<41:04, 27.08s/it]/Data0/swangek_data/991/FastEHR/FastEHR/database/collector.py:581: PerformanceWarning: Determining the column names of a LazyFrame requires resolving its schema, which is a potentially expensive operation. Use `LazyFrame.collect_schema().names()` to get the column names without this warning.
+  .select(lazy_combined_frame.columns)
+Thread generating parquet for 102 practices:  12%|█▏        | 12/102 [05:36<43:23, 28.93s/it]/Data0/swangek_data/991/FastEHR/FastEHR/database/collector.py:581: PerformanceWarning: Determining the column names of a LazyFrame requires resolving its schema, which is a potentially expensive operation. Use `LazyFrame.collect_schema().names()` to get the column names without this warning.
+  .select(lazy_combined_frame.columns)
+Thread generating parquet for 102 practices:  13%|█▎        | 13/102 [06:02<41:40, 28.09s/it]/Data0/swangek_data/991/FastEHR/FastEHR/database/collector.py:581: PerformanceWarning: Determining the column names of a LazyFrame requires resolving its schema, which is a potentially expensive operation. Use `LazyFrame.collect_schema().names()` to get the column names without this warning.
+  .select(lazy_combined_frame.columns)
+Thread generating parquet for 102 practices:  14%|█▎        | 14/102 [06:24<38:20, 26.14s/it]/Data0/swangek_data/991/FastEHR/FastEHR/database/collector.py:581: PerformanceWarning: Determining the column names of a LazyFrame requires resolving its schema, which is a potentially expensive operation. Use `LazyFrame.collect_schema().names()` to get the column names without this warning.
+  .select(lazy_combined_frame.columns)
+Thread generating parquet for 102 practices:  15%|█▍        | 15/102 [06:51<38:22, 26.46s/it]/Data0/swangek_data/991/FastEHR/FastEHR/database/collector.py:581: PerformanceWarning: Determining the column names of a LazyFrame requires resolving its schema, which is a potentially expensive operation. Use `LazyFrame.collect_schema().names()` to get the column names without this warning.
+  .select(lazy_combined_frame.columns)
+Thread generating parquet for 102 practices:  16%|█▌        | 16/102 [07:13<36:01, 25.13s/it]/Data0/swangek_data/991/FastEHR/FastEHR/database/collector.py:581: PerformanceWarning: Determining the column names of a LazyFrame requires resolving its schema, which is a potentially expensive operation. Use `LazyFrame.collect_schema().names()` to get the column names without this warning.
+  .select(lazy_combined_frame.columns)
+Thread generating parquet for 102 practices:  17%|█▋        | 17/102 [08:03<46:02, 32.50s/it]/Data0/swangek_data/991/FastEHR/FastEHR/database/collector.py:581: PerformanceWarning: Determining the column names of a LazyFrame requires resolving its schema, which is a potentially expensive operation. Use `LazyFrame.collect_schema().names()` to get the column names without this warning.
+  .select(lazy_combined_frame.columns)
+Thread generating parquet for 102 practices:  18%|█▊        | 18/102 [08:33<44:23, 31.71s/it]/Data0/swangek_data/991/FastEHR/FastEHR/database/collector.py:581: PerformanceWarning: Determining the column names of a LazyFrame requires resolving its schema, which is a potentially expensive operation. Use `LazyFrame.collect_schema().names()` to get the column names without this warning.
+  .select(lazy_combined_frame.columns)
+Thread generating parquet for 102 practices:  19%|█▊        | 19/102 [09:21<50:48, 36.73s/it]/Data0/swangek_data/991/FastEHR/FastEHR/database/collector.py:581: PerformanceWarning: Determining the column names of a LazyFrame requires resolving its schema, which is a potentially expensive operation. Use `LazyFrame.collect_schema().names()` to get the column names without this warning.
+  .select(lazy_combined_frame.columns)
+Thread generating parquet for 102 practices:  20%|█▉        | 20/102 [09:44<44:25, 32.50s/it]/Data0/swangek_data/991/FastEHR/FastEHR/database/collector.py:581: PerformanceWarning: Determining the column names of a LazyFrame requires resolving its schema, which is a potentially expensive operation. Use `LazyFrame.collect_schema().names()` to get the column names without this warning.
+  .select(lazy_combined_frame.columns)
+Thread generating parquet for 102 practices:  21%|██        | 21/102 [10:19<44:54, 33.27s/it]/Data0/swangek_data/991/FastEHR/FastEHR/database/collector.py:581: PerformanceWarning: Determining the column names of a LazyFrame requires resolving its schema, which is a potentially expensive operation. Use `LazyFrame.collect_schema().names()` to get the column names without this warning.
+  .select(lazy_combined_frame.columns)
+Thread generating parquet for 102 practices:  22%|██▏       | 22/102 [11:09<51:19, 38.50s/it]/Data0/swangek_data/991/FastEHR/FastEHR/database/collector.py:581: PerformanceWarning: Determining the column names of a LazyFrame requires resolving its schema, which is a potentially expensive operation. Use `LazyFrame.collect_schema().names()` to get the column names without this warning.
+  .select(lazy_combined_frame.columns)
+Thread generating parquet for 102 practices:  23%|██▎       | 23/102 [11:58<54:50, 41.66s/it]/Data0/swangek_data/991/FastEHR/FastEHR/database/collector.py:581: PerformanceWarning: Determining the column names of a LazyFrame requires resolving its schema, which is a potentially expensive operation. Use `LazyFrame.collect_schema().names()` to get the column names without this warning.
+  .select(lazy_combined_frame.columns)
+Thread generating parquet for 102 practices:  24%|██▎       | 24/102 [12:30<50:19, 38.71s/it]/Data0/swangek_data/991/FastEHR/FastEHR/database/collector.py:581: PerformanceWarning: Determining the column names of a LazyFrame requires resolving its schema, which is a potentially expensive operation. Use `LazyFrame.collect_schema().names()` to get the column names without this warning.
+  .select(lazy_combined_frame.columns)
+Thread generating parquet for 102 practices:  25%|██▍       | 25/102 [12:58<45:27, 35.42s/it]/Data0/swangek_data/991/FastEHR/FastEHR/database/collector.py:581: PerformanceWarning: Determining the column names of a LazyFrame requires resolving its schema, which is a potentially expensive operation. Use `LazyFrame.collect_schema().names()` to get the column names without this warning.
+  .select(lazy_combined_frame.columns)
+Thread generating parquet for 102 practices:  25%|██▌       | 26/102 [13:19<39:35, 31.25s/it]/Data0/swangek_data/991/FastEHR/FastEHR/database/collector.py:581: PerformanceWarning: Determining the column names of a LazyFrame requires resolving its schema, which is a potentially expensive operation. Use `LazyFrame.collect_schema().names()` to get the column names without this warning.
+  .select(lazy_combined_frame.columns)
+Thread generating parquet for 102 practices:  26%|██▋       | 27/102 [13:53<39:54, 31.93s/it]/Data0/swangek_data/991/FastEHR/FastEHR/database/collector.py:581: PerformanceWarning: Determining the column names of a LazyFrame requires resolving its schema, which is a potentially expensive operation. Use `LazyFrame.collect_schema().names()` to get the column names without this warning.
+  .select(lazy_combined_frame.columns)
+Thread generating parquet for 102 practices:  27%|██▋       | 28/102 [14:19<37:00, 30.01s/it]/Data0/swangek_data/991/FastEHR/FastEHR/database/collector.py:581: PerformanceWarning: Determining the column names of a LazyFrame requires resolving its schema, which is a potentially expensive operation. Use `LazyFrame.collect_schema().names()` to get the column names without this warning.
+  .select(lazy_combined_frame.columns)
+Thread generating parquet for 102 practices:  28%|██▊       | 29/102 [14:41<33:39, 27.66s/it]/Data0/swangek_data/991/FastEHR/FastEHR/database/collector.py:581: PerformanceWarning: Determining the column names of a LazyFrame requires resolving its schema, which is a potentially expensive operation. Use `LazyFrame.collect_schema().names()` to get the column names without this warning.
+  .select(lazy_combined_frame.columns)
+Thread generating parquet for 102 practices:  29%|██▉       | 30/102 [15:03<31:10, 25.98s/it]/Data0/swangek_data/991/FastEHR/FastEHR/database/collector.py:581: PerformanceWarning: Determining the column names of a LazyFrame requires resolving its schema, which is a potentially expensive operation. Use `LazyFrame.collect_schema().names()` to get the column names without this warning.
+  .select(lazy_combined_frame.columns)
+Thread generating parquet for 102 practices:  30%|███       | 31/102 [15:26<29:35, 25.01s/it]/Data0/swangek_data/991/FastEHR/FastEHR/database/collector.py:581: PerformanceWarning: Determining the column names of a LazyFrame requires resolving its schema, which is a potentially expensive operation. Use `LazyFrame.collect_schema().names()` to get the column names without this warning.
+  .select(lazy_combined_frame.columns)
+Thread generating parquet for 102 practices:  31%|███▏      | 32/102 [15:56<31:13, 26.76s/it]/Data0/swangek_data/991/FastEHR/FastEHR/database/collector.py:581: PerformanceWarning: Determining the column names of a LazyFrame requires resolving its schema, which is a potentially expensive operation. Use `LazyFrame.collect_schema().names()` to get the column names without this warning.
+  .select(lazy_combined_frame.columns)
+Thread generating parquet for 102 practices:  32%|███▏      | 33/102 [16:30<33:09, 28.83s/it]/Data0/swangek_data/991/FastEHR/FastEHR/database/collector.py:581: PerformanceWarning: Determining the column names of a LazyFrame requires resolving its schema, which is a potentially expensive operation. Use `LazyFrame.collect_schema().names()` to get the column names without this warning.
+  .select(lazy_combined_frame.columns)
+Thread generating parquet for 102 practices:  33%|███▎      | 34/102 [17:18<39:08, 34.54s/it]/Data0/swangek_data/991/FastEHR/FastEHR/database/collector.py:581: PerformanceWarning: Determining the column names of a LazyFrame requires resolving its schema, which is a potentially expensive operation. Use `LazyFrame.collect_schema().names()` to get the column names without this warning.
+  .select(lazy_combined_frame.columns)
+Thread generating parquet for 102 practices:  34%|███▍      | 35/102 [18:07<43:18, 38.78s/it]/Data0/swangek_data/991/FastEHR/FastEHR/database/collector.py:581: PerformanceWarning: Determining the column names of a LazyFrame requires resolving its schema, which is a potentially expensive operation. Use `LazyFrame.collect_schema().names()` to get the column names without this warning.
+  .select(lazy_combined_frame.columns)
+Thread generating parquet for 102 practices:  35%|███▌      | 36/102 [18:54<45:33, 41.41s/it]/Data0/swangek_data/991/FastEHR/FastEHR/database/collector.py:581: PerformanceWarning: Determining the column names of a LazyFrame requires resolving its schema, which is a potentially expensive operation. Use `LazyFrame.collect_schema().names()` to get the column names without this warning.
+  .select(lazy_combined_frame.columns)
+Thread generating parquet for 102 practices:  36%|███▋      | 37/102 [19:14<37:52, 34.97s/it]/Data0/swangek_data/991/FastEHR/FastEHR/database/collector.py:581: PerformanceWarning: Determining the column names of a LazyFrame requires resolving its schema, which is a potentially expensive operation. Use `LazyFrame.collect_schema().names()` to get the column names without this warning.
+  .select(lazy_combined_frame.columns)
+Thread generating parquet for 102 practices:  37%|███▋      | 38/102 [19:42<35:02, 32.85s/it]/Data0/swangek_data/991/FastEHR/FastEHR/database/collector.py:581: PerformanceWarning: Determining the column names of a LazyFrame requires resolving its schema, which is a potentially expensive operation. Use `LazyFrame.collect_schema().names()` to get the column names without this warning.
+  .select(lazy_combined_frame.columns)
+Thread generating parquet for 102 practices:  38%|███▊      | 39/102 [20:14<34:11, 32.56s/it]/Data0/swangek_data/991/FastEHR/FastEHR/database/collector.py:581: PerformanceWarning: Determining the column names of a LazyFrame requires resolving its schema, which is a potentially expensive operation. Use `LazyFrame.collect_schema().names()` to get the column names without this warning.
+  .select(lazy_combined_frame.columns)
+Thread generating parquet for 102 practices:  39%|███▉      | 40/102 [20:45<33:12, 32.13s/it]/Data0/swangek_data/991/FastEHR/FastEHR/database/collector.py:581: PerformanceWarning: Determining the column names of a LazyFrame requires resolving its schema, which is a potentially expensive operation. Use `LazyFrame.collect_schema().names()` to get the column names without this warning.
+  .select(lazy_combined_frame.columns)
+Thread generating parquet for 102 practices:  40%|████      | 41/102 [21:06<29:21, 28.88s/it]/Data0/swangek_data/991/FastEHR/FastEHR/database/collector.py:581: PerformanceWarning: Determining the column names of a LazyFrame requires resolving its schema, which is a potentially expensive operation. Use `LazyFrame.collect_schema().names()` to get the column names without this warning.
+  .select(lazy_combined_frame.columns)
+Thread generating parquet for 102 practices:  41%|████      | 42/102 [21:55<34:54, 34.91s/it]/Data0/swangek_data/991/FastEHR/FastEHR/database/collector.py:581: PerformanceWarning: Determining the column names of a LazyFrame requires resolving its schema, which is a potentially expensive operation. Use `LazyFrame.collect_schema().names()` to get the column names without this warning.
+  .select(lazy_combined_frame.columns)
+Thread generating parquet for 102 practices:  42%|████▏     | 43/102 [22:26<33:13, 33.79s/it]/Data0/swangek_data/991/FastEHR/FastEHR/database/collector.py:581: PerformanceWarning: Determining the column names of a LazyFrame requires resolving its schema, which is a potentially expensive operation. Use `LazyFrame.collect_schema().names()` to get the column names without this warning.
+  .select(lazy_combined_frame.columns)
+Thread generating parquet for 102 practices:  43%|████▎     | 44/102 [22:54<30:47, 31.85s/it]/Data0/swangek_data/991/FastEHR/FastEHR/database/collector.py:581: PerformanceWarning: Determining the column names of a LazyFrame requires resolving its schema, which is a potentially expensive operation. Use `LazyFrame.collect_schema().names()` to get the column names without this warning.
+  .select(lazy_combined_frame.columns)
+Thread generating parquet for 102 practices:  44%|████▍     | 45/102 [23:12<26:21, 27.75s/it]/Data0/swangek_data/991/FastEHR/FastEHR/database/collector.py:581: PerformanceWarning: Determining the column names of a LazyFrame requires resolving its schema, which is a potentially expensive operation. Use `LazyFrame.collect_schema().names()` to get the column names without this warning.
+  .select(lazy_combined_frame.columns)
+Thread generating parquet for 102 practices:  45%|████▌     | 46/102 [23:45<27:18, 29.26s/it]/Data0/swangek_data/991/FastEHR/FastEHR/database/collector.py:581: PerformanceWarning: Determining the column names of a LazyFrame requires resolving its schema, which is a potentially expensive operation. Use `LazyFrame.collect_schema().names()` to get the column names without this warning.
+  .select(lazy_combined_frame.columns)
+Thread generating parquet for 102 practices:  46%|████▌     | 47/102 [24:03<23:47, 25.96s/it]/Data0/swangek_data/991/FastEHR/FastEHR/database/collector.py:581: PerformanceWarning: Determining the column names of a LazyFrame requires resolving its schema, which is a potentially expensive operation. Use `LazyFrame.collect_schema().names()` to get the column names without this warning.
+  .select(lazy_combined_frame.columns)
+Thread generating parquet for 102 practices:  47%|████▋     | 48/102 [24:37<25:38, 28.50s/it]/Data0/swangek_data/991/FastEHR/FastEHR/database/collector.py:581: PerformanceWarning: Determining the column names of a LazyFrame requires resolving its schema, which is a potentially expensive operation. Use `LazyFrame.collect_schema().names()` to get the column names without this warning.
+  .select(lazy_combined_frame.columns)
+Thread generating parquet for 102 practices:  48%|████▊     | 49/102 [24:59<23:22, 26.46s/it]/Data0/swangek_data/991/FastEHR/FastEHR/database/collector.py:581: PerformanceWarning: Determining the column names of a LazyFrame requires resolving its schema, which is a potentially expensive operation. Use `LazyFrame.collect_schema().names()` to get the column names without this warning.
+  .select(lazy_combined_frame.columns)
+Thread generating parquet for 102 practices:  49%|████▉     | 50/102 [25:23<22:18, 25.74s/it]/Data0/swangek_data/991/FastEHR/FastEHR/database/collector.py:581: PerformanceWarning: Determining the column names of a LazyFrame requires resolving its schema, which is a potentially expensive operation. Use `LazyFrame.collect_schema().names()` to get the column names without this warning.
+  .select(lazy_combined_frame.columns)
+Thread generating parquet for 102 practices:  50%|█████     | 51/102 [25:49<21:49, 25.68s/it]/Data0/swangek_data/991/FastEHR/FastEHR/database/collector.py:581: PerformanceWarning: Determining the column names of a LazyFrame requires resolving its schema, which is a potentially expensive operation. Use `LazyFrame.collect_schema().names()` to get the column names without this warning.
+  .select(lazy_combined_frame.columns)
+Thread generating parquet for 102 practices:  51%|█████     | 52/102 [26:10<20:13, 24.27s/it]/Data0/swangek_data/991/FastEHR/FastEHR/database/collector.py:581: PerformanceWarning: Determining the column names of a LazyFrame requires resolving its schema, which is a potentially expensive operation. Use `LazyFrame.collect_schema().names()` to get the column names without this warning.
+  .select(lazy_combined_frame.columns)
+Thread generating parquet for 102 practices:  52%|█████▏    | 53/102 [26:38<20:42, 25.36s/it]/Data0/swangek_data/991/FastEHR/FastEHR/database/collector.py:581: PerformanceWarning: Determining the column names of a LazyFrame requires resolving its schema, which is a potentially expensive operation. Use `LazyFrame.collect_schema().names()` to get the column names without this warning.
+  .select(lazy_combined_frame.columns)
+Thread generating parquet for 102 practices:  53%|█████▎    | 54/102 [27:05<20:49, 26.02s/it]/Data0/swangek_data/991/FastEHR/FastEHR/database/collector.py:581: PerformanceWarning: Determining the column names of a LazyFrame requires resolving its schema, which is a potentially expensive operation. Use `LazyFrame.collect_schema().names()` to get the column names without this warning.
+  .select(lazy_combined_frame.columns)
+Thread generating parquet for 102 practices:  54%|█████▍    | 55/102 [27:34<21:05, 26.92s/it]/Data0/swangek_data/991/FastEHR/FastEHR/database/collector.py:581: PerformanceWarning: Determining the column names of a LazyFrame requires resolving its schema, which is a potentially expensive operation. Use `LazyFrame.collect_schema().names()` to get the column names without this warning.
+  .select(lazy_combined_frame.columns)
+Thread generating parquet for 102 practices:  55%|█████▍    | 56/102 [27:55<19:16, 25.14s/it]/Data0/swangek_data/991/FastEHR/FastEHR/database/collector.py:581: PerformanceWarning: Determining the column names of a LazyFrame requires resolving its schema, which is a potentially expensive operation. Use `LazyFrame.collect_schema().names()` to get the column names without this warning.
+  .select(lazy_combined_frame.columns)
+Thread generating parquet for 102 practices:  56%|█████▌    | 57/102 [28:17<18:10, 24.23s/it]/Data0/swangek_data/991/FastEHR/FastEHR/database/collector.py:581: PerformanceWarning: Determining the column names of a LazyFrame requires resolving its schema, which is a potentially expensive operation. Use `LazyFrame.collect_schema().names()` to get the column names without this warning.
+  .select(lazy_combined_frame.columns)
+Thread generating parquet for 102 practices:  57%|█████▋    | 58/102 [28:34<16:01, 21.86s/it]/Data0/swangek_data/991/FastEHR/FastEHR/database/collector.py:581: PerformanceWarning: Determining the column names of a LazyFrame requires resolving its schema, which is a potentially expensive operation. Use `LazyFrame.collect_schema().names()` to get the column names without this warning.
+  .select(lazy_combined_frame.columns)
+Thread generating parquet for 102 practices:  58%|█████▊    | 59/102 [28:55<15:39, 21.85s/it]/Data0/swangek_data/991/FastEHR/FastEHR/database/collector.py:581: PerformanceWarning: Determining the column names of a LazyFrame requires resolving its schema, which is a potentially expensive operation. Use `LazyFrame.collect_schema().names()` to get the column names without this warning.
+  .select(lazy_combined_frame.columns)
+Thread generating parquet for 102 practices:  59%|█████▉    | 60/102 [29:28<17:34, 25.11s/it]/Data0/swangek_data/991/FastEHR/FastEHR/database/collector.py:581: PerformanceWarning: Determining the column names of a LazyFrame requires resolving its schema, which is a potentially expensive operation. Use `LazyFrame.collect_schema().names()` to get the column names without this warning.
+  .select(lazy_combined_frame.columns)
+Thread generating parquet for 102 practices:  60%|█████▉    | 61/102 [29:53<17:11, 25.16s/it]/Data0/swangek_data/991/FastEHR/FastEHR/database/collector.py:581: PerformanceWarning: Determining the column names of a LazyFrame requires resolving its schema, which is a potentially expensive operation. Use `LazyFrame.collect_schema().names()` to get the column names without this warning.
+  .select(lazy_combined_frame.columns)
+Thread generating parquet for 102 practices:  61%|██████    | 62/102 [30:11<15:14, 22.86s/it]/Data0/swangek_data/991/FastEHR/FastEHR/database/collector.py:581: PerformanceWarning: Determining the column names of a LazyFrame requires resolving its schema, which is a potentially expensive operation. Use `LazyFrame.collect_schema().names()` to get the column names without this warning.
+  .select(lazy_combined_frame.columns)
+Thread generating parquet for 102 practices:  62%|██████▏   | 63/102 [30:43<16:39, 25.63s/it]/Data0/swangek_data/991/FastEHR/FastEHR/database/collector.py:581: PerformanceWarning: Determining the column names of a LazyFrame requires resolving its schema, which is a potentially expensive operation. Use `LazyFrame.collect_schema().names()` to get the column names without this warning.
+  .select(lazy_combined_frame.columns)
+Thread generating parquet for 102 practices:  63%|██████▎   | 64/102 [31:02<14:59, 23.67s/it]/Data0/swangek_data/991/FastEHR/FastEHR/database/collector.py:581: PerformanceWarning: Determining the column names of a LazyFrame requires resolving its schema, which is a potentially expensive operation. Use `LazyFrame.collect_schema().names()` to get the column names without this warning.
+  .select(lazy_combined_frame.columns)
+Thread generating parquet for 102 practices:  64%|██████▎   | 65/102 [31:25<14:24, 23.37s/it]/Data0/swangek_data/991/FastEHR/FastEHR/database/collector.py:581: PerformanceWarning: Determining the column names of a LazyFrame requires resolving its schema, which is a potentially expensive operation. Use `LazyFrame.collect_schema().names()` to get the column names without this warning.
+  .select(lazy_combined_frame.columns)
+Thread generating parquet for 102 practices:  65%|██████▍   | 66/102 [31:56<15:22, 25.62s/it]/Data0/swangek_data/991/FastEHR/FastEHR/database/collector.py:581: PerformanceWarning: Determining the column names of a LazyFrame requires resolving its schema, which is a potentially expensive operation. Use `LazyFrame.collect_schema().names()` to get the column names without this warning.
+  .select(lazy_combined_frame.columns)
+Thread generating parquet for 102 practices:  66%|██████▌   | 67/102 [32:19<14:28, 24.80s/it]/Data0/swangek_data/991/FastEHR/FastEHR/database/collector.py:581: PerformanceWarning: Determining the column names of a LazyFrame requires resolving its schema, which is a potentially expensive operation. Use `LazyFrame.collect_schema().names()` to get the column names without this warning.
+  .select(lazy_combined_frame.columns)
+Thread generating parquet for 102 practices:  67%|██████▋   | 68/102 [32:45<14:19, 25.29s/it]/Data0/swangek_data/991/FastEHR/FastEHR/database/collector.py:581: PerformanceWarning: Determining the column names of a LazyFrame requires resolving its schema, which is a potentially expensive operation. Use `LazyFrame.collect_schema().names()` to get the column names without this warning.
+  .select(lazy_combined_frame.columns)
+Thread generating parquet for 102 practices:  68%|██████▊   | 69/102 [33:03<12:43, 23.13s/it]/Data0/swangek_data/991/FastEHR/FastEHR/database/collector.py:581: PerformanceWarning: Determining the column names of a LazyFrame requires resolving its schema, which is a potentially expensive operation. Use `LazyFrame.collect_schema().names()` to get the column names without this warning.
+  .select(lazy_combined_frame.columns)
+Thread generating parquet for 102 practices:  69%|██████▊   | 70/102 [33:26<12:15, 23.00s/it]/Data0/swangek_data/991/FastEHR/FastEHR/database/collector.py:581: PerformanceWarning: Determining the column names of a LazyFrame requires resolving its schema, which is a potentially expensive operation. Use `LazyFrame.collect_schema().names()` to get the column names without this warning.
+  .select(lazy_combined_frame.columns)
+Thread generating parquet for 102 practices:  70%|██████▉   | 71/102 [33:48<11:47, 22.84s/it]/Data0/swangek_data/991/FastEHR/FastEHR/database/collector.py:581: PerformanceWarning: Determining the column names of a LazyFrame requires resolving its schema, which is a potentially expensive operation. Use `LazyFrame.collect_schema().names()` to get the column names without this warning.
+  .select(lazy_combined_frame.columns)
+Thread generating parquet for 102 practices:  71%|███████   | 72/102 [34:19<12:39, 25.32s/it]/Data0/swangek_data/991/FastEHR/FastEHR/database/collector.py:581: PerformanceWarning: Determining the column names of a LazyFrame requires resolving its schema, which is a potentially expensive operation. Use `LazyFrame.collect_schema().names()` to get the column names without this warning.
+  .select(lazy_combined_frame.columns)
+Thread generating parquet for 102 practices:  72%|███████▏  | 73/102 [34:39<11:24, 23.60s/it]/Data0/swangek_data/991/FastEHR/FastEHR/database/collector.py:581: PerformanceWarning: Determining the column names of a LazyFrame requires resolving its schema, which is a potentially expensive operation. Use `LazyFrame.collect_schema().names()` to get the column names without this warning.
+  .select(lazy_combined_frame.columns)
+Thread generating parquet for 102 practices:  73%|███████▎  | 74/102 [35:08<11:45, 25.19s/it]/Data0/swangek_data/991/FastEHR/FastEHR/database/collector.py:581: PerformanceWarning: Determining the column names of a LazyFrame requires resolving its schema, which is a potentially expensive operation. Use `LazyFrame.collect_schema().names()` to get the column names without this warning.
+  .select(lazy_combined_frame.columns)
+Thread generating parquet for 102 practices:  74%|███████▎  | 75/102 [35:26<10:20, 22.97s/it]/Data0/swangek_data/991/FastEHR/FastEHR/database/collector.py:581: PerformanceWarning: Determining the column names of a LazyFrame requires resolving its schema, which is a potentially expensive operation. Use `LazyFrame.collect_schema().names()` to get the column names without this warning.
+  .select(lazy_combined_frame.columns)
+Thread generating parquet for 102 practices:  75%|███████▍  | 76/102 [35:57<11:04, 25.57s/it]/Data0/swangek_data/991/FastEHR/FastEHR/database/collector.py:581: PerformanceWarning: Determining the column names of a LazyFrame requires resolving its schema, which is a potentially expensive operation. Use `LazyFrame.collect_schema().names()` to get the column names without this warning.
+  .select(lazy_combined_frame.columns)
+Thread generating parquet for 102 practices:  75%|███████▌  | 77/102 [36:46<13:35, 32.62s/it]/Data0/swangek_data/991/FastEHR/FastEHR/database/collector.py:581: PerformanceWarning: Determining the column names of a LazyFrame requires resolving its schema, which is a potentially expensive operation. Use `LazyFrame.collect_schema().names()` to get the column names without this warning.
+  .select(lazy_combined_frame.columns)
+Thread generating parquet for 102 practices:  76%|███████▋  | 78/102 [37:04<11:16, 28.20s/it]/Data0/swangek_data/991/FastEHR/FastEHR/database/collector.py:581: PerformanceWarning: Determining the column names of a LazyFrame requires resolving its schema, which is a potentially expensive operation. Use `LazyFrame.collect_schema().names()` to get the column names without this warning.
+  .select(lazy_combined_frame.columns)
+Thread generating parquet for 102 practices:  77%|███████▋  | 79/102 [37:27<10:10, 26.53s/it]/Data0/swangek_data/991/FastEHR/FastEHR/database/collector.py:581: PerformanceWarning: Determining the column names of a LazyFrame requires resolving its schema, which is a potentially expensive operation. Use `LazyFrame.collect_schema().names()` to get the column names without this warning.
+  .select(lazy_combined_frame.columns)
+Thread generating parquet for 102 practices:  78%|███████▊  | 80/102 [37:44<08:42, 23.77s/it]/Data0/swangek_data/991/FastEHR/FastEHR/database/collector.py:581: PerformanceWarning: Determining the column names of a LazyFrame requires resolving its schema, which is a potentially expensive operation. Use `LazyFrame.collect_schema().names()` to get the column names without this warning.
+  .select(lazy_combined_frame.columns)
+Thread generating parquet for 102 practices:  79%|███████▉  | 81/102 [38:10<08:29, 24.26s/it]/Data0/swangek_data/991/FastEHR/FastEHR/database/collector.py:581: PerformanceWarning: Determining the column names of a LazyFrame requires resolving its schema, which is a potentially expensive operation. Use `LazyFrame.collect_schema().names()` to get the column names without this warning.
+  .select(lazy_combined_frame.columns)
+Thread generating parquet for 102 practices:  80%|████████  | 82/102 [38:58<10:31, 31.57s/it]/Data0/swangek_data/991/FastEHR/FastEHR/database/collector.py:581: PerformanceWarning: Determining the column names of a LazyFrame requires resolving its schema, which is a potentially expensive operation. Use `LazyFrame.collect_schema().names()` to get the column names without this warning.
+  .select(lazy_combined_frame.columns)
+Thread generating parquet for 102 practices:  81%|████████▏ | 83/102 [39:24<09:29, 29.96s/it]/Data0/swangek_data/991/FastEHR/FastEHR/database/collector.py:581: PerformanceWarning: Determining the column names of a LazyFrame requires resolving its schema, which is a potentially expensive operation. Use `LazyFrame.collect_schema().names()` to get the column names without this warning.
+  .select(lazy_combined_frame.columns)
+Thread generating parquet for 102 practices:  82%|████████▏ | 84/102 [39:46<08:12, 27.36s/it]/Data0/swangek_data/991/FastEHR/FastEHR/database/collector.py:581: PerformanceWarning: Determining the column names of a LazyFrame requires resolving its schema, which is a potentially expensive operation. Use `LazyFrame.collect_schema().names()` to get the column names without this warning.
+  .select(lazy_combined_frame.columns)
+Thread generating parquet for 102 practices:  83%|████████▎ | 85/102 [40:07<07:13, 25.51s/it]/Data0/swangek_data/991/FastEHR/FastEHR/database/collector.py:581: PerformanceWarning: Determining the column names of a LazyFrame requires resolving its schema, which is a potentially expensive operation. Use `LazyFrame.collect_schema().names()` to get the column names without this warning.
+  .select(lazy_combined_frame.columns)
+Thread generating parquet for 102 practices:  84%|████████▍ | 86/102 [40:41<07:27, 28.00s/it]/Data0/swangek_data/991/FastEHR/FastEHR/database/collector.py:581: PerformanceWarning: Determining the column names of a LazyFrame requires resolving its schema, which is a potentially expensive operation. Use `LazyFrame.collect_schema().names()` to get the column names without this warning.
+  .select(lazy_combined_frame.columns)
+Thread generating parquet for 102 practices:  85%|████████▌ | 87/102 [41:13<07:19, 29.27s/it]/Data0/swangek_data/991/FastEHR/FastEHR/database/collector.py:581: PerformanceWarning: Determining the column names of a LazyFrame requires resolving its schema, which is a potentially expensive operation. Use `LazyFrame.collect_schema().names()` to get the column names without this warning.
+  .select(lazy_combined_frame.columns)
+Thread generating parquet for 102 practices:  86%|████████▋ | 88/102 [42:00<08:04, 34.64s/it]/Data0/swangek_data/991/FastEHR/FastEHR/database/collector.py:581: PerformanceWarning: Determining the column names of a LazyFrame requires resolving its schema, which is a potentially expensive operation. Use `LazyFrame.collect_schema().names()` to get the column names without this warning.
+  .select(lazy_combined_frame.columns)
+Thread generating parquet for 102 practices:  87%|████████▋ | 89/102 [42:33<07:24, 34.17s/it]/Data0/swangek_data/991/FastEHR/FastEHR/database/collector.py:581: PerformanceWarning: Determining the column names of a LazyFrame requires resolving its schema, which is a potentially expensive operation. Use `LazyFrame.collect_schema().names()` to get the column names without this warning.
+  .select(lazy_combined_frame.columns)
+Thread generating parquet for 102 practices:  88%|████████▊ | 90/102 [42:51<05:50, 29.21s/it]/Data0/swangek_data/991/FastEHR/FastEHR/database/collector.py:581: PerformanceWarning: Determining the column names of a LazyFrame requires resolving its schema, which is a potentially expensive operation. Use `LazyFrame.collect_schema().names()` to get the column names without this warning.
+  .select(lazy_combined_frame.columns)
+Thread generating parquet for 102 practices:  89%|████████▉ | 91/102 [43:39<06:23, 34.82s/it]/Data0/swangek_data/991/FastEHR/FastEHR/database/collector.py:581: PerformanceWarning: Determining the column names of a LazyFrame requires resolving its schema, which is a potentially expensive operation. Use `LazyFrame.collect_schema().names()` to get the column names without this warning.
+  .select(lazy_combined_frame.columns)
+Thread generating parquet for 102 practices:  90%|█████████ | 92/102 [44:03<05:15, 31.54s/it]/Data0/swangek_data/991/FastEHR/FastEHR/database/collector.py:581: PerformanceWarning: Determining the column names of a LazyFrame requires resolving its schema, which is a potentially expensive operation. Use `LazyFrame.collect_schema().names()` to get the column names without this warning.
+  .select(lazy_combined_frame.columns)
+Thread generating parquet for 102 practices:  91%|█████████ | 93/102 [44:24<04:17, 28.62s/it]/Data0/swangek_data/991/FastEHR/FastEHR/database/collector.py:581: PerformanceWarning: Determining the column names of a LazyFrame requires resolving its schema, which is a potentially expensive operation. Use `LazyFrame.collect_schema().names()` to get the column names without this warning.
+  .select(lazy_combined_frame.columns)
+Thread generating parquet for 102 practices:  92%|█████████▏| 94/102 [44:57<03:58, 29.76s/it]/Data0/swangek_data/991/FastEHR/FastEHR/database/collector.py:581: PerformanceWarning: Determining the column names of a LazyFrame requires resolving its schema, which is a potentially expensive operation. Use `LazyFrame.collect_schema().names()` to get the column names without this warning.
+  .select(lazy_combined_frame.columns)
+Thread generating parquet for 102 practices:  93%|█████████▎| 95/102 [45:18<03:10, 27.16s/it]/Data0/swangek_data/991/FastEHR/FastEHR/database/collector.py:581: PerformanceWarning: Determining the column names of a LazyFrame requires resolving its schema, which is a potentially expensive operation. Use `LazyFrame.collect_schema().names()` to get the column names without this warning.
+  .select(lazy_combined_frame.columns)
+Thread generating parquet for 102 practices:  94%|█████████▍| 96/102 [45:40<02:33, 25.66s/it]/Data0/swangek_data/991/FastEHR/FastEHR/database/collector.py:581: PerformanceWarning: Determining the column names of a LazyFrame requires resolving its schema, which is a potentially expensive operation. Use `LazyFrame.collect_schema().names()` to get the column names without this warning.
+  .select(lazy_combined_frame.columns)
+Thread generating parquet for 102 practices:  95%|█████████▌| 97/102 [45:59<01:58, 23.76s/it]/Data0/swangek_data/991/FastEHR/FastEHR/database/collector.py:581: PerformanceWarning: Determining the column names of a LazyFrame requires resolving its schema, which is a potentially expensive operation. Use `LazyFrame.collect_schema().names()` to get the column names without this warning.
+  .select(lazy_combined_frame.columns)
+Thread generating parquet for 102 practices:  96%|█████████▌| 98/102 [46:22<01:33, 23.39s/it]/Data0/swangek_data/991/FastEHR/FastEHR/database/collector.py:581: PerformanceWarning: Determining the column names of a LazyFrame requires resolving its schema, which is a potentially expensive operation. Use `LazyFrame.collect_schema().names()` to get the column names without this warning.
+  .select(lazy_combined_frame.columns)
+Thread generating parquet for 102 practices:  97%|█████████▋| 99/102 [46:54<01:17, 25.97s/it]/Data0/swangek_data/991/FastEHR/FastEHR/database/collector.py:581: PerformanceWarning: Determining the column names of a LazyFrame requires resolving its schema, which is a potentially expensive operation. Use `LazyFrame.collect_schema().names()` to get the column names without this warning.
+  .select(lazy_combined_frame.columns)
+Thread generating parquet for 102 practices:  98%|█████████▊| 100/102 [47:23<00:53, 26.81s/it]/Data0/swangek_data/991/FastEHR/FastEHR/database/collector.py:581: PerformanceWarning: Determining the column names of a LazyFrame requires resolving its schema, which is a potentially expensive operation. Use `LazyFrame.collect_schema().names()` to get the column names without this warning.
+  .select(lazy_combined_frame.columns)
+Thread generating parquet for 102 practices:  99%|█████████▉| 101/102 [47:44<00:25, 25.20s/it]/Data0/swangek_data/991/FastEHR/FastEHR/database/collector.py:581: PerformanceWarning: Determining the column names of a LazyFrame requires resolving its schema, which is a potentially expensive operation. Use `LazyFrame.collect_schema().names()` to get the column names without this warning.
+  .select(lazy_combined_frame.columns)
+Thread generating parquet for 102 practices: 100%|██████████| 102/102 [48:10<00:00, 25.34s/it]Thread generating parquet for 102 practices: 100%|██████████| 102/102 [48:10<00:00, 28.34s/it]
+INFO:root:Created dataset at /Data0/swangek_data/991/CPRD/data/FoundationalModel/FineTune_Dementia_CR/split=train with 199698 number of samples
+Getting file row counts. This allows the creation of an index to file map, increasing read efficiency: 0it [00:00, ?it/s]Getting file row counts. This allows the creation of an index to file map, increasing read efficiency: 290it [00:00, 2893.62it/s]Getting file row counts. This allows the creation of an index to file map, increasing read efficiency: 585it [00:00, 2922.04it/s]Getting file row counts. This allows the creation of an index to file map, increasing read efficiency: 852it [00:00, 2924.91it/s]
+INFO:root:	 Obtained with a total of 199698 samples
+INFO:root:Processing val split...
+Thread generating parquet for 6 practices:   0%|          | 0/6 [00:00<?, ?it/s]/Data0/swangek_data/991/FastEHR/FastEHR/database/collector.py:581: PerformanceWarning: Determining the column names of a LazyFrame requires resolving its schema, which is a potentially expensive operation. Use `LazyFrame.collect_schema().names()` to get the column names without this warning.
+  .select(lazy_combined_frame.columns)
+Thread generating parquet for 6 practices:  17%|█▋        | 1/6 [00:31<02:36, 31.29s/it]/Data0/swangek_data/991/FastEHR/FastEHR/database/collector.py:581: PerformanceWarning: Determining the column names of a LazyFrame requires resolving its schema, which is a potentially expensive operation. Use `LazyFrame.collect_schema().names()` to get the column names without this warning.
+  .select(lazy_combined_frame.columns)
+Thread generating parquet for 6 practices:  33%|███▎      | 2/6 [01:02<02:04, 31.11s/it]/Data0/swangek_data/991/FastEHR/FastEHR/database/collector.py:581: PerformanceWarning: Determining the column names of a LazyFrame requires resolving its schema, which is a potentially expensive operation. Use `LazyFrame.collect_schema().names()` to get the column names without this warning.
+  .select(lazy_combined_frame.columns)
+Thread generating parquet for 6 practices:  50%|█████     | 3/6 [01:23<01:19, 26.58s/it]/Data0/swangek_data/991/FastEHR/FastEHR/database/collector.py:581: PerformanceWarning: Determining the column names of a LazyFrame requires resolving its schema, which is a potentially expensive operation. Use `LazyFrame.collect_schema().names()` to get the column names without this warning.
+  .select(lazy_combined_frame.columns)
+Thread generating parquet for 6 practices:  67%|██████▋   | 4/6 [01:55<00:57, 28.74s/it]/Data0/swangek_data/991/FastEHR/FastEHR/database/collector.py:581: PerformanceWarning: Determining the column names of a LazyFrame requires resolving its schema, which is a potentially expensive operation. Use `LazyFrame.collect_schema().names()` to get the column names without this warning.
+  .select(lazy_combined_frame.columns)
+Thread generating parquet for 6 practices:  83%|████████▎ | 5/6 [02:14<00:25, 25.12s/it]/Data0/swangek_data/991/FastEHR/FastEHR/database/collector.py:581: PerformanceWarning: Determining the column names of a LazyFrame requires resolving its schema, which is a potentially expensive operation. Use `LazyFrame.collect_schema().names()` to get the column names without this warning.
+  .select(lazy_combined_frame.columns)
+Thread generating parquet for 6 practices: 100%|██████████| 6/6 [02:31<00:00, 22.51s/it]Thread generating parquet for 6 practices: 100%|██████████| 6/6 [02:31<00:00, 25.27s/it]
+INFO:root:Created dataset at /Data0/swangek_data/991/CPRD/data/FoundationalModel/FineTune_Dementia_CR/split=val with 10369 number of samples
+Getting file row counts. This allows the creation of an index to file map, increasing read efficiency: 0it [00:00, ?it/s]Getting file row counts. This allows the creation of an index to file map, increasing read efficiency: 44it [00:00, 2790.71it/s]
+INFO:root:	 Obtained with a total of 10369 samples
+INFO:root:Using meta information from /Data0/swangek_data/991/CPRD/data/FoundationalModel/PreTrain/meta_information_custom.pickle
+INFO:root:Using train file-row count dict from /Data0/swangek_data/991/CPRD/data/FoundationalModel/FineTune_Dementia_CR/file_row_count_dict_train.pickle
+INFO:root:Using test file-row count dict from /Data0/swangek_data/991/CPRD/data/FoundationalModel/FineTune_Dementia_CR/file_row_count_dict_test.pickle
+INFO:root:Using val file-row count dict from /Data0/swangek_data/991/CPRD/data/FoundationalModel/FineTune_Dementia_CR/file_row_count_dict_val.pickle
+INFO:root:Tokenzier created based on 373,927,777 tokens
+INFO:root:Using tabular tokenizer, created from meta information and containing 108118 tokens
+INFO:root:Set seed to 1337
+INFO:root:Loaded /Data0/swangek_data/991/CPRD/data/FoundationalModel/FineTune_Dementia_CR/split=train/ dataset
+INFO:root:Pre-loading 852 parquet files into memory...
+INFO:root:Pre-loaded 852 files into memory
+INFO:root:with 199,698 samples
+INFO:root:Set seed to 42
+INFO:root:Loaded /Data0/swangek_data/991/CPRD/data/FoundationalModel/FineTune_Dementia_CR/split=test/ dataset
+INFO:root:Pre-loading 53 parquet files into memory...
+INFO:root:Pre-loaded 53 files into memory
+INFO:root:with 12,524 samples
+INFO:root:Set seed to 42
+INFO:root:Loaded /Data0/swangek_data/991/CPRD/data/FoundationalModel/FineTune_Dementia_CR/split=val/ dataset
+INFO:root:Pre-loading 44 parquet files into memory...
+INFO:root:Pre-loaded 44 files into memory
+INFO:root:with 10,369 samples
+INFO:root:Creating unsupervised collator for DataModule
+
+Dataset built successfully!
+  Training patients:   199698
+  Validation patients: 10369
+  Test patients:       12524
+  Vocab size:          108118
+
+  DEATH token ID: 108117
+  Dementia token IDs: 41 unique
+
+Done. Use config_FineTune_Dementia_CR.yaml to run fine-tuning.

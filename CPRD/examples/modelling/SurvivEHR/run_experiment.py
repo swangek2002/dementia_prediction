@@ -47,6 +47,7 @@ def run(cfg : DictConfig):
                                 min_workers=cfg.data.min_workers,
                                 overwrite_meta_information=cfg.data.meta_information_path,
                                 supervised=supervised,
+                                supervised_time_scale=getattr(cfg.data, 'supervised_time_scale', 1.0),
                                 subsample_training=cfg.data.subsample_training,
                                 seed=cfg.experiment.seed,
                                )
@@ -75,6 +76,44 @@ def run(cfg : DictConfig):
     experiment_type = cfg.experiment.type.replace('-', '').replace(' ', '').lower()
     match experiment_type:
     # (TODO: LBYL)
+        # case "pretrain" | "causal" | "selfsupervised":
+            
+        #     # Training (or causal evaluation) a pre-trained model
+        #     logging.info("="*100)
+        #     logging.info(f"# Pre-training experiment")
+        #     logging.info("="*100)
+            
+        #     if Path(pre_trained_ckpt_path).is_file():
+        #         # Load existing experiment from checkpoint
+        #         logging.info(f"Loading a pre-trained model with the checkpoint path {pre_trained_ckpt_path}.")
+
+        #         # Catch cases where user loads a pre-trained model to pre-train it further
+        #         #   (it will result in checkpointing to a new pre_train_ckpt-V2.ckpt file and then re-loading the original after training)
+        #         if cfg.experiment.train:
+        #             logging.warning(f"Further training on a checkpoint {pre_trained_ckpt_path} which will create a new checkpoint. Ensure evaluation is not on the original checkpoint.")
+                    
+        #         load_from_checkpoint = pre_trained_ckpt_path
+        #         new_checkpoint = pre_trained_ckpt_path.split(".")
+        #         new_checkpoint = new_checkpoint[0] + "-v1." + new_checkpoint[1]
+                
+        #     else:
+        #         # Create new experiment
+        #         logging.info(f"Creating new pre-trained model at the path {pre_trained_ckpt_path}.")
+                
+        #         assert dm.is_supervised == False, f"If you are training a new pre-trained model, the data module must not be supervised. Got {dm.is_supervised}."
+        #         assert cfg.experiment.train is True, f"If you are not training a new pre-trained model, please load a valid checkpoint. {pre_trained_ckpt_path} is not valid."
+                
+        #         logging.info(f"# This will create / evaluate a pre-trained Foundation Model on a causal (next-event prediction) modelling task.")
+        #         load_from_checkpoint = None
+        #         new_checkpoint = pre_trained_ckpt_path
+                
+        #     experiment_instance, Experiment, trainer = setup_causal_experiment(cfg=cfg, 
+        #                                                                        dm=dm, 
+        #                                                                        vocab_size=vocab_size,
+        #                                                                        checkpoint=load_from_checkpoint,
+        #                                                                        logger=logger,
+        #                                                                       )
+
         case "pretrain" | "causal" | "selfsupervised":
             
             # Training (or causal evaluation) a pre-trained model
@@ -86,14 +125,15 @@ def run(cfg : DictConfig):
                 # Load existing experiment from checkpoint
                 logging.info(f"Loading a pre-trained model with the checkpoint path {pre_trained_ckpt_path}.")
 
-                # Catch cases where user loads a pre-trained model to pre-train it further
-                #   (it will result in checkpointing to a new pre_train_ckpt-V2.ckpt file and then re-loading the original after training)
                 if cfg.experiment.train:
                     logging.warning(f"Further training on a checkpoint {pre_trained_ckpt_path} which will create a new checkpoint. Ensure evaluation is not on the original checkpoint.")
-                    
-                load_from_checkpoint = pre_trained_ckpt_path
-                new_checkpoint = pre_trained_ckpt_path.split(".")
-                new_checkpoint = new_checkpoint[0] + "-v1." + new_checkpoint[1]
+                    load_from_checkpoint = pre_trained_ckpt_path
+                    new_checkpoint = pre_trained_ckpt_path.split(".")
+                    new_checkpoint = new_checkpoint[0] + "-v1." + new_checkpoint[1]
+                else:
+                    # 【修改这里：如果是仅测试模式，直接指向原文件，并设定用于测试的 new_checkpoint】
+                    load_from_checkpoint = pre_trained_ckpt_path
+                    new_checkpoint = pre_trained_ckpt_path
                 
             else:
                 # Create new experiment
@@ -105,13 +145,14 @@ def run(cfg : DictConfig):
                 logging.info(f"# This will create / evaluate a pre-trained Foundation Model on a causal (next-event prediction) modelling task.")
                 load_from_checkpoint = None
                 new_checkpoint = pre_trained_ckpt_path
-                
+            
             experiment_instance, Experiment, trainer = setup_causal_experiment(cfg=cfg, 
                                                                                dm=dm, 
                                                                                vocab_size=vocab_size,
                                                                                checkpoint=load_from_checkpoint,
                                                                                logger=logger,
                                                                               )
+            
 
         case "zeroshot":
             # Evaluate an existing pre-trained experiment
@@ -235,6 +276,7 @@ def run(cfg : DictConfig):
                                                                                  risk_model=risk_model,
                                                                                  checkpoint=ft_ckpt,
                                                                                  logger=logger,
+                                                                                 vocab_size=vocab_size,
                                                                                 )
             new_checkpoint = supervised_ckpt_path
 
@@ -250,12 +292,14 @@ def run(cfg : DictConfig):
             logging.info(f"Resuming full training state from {resume_ckpt}")
         trainer.fit(experiment_instance, datamodule=dm, ckpt_path=resume_ckpt)
 
-        # Ensure we evaluate on the best/latest version of the model - particularly if we just trained then load the new best checkpoint
-        logging.info(f"Re-loading from best cached checkpoint {new_checkpoint}")
-        experiment_instance = Experiment.load_from_checkpoint(new_checkpoint)
-
     # Test model
     if cfg.experiment.test:
+        # Ensure we evaluate on the best version - use actual best_model_path from checkpoint callback
+        best_path = getattr(trainer.checkpoint_callback, "best_model_path", None) if hasattr(trainer, "checkpoint_callback") else None
+        if best_path and Path(best_path).is_file():
+            new_checkpoint = best_path
+        logging.info(f"Re-loading from best cached checkpoint {new_checkpoint}")
+        experiment_instance = Experiment.load_from_checkpoint(new_checkpoint)
         logging.info(f"Testing model.")
         trainer.test(experiment_instance, dataloaders=dm.test_dataloader())
 

@@ -647,10 +647,10 @@ class FoundationalDataset(Dataset):
         else:
             earlier_global_events, earlier_global_ages, earlier_global_values = [], [], []
 
-        # combine
-        encoded_tokens = earlier_global_events + encoded_tokens[start_pos:end_pos]
-        sequence_ages = earlier_global_ages + sequence_ages[start_pos:end_pos]
-        sequence_values = earlier_global_values + sequence_values[start_pos:end_pos]
+        # combine and enforce max_seq_length (global_diagnoses can push length past the limit)
+        encoded_tokens = (earlier_global_events + encoded_tokens[start_pos:end_pos])[:self.max_seq_length]
+        sequence_ages = (earlier_global_ages + sequence_ages[start_pos:end_pos])[:self.max_seq_length]
+        sequence_values = (earlier_global_values + sequence_values[start_pos:end_pos])[:self.max_seq_length]
 
         return {
             "static_covariates": torch.tensor(static_covariates, dtype=torch.float),

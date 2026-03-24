@@ -1,0 +1,582 @@
+/Data0/swangek_data/conda_envs/survivehr/lib/python3.10/site-packages/lightning_fabric/__init__.py:40: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.
+[2026-03-12 23:17:59,287][root][INFO] - Running cr on 48 CPUs and 4 GPUs
+[2026-03-12 23:17:59,292][root][INFO] - ====================================================================================================
+[2026-03-12 23:17:59,292][root][INFO] - # Loading DataModule for dataset /Data0/swangek_data/991/CPRD/data/FoundationalModel/PreTrain/. This will be loaded in causal form.
+[2026-03-12 23:17:59,292][root][INFO] - ====================================================================================================
+[2026-03-12 23:18:30,500][root][INFO] - Using meta information from /Data0/swangek_data/991/CPRD/data/FoundationalModel/PreTrain/meta_information_custom.pickle
+[2026-03-12 23:18:30,501][root][INFO] - Using train file-row count dict from /Data0/swangek_data/991/CPRD/data/FoundationalModel/PreTrain/file_row_count_dict_train.pickle
+[2026-03-12 23:18:30,501][root][INFO] - Using test file-row count dict from /Data0/swangek_data/991/CPRD/data/FoundationalModel/PreTrain/file_row_count_dict_test.pickle
+[2026-03-12 23:18:30,502][root][INFO] - Using val file-row count dict from /Data0/swangek_data/991/CPRD/data/FoundationalModel/PreTrain/file_row_count_dict_val.pickle
+[2026-03-12 23:18:30,540][root][INFO] - Tokenzier created based on 373,927,777 tokens
+[2026-03-12 23:18:30,631][root][INFO] - Using tabular tokenizer, created from meta information and containing 108118 tokens
+[2026-03-12 23:18:30,631][root][INFO] - Set seed to 1337
+[2026-03-12 23:18:30,632][root][INFO] - Loaded /Data0/swangek_data/991/CPRD/data/FoundationalModel/PreTrain/split=train/ dataset
+[2026-03-12 23:18:30,632][root][INFO] - Pre-loading 1807 parquet files into memory...
+[2026-03-12 23:19:01,140][root][INFO] - Pre-loaded 1807 files into memory
+[2026-03-12 23:19:01,140][root][INFO] - with 448,572 samples
+[2026-03-12 23:19:01,662][root][INFO] - Set seed to 42
+[2026-03-12 23:19:01,663][root][INFO] - Loaded /Data0/swangek_data/991/CPRD/data/FoundationalModel/PreTrain/split=test/ dataset
+[2026-03-12 23:19:01,663][root][INFO] - Pre-loading 113 parquet files into memory...
+[2026-03-12 23:19:03,780][root][INFO] - Pre-loaded 113 files into memory
+[2026-03-12 23:19:03,781][root][INFO] - with 28,182 samples
+[2026-03-12 23:19:04,296][root][INFO] - Set seed to 42
+[2026-03-12 23:19:04,296][root][INFO] - Loaded /Data0/swangek_data/991/CPRD/data/FoundationalModel/PreTrain/split=val/ dataset
+[2026-03-12 23:19:04,296][root][INFO] - Pre-loading 102 parquet files into memory...
+[2026-03-12 23:19:05,512][root][INFO] - Pre-loaded 102 files into memory
+[2026-03-12 23:19:05,512][root][INFO] - with 25,136 samples
+[2026-03-12 23:19:06,026][root][INFO] - Creating unsupervised collator for DataModule
+[2026-03-12 23:19:10,617][root][INFO] - is_decoder: true
+data:
+  batch_size: 10
+  unk_freq_threshold: 0.0
+  min_workers: 12
+  global_diagnoses: false
+  repeating_events: true
+  path_to_db: /Data0/swangek_data/991/CPRD/data/example_exercise_database.db
+  path_to_ds: /Data0/swangek_data/991/CPRD/data/FoundationalModel/PreTrain/
+  meta_information_path: /Data0/swangek_data/991/CPRD/data/FoundationalModel/PreTrain/meta_information_custom.pickle
+  subsample_training: null
+  num_static_covariates: 27
+experiment:
+  type: pre-train
+  project_name: SurvivEHR
+  run_id: crPreTrain_small_1337
+  fine_tune_id: null
+  notes: null
+  tags: null
+  train: true
+  test: true
+  verbose: true
+  seed: 1337
+  log: true
+  log_dir: /Data0/swangek_data/991/CPRD/output/
+  ckpt_dir: /Data0/swangek_data/991/CPRD/output/checkpoints/
+fine_tuning:
+  fine_tune_outcomes: null
+  custom_outcome_method:
+    _target_: null
+  custom_stratification_method:
+    _target_: null
+  use_callbacks:
+    hidden_embedding:
+      num_batches: 0
+      mask_static: false
+      mask_value: false
+    performance_metrics: true
+    rmst: false
+  compression_layer: false
+  llrd: null
+  PEFT:
+    method: null
+    adapter_dim: 8
+  backbone:
+    linear_probe_epochs: 0
+    unfreeze_top_k: null
+  head:
+    surv_weight: 1
+    value_weight: 0
+    learning_rate: 0.0005
+optim:
+  num_epochs: 10
+  learning_rate: 0.0003
+  scheduler_warmup: true
+  scheduler: decaycawarmrestarts
+  scheduler_periods: 10000
+  learning_rate_decay: 0.8
+  val_check_interval: 2500
+  early_stop: true
+  early_stop_patience: 30
+  log_every_n_steps: 20
+  limit_val_batches: 0.025
+  limit_test_batches: null
+  accumulate_grad_batches: 1
+transformer:
+  block_type: Neo
+  block_size: 256
+  n_layer: 6
+  n_head: 6
+  n_embd: 384
+  layer_norm_bias: false
+  attention_type: global
+  bias: true
+  dropout: 0.0
+  attention_dropout: 0.0
+  resid_dropout: 0.0
+  private_heads: 0
+head:
+  SurvLayer: cr
+  surv_weight: 1
+  tokens_for_univariate_regression: <9247 token IDs omitted>
+  value_weight: 0.1
+
+[2026-03-12 23:19:10,618][root][INFO] - ====================================================================================================
+[2026-03-12 23:19:10,618][root][INFO] - # Pre-training experiment
+[2026-03-12 23:19:10,618][root][INFO] - ====================================================================================================
+[2026-03-12 23:19:10,619][root][INFO] - Loading a pre-trained model with the checkpoint path /Data0/swangek_data/991/CPRD/output/checkpoints/crPreTrain_small_1337.ckpt.
+[2026-03-12 23:19:10,619][root][WARNING] - Further training on a checkpoint /Data0/swangek_data/991/CPRD/output/checkpoints/crPreTrain_small_1337.ckpt which will create a new checkpoint. Ensure evaluation is not on the original checkpoint.
+[2026-03-12 23:19:22,846][torch.distributed.nn.jit.instantiator][INFO] - Created a temporary directory at /tmp/tmp81c3br60
+[2026-03-12 23:19:22,847][torch.distributed.nn.jit.instantiator][INFO] - Writing /tmp/tmp81c3br60/_remote_module_non_scriptable.py
+[2026-03-12 23:19:23,185][root][INFO] - Using Temporal Positional Encoding. This module uses the patient's age at an event within their time series.
+[2026-03-12 23:19:24,321][root][INFO] - Using a DeSurv Competing-Risk head.
+[2026-03-12 23:19:24,321][root][INFO] - 	With concurrent strategy=add_noise for handling simultaneous events.
+[2026-03-12 23:19:24,321][root][INFO] - 	Evaluating on a time grid between [0.0, 1.0] with 1000 intervals
+[2026-03-12 23:20:28,564][root][INFO] - Created PerformanceMetrics callback for causal self-supervised tasks.
+[2026-03-12 23:20:28,565][root][INFO] - 	 
+[2026-03-12 23:20:28,565][root][INFO] - GPu job
+[2026-03-12 23:20:28,565][root][INFO] - Using ddp strategy
+Using 16bit Automatic Mixed Precision (AMP)
+GPU available: True (cuda), used: True
+TPU available: False, using: 0 TPU cores
+IPU available: False, using: 0 IPUs
+HPU available: False, using: 0 HPUs
+[2026-03-12 23:20:28,580][root][INFO] - Training model.
+[2026-03-12 23:20:28,580][root][INFO] - Resuming full training state from /Data0/swangek_data/991/CPRD/output/checkpoints/last.ckpt
+Initializing distributed: GLOBAL_RANK: 0, MEMBER: 1/4
+/Data0/swangek_data/conda_envs/survivehr/lib/python3.10/site-packages/lightning_fabric/__init__.py:40: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.
+/Data0/swangek_data/conda_envs/survivehr/lib/python3.10/site-packages/lightning_fabric/__init__.py:40: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.
+/Data0/swangek_data/conda_envs/survivehr/lib/python3.10/site-packages/lightning_fabric/__init__.py:40: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.
+[2026-03-12 23:20:44,138][root][INFO] - Running cr on 48 CPUs and 4 GPUs
+[2026-03-12 23:20:44,143][root][INFO] - ====================================================================================================
+[2026-03-12 23:20:44,143][root][INFO] - # Loading DataModule for dataset /Data0/swangek_data/991/CPRD/data/FoundationalModel/PreTrain/. This will be loaded in causal form.
+[2026-03-12 23:20:44,143][root][INFO] - ====================================================================================================
+[2026-03-12 23:20:44,760][root][INFO] - Running cr on 48 CPUs and 4 GPUs
+[2026-03-12 23:20:44,765][root][INFO] - ====================================================================================================
+[2026-03-12 23:20:44,765][root][INFO] - # Loading DataModule for dataset /Data0/swangek_data/991/CPRD/data/FoundationalModel/PreTrain/. This will be loaded in causal form.
+[2026-03-12 23:20:44,765][root][INFO] - ====================================================================================================
+[2026-03-12 23:20:44,802][root][INFO] - Running cr on 48 CPUs and 4 GPUs
+[2026-03-12 23:20:44,807][root][INFO] - ====================================================================================================
+[2026-03-12 23:20:44,807][root][INFO] - # Loading DataModule for dataset /Data0/swangek_data/991/CPRD/data/FoundationalModel/PreTrain/. This will be loaded in causal form.
+[2026-03-12 23:20:44,807][root][INFO] - ====================================================================================================
+[2026-03-12 23:21:15,995][root][INFO] - Using meta information from /Data0/swangek_data/991/CPRD/data/FoundationalModel/PreTrain/meta_information_custom.pickle
+[2026-03-12 23:21:15,996][root][INFO] - Using train file-row count dict from /Data0/swangek_data/991/CPRD/data/FoundationalModel/PreTrain/file_row_count_dict_train.pickle
+[2026-03-12 23:21:15,996][root][INFO] - Using test file-row count dict from /Data0/swangek_data/991/CPRD/data/FoundationalModel/PreTrain/file_row_count_dict_test.pickle
+[2026-03-12 23:21:15,996][root][INFO] - Using val file-row count dict from /Data0/swangek_data/991/CPRD/data/FoundationalModel/PreTrain/file_row_count_dict_val.pickle
+[2026-03-12 23:21:16,035][root][INFO] - Tokenzier created based on 373,927,777 tokens
+[2026-03-12 23:21:16,096][root][INFO] - Using tabular tokenizer, created from meta information and containing 108118 tokens
+[2026-03-12 23:21:16,097][root][INFO] - Set seed to 1337
+[2026-03-12 23:21:16,097][root][INFO] - Loaded /Data0/swangek_data/991/CPRD/data/FoundationalModel/PreTrain/split=train/ dataset
+[2026-03-12 23:21:16,097][root][INFO] - Pre-loading 1807 parquet files into memory...
+[2026-03-12 23:21:16,946][root][INFO] - Using meta information from /Data0/swangek_data/991/CPRD/data/FoundationalModel/PreTrain/meta_information_custom.pickle
+[2026-03-12 23:21:16,947][root][INFO] - Using train file-row count dict from /Data0/swangek_data/991/CPRD/data/FoundationalModel/PreTrain/file_row_count_dict_train.pickle
+[2026-03-12 23:21:16,947][root][INFO] - Using test file-row count dict from /Data0/swangek_data/991/CPRD/data/FoundationalModel/PreTrain/file_row_count_dict_test.pickle
+[2026-03-12 23:21:16,947][root][INFO] - Using val file-row count dict from /Data0/swangek_data/991/CPRD/data/FoundationalModel/PreTrain/file_row_count_dict_val.pickle
+[2026-03-12 23:21:16,986][root][INFO] - Tokenzier created based on 373,927,777 tokens
+[2026-03-12 23:21:17,074][root][INFO] - Using tabular tokenizer, created from meta information and containing 108118 tokens
+[2026-03-12 23:21:17,075][root][INFO] - Set seed to 1337
+[2026-03-12 23:21:17,075][root][INFO] - Loaded /Data0/swangek_data/991/CPRD/data/FoundationalModel/PreTrain/split=train/ dataset
+[2026-03-12 23:21:17,075][root][INFO] - Pre-loading 1807 parquet files into memory...
+[2026-03-12 23:21:17,446][root][INFO] - Using meta information from /Data0/swangek_data/991/CPRD/data/FoundationalModel/PreTrain/meta_information_custom.pickle
+[2026-03-12 23:21:17,447][root][INFO] - Using train file-row count dict from /Data0/swangek_data/991/CPRD/data/FoundationalModel/PreTrain/file_row_count_dict_train.pickle
+[2026-03-12 23:21:17,448][root][INFO] - Using test file-row count dict from /Data0/swangek_data/991/CPRD/data/FoundationalModel/PreTrain/file_row_count_dict_test.pickle
+[2026-03-12 23:21:17,448][root][INFO] - Using val file-row count dict from /Data0/swangek_data/991/CPRD/data/FoundationalModel/PreTrain/file_row_count_dict_val.pickle
+[2026-03-12 23:21:17,491][root][INFO] - Tokenzier created based on 373,927,777 tokens
+[2026-03-12 23:21:17,566][root][INFO] - Using tabular tokenizer, created from meta information and containing 108118 tokens
+[2026-03-12 23:21:17,567][root][INFO] - Set seed to 1337
+[2026-03-12 23:21:17,567][root][INFO] - Loaded /Data0/swangek_data/991/CPRD/data/FoundationalModel/PreTrain/split=train/ dataset
+[2026-03-12 23:21:17,567][root][INFO] - Pre-loading 1807 parquet files into memory...
+[2026-03-12 23:21:48,330][root][INFO] - Pre-loaded 1807 files into memory
+[2026-03-12 23:21:48,330][root][INFO] - with 448,572 samples
+[2026-03-12 23:21:48,880][root][INFO] - Set seed to 42
+[2026-03-12 23:21:48,880][root][INFO] - Loaded /Data0/swangek_data/991/CPRD/data/FoundationalModel/PreTrain/split=test/ dataset
+[2026-03-12 23:21:48,880][root][INFO] - Pre-loading 113 parquet files into memory...
+[2026-03-12 23:21:51,081][root][INFO] - Pre-loaded 113 files into memory
+[2026-03-12 23:21:51,081][root][INFO] - with 28,182 samples
+[2026-03-12 23:21:51,629][root][INFO] - Set seed to 42
+[2026-03-12 23:21:51,629][root][INFO] - Loaded /Data0/swangek_data/991/CPRD/data/FoundationalModel/PreTrain/split=val/ dataset
+[2026-03-12 23:21:51,630][root][INFO] - Pre-loading 102 parquet files into memory...
+[2026-03-12 23:21:52,864][root][INFO] - Pre-loaded 102 files into memory
+[2026-03-12 23:21:52,864][root][INFO] - with 25,136 samples
+[2026-03-12 23:21:52,937][root][INFO] - Pre-loaded 1807 files into memory
+[2026-03-12 23:21:52,938][root][INFO] - with 448,572 samples
+[2026-03-12 23:21:53,414][root][INFO] - Creating unsupervised collator for DataModule
+[2026-03-12 23:21:53,536][root][INFO] - Set seed to 42
+[2026-03-12 23:21:53,536][root][INFO] - Loaded /Data0/swangek_data/991/CPRD/data/FoundationalModel/PreTrain/split=test/ dataset
+[2026-03-12 23:21:53,536][root][INFO] - Pre-loading 113 parquet files into memory...
+[2026-03-12 23:21:54,434][root][INFO] - Pre-loaded 1807 files into memory
+[2026-03-12 23:21:54,435][root][INFO] - with 448,572 samples
+[2026-03-12 23:21:55,165][root][INFO] - Set seed to 42
+[2026-03-12 23:21:55,166][root][INFO] - Loaded /Data0/swangek_data/991/CPRD/data/FoundationalModel/PreTrain/split=test/ dataset
+[2026-03-12 23:21:55,166][root][INFO] - Pre-loading 113 parquet files into memory...
+[2026-03-12 23:21:56,079][root][INFO] - Pre-loaded 113 files into memory
+[2026-03-12 23:21:56,079][root][INFO] - with 28,182 samples
+[2026-03-12 23:21:56,763][root][INFO] - Set seed to 42
+[2026-03-12 23:21:56,763][root][INFO] - Loaded /Data0/swangek_data/991/CPRD/data/FoundationalModel/PreTrain/split=val/ dataset
+[2026-03-12 23:21:56,763][root][INFO] - Pre-loading 102 parquet files into memory...
+[2026-03-12 23:21:57,800][root][INFO] - Pre-loaded 113 files into memory
+[2026-03-12 23:21:57,800][root][INFO] - with 28,182 samples
+[2026-03-12 23:21:57,808][root][INFO] - is_decoder: true
+data:
+  batch_size: 10
+  unk_freq_threshold: 0.0
+  min_workers: 12
+  global_diagnoses: false
+  repeating_events: true
+  path_to_db: /Data0/swangek_data/991/CPRD/data/example_exercise_database.db
+  path_to_ds: /Data0/swangek_data/991/CPRD/data/FoundationalModel/PreTrain/
+  meta_information_path: /Data0/swangek_data/991/CPRD/data/FoundationalModel/PreTrain/meta_information_custom.pickle
+  subsample_training: null
+  num_static_covariates: 27
+experiment:
+  type: pre-train
+  project_name: SurvivEHR
+  run_id: crPreTrain_small_1337
+  fine_tune_id: null
+  notes: null
+  tags: null
+  train: true
+  test: true
+  verbose: true
+  seed: 1337
+  log: true
+  log_dir: /Data0/swangek_data/991/CPRD/output/
+  ckpt_dir: /Data0/swangek_data/991/CPRD/output/checkpoints/
+fine_tuning:
+  fine_tune_outcomes: null
+  custom_outcome_method:
+    _target_: null
+  custom_stratification_method:
+    _target_: null
+  use_callbacks:
+    hidden_embedding:
+      num_batches: 0
+      mask_static: false
+      mask_value: false
+    performance_metrics: true
+    rmst: false
+  compression_layer: false
+  llrd: null
+  PEFT:
+    method: null
+    adapter_dim: 8
+  backbone:
+    linear_probe_epochs: 0
+    unfreeze_top_k: null
+  head:
+    surv_weight: 1
+    value_weight: 0
+    learning_rate: 0.0005
+optim:
+  num_epochs: 10
+  learning_rate: 0.0003
+  scheduler_warmup: true
+  scheduler: decaycawarmrestarts
+  scheduler_periods: 10000
+  learning_rate_decay: 0.8
+  val_check_interval: 2500
+  early_stop: true
+  early_stop_patience: 30
+  log_every_n_steps: 20
+  limit_val_batches: 0.025
+  limit_test_batches: null
+  accumulate_grad_batches: 1
+transformer:
+  block_type: Neo
+  block_size: 256
+  n_layer: 6
+  n_head: 6
+  n_embd: 384
+  layer_norm_bias: false
+  attention_type: global
+  bias: true
+  dropout: 0.0
+  attention_dropout: 0.0
+  resid_dropout: 0.0
+  private_heads: 0
+head:
+  SurvLayer: cr
+  surv_weight: 1
+  tokens_for_univariate_regression: <9247 token IDs omitted>
+  value_weight: 0.1
+
+[2026-03-12 23:21:57,810][root][INFO] - ====================================================================================================
+[2026-03-12 23:21:57,810][root][INFO] - # Pre-training experiment
+[2026-03-12 23:21:57,810][root][INFO] - ====================================================================================================
+[2026-03-12 23:21:57,810][root][INFO] - Loading a pre-trained model with the checkpoint path /Data0/swangek_data/991/CPRD/output/checkpoints/crPreTrain_small_1337.ckpt.
+[2026-03-12 23:21:57,810][root][WARNING] - Further training on a checkpoint /Data0/swangek_data/991/CPRD/output/checkpoints/crPreTrain_small_1337.ckpt which will create a new checkpoint. Ensure evaluation is not on the original checkpoint.
+[2026-03-12 23:21:58,212][root][INFO] - Pre-loaded 102 files into memory
+[2026-03-12 23:21:58,212][root][INFO] - with 25,136 samples
+[2026-03-12 23:21:58,390][root][INFO] - Set seed to 42
+[2026-03-12 23:21:58,391][root][INFO] - Loaded /Data0/swangek_data/991/CPRD/data/FoundationalModel/PreTrain/split=val/ dataset
+[2026-03-12 23:21:58,391][root][INFO] - Pre-loading 102 parquet files into memory...
+[2026-03-12 23:21:58,815][root][INFO] - Creating unsupervised collator for DataModule
+[2026-03-12 23:21:59,656][root][INFO] - Pre-loaded 102 files into memory
+[2026-03-12 23:21:59,657][root][INFO] - with 25,136 samples
+[2026-03-12 23:22:00,294][root][INFO] - Creating unsupervised collator for DataModule
+[2026-03-12 23:22:03,876][root][INFO] - is_decoder: true
+data:
+  batch_size: 10
+  unk_freq_threshold: 0.0
+  min_workers: 12
+  global_diagnoses: false
+  repeating_events: true
+  path_to_db: /Data0/swangek_data/991/CPRD/data/example_exercise_database.db
+  path_to_ds: /Data0/swangek_data/991/CPRD/data/FoundationalModel/PreTrain/
+  meta_information_path: /Data0/swangek_data/991/CPRD/data/FoundationalModel/PreTrain/meta_information_custom.pickle
+  subsample_training: null
+  num_static_covariates: 27
+experiment:
+  type: pre-train
+  project_name: SurvivEHR
+  run_id: crPreTrain_small_1337
+  fine_tune_id: null
+  notes: null
+  tags: null
+  train: true
+  test: true
+  verbose: true
+  seed: 1337
+  log: true
+  log_dir: /Data0/swangek_data/991/CPRD/output/
+  ckpt_dir: /Data0/swangek_data/991/CPRD/output/checkpoints/
+fine_tuning:
+  fine_tune_outcomes: null
+  custom_outcome_method:
+    _target_: null
+  custom_stratification_method:
+    _target_: null
+  use_callbacks:
+    hidden_embedding:
+      num_batches: 0
+      mask_static: false
+      mask_value: false
+    performance_metrics: true
+    rmst: false
+  compression_layer: false
+  llrd: null
+  PEFT:
+    method: null
+    adapter_dim: 8
+  backbone:
+    linear_probe_epochs: 0
+    unfreeze_top_k: null
+  head:
+    surv_weight: 1
+    value_weight: 0
+    learning_rate: 0.0005
+optim:
+  num_epochs: 10
+  learning_rate: 0.0003
+  scheduler_warmup: true
+  scheduler: decaycawarmrestarts
+  scheduler_periods: 10000
+  learning_rate_decay: 0.8
+  val_check_interval: 2500
+  early_stop: true
+  early_stop_patience: 30
+  log_every_n_steps: 20
+  limit_val_batches: 0.025
+  limit_test_batches: null
+  accumulate_grad_batches: 1
+transformer:
+  block_type: Neo
+  block_size: 256
+  n_layer: 6
+  n_head: 6
+  n_embd: 384
+  layer_norm_bias: false
+  attention_type: global
+  bias: true
+  dropout: 0.0
+  attention_dropout: 0.0
+  resid_dropout: 0.0
+  private_heads: 0
+head:
+  SurvLayer: cr
+  surv_weight: 1
+  tokens_for_univariate_regression: <9247 token IDs omitted>
+  value_weight: 0.1
+
+[2026-03-12 23:22:03,878][root][INFO] - ====================================================================================================
+[2026-03-12 23:22:03,878][root][INFO] - # Pre-training experiment
+[2026-03-12 23:22:03,878][root][INFO] - ====================================================================================================
+[2026-03-12 23:22:03,878][root][INFO] - Loading a pre-trained model with the checkpoint path /Data0/swangek_data/991/CPRD/output/checkpoints/crPreTrain_small_1337.ckpt.
+[2026-03-12 23:22:03,879][root][WARNING] - Further training on a checkpoint /Data0/swangek_data/991/CPRD/output/checkpoints/crPreTrain_small_1337.ckpt which will create a new checkpoint. Ensure evaluation is not on the original checkpoint.
+[2026-03-12 23:22:05,447][root][INFO] - is_decoder: true
+data:
+  batch_size: 10
+  unk_freq_threshold: 0.0
+  min_workers: 12
+  global_diagnoses: false
+  repeating_events: true
+  path_to_db: /Data0/swangek_data/991/CPRD/data/example_exercise_database.db
+  path_to_ds: /Data0/swangek_data/991/CPRD/data/FoundationalModel/PreTrain/
+  meta_information_path: /Data0/swangek_data/991/CPRD/data/FoundationalModel/PreTrain/meta_information_custom.pickle
+  subsample_training: null
+  num_static_covariates: 27
+experiment:
+  type: pre-train
+  project_name: SurvivEHR
+  run_id: crPreTrain_small_1337
+  fine_tune_id: null
+  notes: null
+  tags: null
+  train: true
+  test: true
+  verbose: true
+  seed: 1337
+  log: true
+  log_dir: /Data0/swangek_data/991/CPRD/output/
+  ckpt_dir: /Data0/swangek_data/991/CPRD/output/checkpoints/
+fine_tuning:
+  fine_tune_outcomes: null
+  custom_outcome_method:
+    _target_: null
+  custom_stratification_method:
+    _target_: null
+  use_callbacks:
+    hidden_embedding:
+      num_batches: 0
+      mask_static: false
+      mask_value: false
+    performance_metrics: true
+    rmst: false
+  compression_layer: false
+  llrd: null
+  PEFT:
+    method: null
+    adapter_dim: 8
+  backbone:
+    linear_probe_epochs: 0
+    unfreeze_top_k: null
+  head:
+    surv_weight: 1
+    value_weight: 0
+    learning_rate: 0.0005
+optim:
+  num_epochs: 10
+  learning_rate: 0.0003
+  scheduler_warmup: true
+  scheduler: decaycawarmrestarts
+  scheduler_periods: 10000
+  learning_rate_decay: 0.8
+  val_check_interval: 2500
+  early_stop: true
+  early_stop_patience: 30
+  log_every_n_steps: 20
+  limit_val_batches: 0.025
+  limit_test_batches: null
+  accumulate_grad_batches: 1
+transformer:
+  block_type: Neo
+  block_size: 256
+  n_layer: 6
+  n_head: 6
+  n_embd: 384
+  layer_norm_bias: false
+  attention_type: global
+  bias: true
+  dropout: 0.0
+  attention_dropout: 0.0
+  resid_dropout: 0.0
+  private_heads: 0
+head:
+  SurvLayer: cr
+  surv_weight: 1
+  tokens_for_univariate_regression: <9247 token IDs omitted>
+  value_weight: 0.1
+
+[2026-03-12 23:22:05,449][root][INFO] - ====================================================================================================
+[2026-03-12 23:22:05,449][root][INFO] - # Pre-training experiment
+[2026-03-12 23:22:05,449][root][INFO] - ====================================================================================================
+[2026-03-12 23:22:05,449][root][INFO] - Loading a pre-trained model with the checkpoint path /Data0/swangek_data/991/CPRD/output/checkpoints/crPreTrain_small_1337.ckpt.
+[2026-03-12 23:22:05,449][root][WARNING] - Further training on a checkpoint /Data0/swangek_data/991/CPRD/output/checkpoints/crPreTrain_small_1337.ckpt which will create a new checkpoint. Ensure evaluation is not on the original checkpoint.
+[2026-03-12 23:22:20,063][torch.distributed.nn.jit.instantiator][INFO] - Created a temporary directory at /tmp/tmpioez9ouj
+[2026-03-12 23:22:20,065][torch.distributed.nn.jit.instantiator][INFO] - Writing /tmp/tmpioez9ouj/_remote_module_non_scriptable.py
+[2026-03-12 23:22:20,414][root][INFO] - Using Temporal Positional Encoding. This module uses the patient's age at an event within their time series.
+[2026-03-12 23:22:21,617][root][INFO] - Using a DeSurv Competing-Risk head.
+[2026-03-12 23:22:21,617][root][INFO] - 	With concurrent strategy=add_noise for handling simultaneous events.
+[2026-03-12 23:22:21,618][root][INFO] - 	Evaluating on a time grid between [0.0, 1.0] with 1000 intervals
+[2026-03-12 23:22:27,666][torch.distributed.nn.jit.instantiator][INFO] - Created a temporary directory at /tmp/tmppla1ofnv
+[2026-03-12 23:22:27,667][torch.distributed.nn.jit.instantiator][INFO] - Writing /tmp/tmppla1ofnv/_remote_module_non_scriptable.py
+[2026-03-12 23:22:28,022][root][INFO] - Using Temporal Positional Encoding. This module uses the patient's age at an event within their time series.
+[2026-03-12 23:22:28,431][torch.distributed.nn.jit.instantiator][INFO] - Created a temporary directory at /tmp/tmphe74o6wl
+[2026-03-12 23:22:28,432][torch.distributed.nn.jit.instantiator][INFO] - Writing /tmp/tmphe74o6wl/_remote_module_non_scriptable.py
+[2026-03-12 23:22:28,792][root][INFO] - Using Temporal Positional Encoding. This module uses the patient's age at an event within their time series.
+[2026-03-12 23:22:29,184][root][INFO] - Using a DeSurv Competing-Risk head.
+[2026-03-12 23:22:29,184][root][INFO] - 	With concurrent strategy=add_noise for handling simultaneous events.
+[2026-03-12 23:22:29,184][root][INFO] - 	Evaluating on a time grid between [0.0, 1.0] with 1000 intervals
+[2026-03-12 23:22:29,950][root][INFO] - Using a DeSurv Competing-Risk head.
+[2026-03-12 23:22:29,950][root][INFO] - 	With concurrent strategy=add_noise for handling simultaneous events.
+[2026-03-12 23:22:29,951][root][INFO] - 	Evaluating on a time grid between [0.0, 1.0] with 1000 intervals
+[2026-03-12 23:23:27,932][root][INFO] - Created PerformanceMetrics callback for causal self-supervised tasks.
+[2026-03-12 23:23:27,933][root][INFO] - 	 
+[2026-03-12 23:23:27,933][root][INFO] - GPu job
+[2026-03-12 23:23:27,933][root][INFO] - Using ddp strategy
+[2026-03-12 23:23:27,946][root][INFO] - Training model.
+[2026-03-12 23:23:27,946][root][INFO] - Resuming full training state from /Data0/swangek_data/991/CPRD/output/checkpoints/last.ckpt
+Initializing distributed: GLOBAL_RANK: 2, MEMBER: 3/4
+[2026-03-12 23:23:28,181][torch.distributed.distributed_c10d][INFO] - Added key: store_based_barrier_key:1 to store for rank: 2
+[2026-03-12 23:23:38,186][torch.distributed.distributed_c10d][INFO] - Waiting in store based barrier to initialize process group for rank: 2, key: store_based_barrier_key:1 (world_size=4, worker_count=1, timeout=0:30:00)
+[2026-03-12 23:23:41,284][root][INFO] - Created PerformanceMetrics callback for causal self-supervised tasks.
+[2026-03-12 23:23:41,284][root][INFO] - 	 
+[2026-03-12 23:23:41,284][root][INFO] - GPu job
+[2026-03-12 23:23:41,284][root][INFO] - Using ddp strategy
+[2026-03-12 23:23:41,301][root][INFO] - Training model.
+[2026-03-12 23:23:41,301][root][INFO] - Resuming full training state from /Data0/swangek_data/991/CPRD/output/checkpoints/last.ckpt
+[2026-03-12 23:23:41,452][root][INFO] - Created PerformanceMetrics callback for causal self-supervised tasks.
+[2026-03-12 23:23:41,453][root][INFO] - 	 
+[2026-03-12 23:23:41,453][root][INFO] - GPu job
+[2026-03-12 23:23:41,453][root][INFO] - Using ddp strategy
+[2026-03-12 23:23:41,469][root][INFO] - Training model.
+[2026-03-12 23:23:41,469][root][INFO] - Resuming full training state from /Data0/swangek_data/991/CPRD/output/checkpoints/last.ckpt
+Initializing distributed: GLOBAL_RANK: 1, MEMBER: 2/4
+[2026-03-12 23:23:41,557][torch.distributed.distributed_c10d][INFO] - Added key: store_based_barrier_key:1 to store for rank: 1
+Initializing distributed: GLOBAL_RANK: 3, MEMBER: 4/4
+[2026-03-12 23:23:41,718][torch.distributed.distributed_c10d][INFO] - Added key: store_based_barrier_key:1 to store for rank: 3
+[2026-03-12 23:23:41,725][torch.distributed.distributed_c10d][INFO] - Added key: store_based_barrier_key:1 to store for rank: 0
+[2026-03-12 23:23:41,726][torch.distributed.distributed_c10d][INFO] - Rank 0: Completed store-based barrier for key:store_based_barrier_key:1 with 4 nodes.
+----------------------------------------------------------------------------------------------------
+distributed_backend=nccl
+All distributed processes registered. Starting with 4 processes
+----------------------------------------------------------------------------------------------------
+
+[2026-03-12 23:23:41,729][torch.distributed.distributed_c10d][INFO] - Rank 3: Completed store-based barrier for key:store_based_barrier_key:1 with 4 nodes.
+[2026-03-12 23:23:41,733][torch.distributed.distributed_c10d][INFO] - Rank 2: Completed store-based barrier for key:store_based_barrier_key:1 with 4 nodes.
+[2026-03-12 23:23:41,733][torch.distributed.distributed_c10d][INFO] - Rank 1: Completed store-based barrier for key:store_based_barrier_key:1 with 4 nodes.
+wandb: WARNING The anonymous setting has no effect and will be removed in a future version.
+wandb: [wandb.login()] Loaded credentials for https://api.wandb.ai from /home/swangek/.netrc.
+wandb: Currently logged in as: swangek2002 (swangek2002-hong-kong-university-of-science-and-technology) to https://api.wandb.ai. Use `wandb login --relogin` to force relogin
+wandb: setting up run t7gdjuab
+wandb: Tracking run with wandb version 0.25.0
+wandb: Run data is saved locally in /Data0/swangek_data/991/CPRD/output/wandb/run-20260312_232342-t7gdjuab
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run crPreTrain_small_1337
+wandb: ⭐️ View project at https://wandb.ai/swangek2002-hong-kong-university-of-science-and-technology/SurvivEHR
+wandb: 🚀 View run at https://wandb.ai/swangek2002-hong-kong-university-of-science-and-technology/SurvivEHR/runs/t7gdjuab
+/Data0/swangek_data/conda_envs/survivehr/lib/python3.10/site-packages/pytorch_lightning/callbacks/model_checkpoint.py:630: Checkpoint directory /Data0/swangek_data/991/CPRD/output/checkpoints/ exists and is not empty.
+Restoring states from the checkpoint path at /Data0/swangek_data/991/CPRD/output/checkpoints/last.ckpt
+LOCAL_RANK: 2 - CUDA_VISIBLE_DEVICES: [0,1,2,3]
+LOCAL_RANK: 3 - CUDA_VISIBLE_DEVICES: [0,1,2,3]
+LOCAL_RANK: 1 - CUDA_VISIBLE_DEVICES: [0,1,2,3]
+LOCAL_RANK: 0 - CUDA_VISIBLE_DEVICES: [0,1,2,3]
+[2026-03-12 23:25:14,695][root][INFO] - Using warm-up in scheduler for 10000 steps
+[2026-03-12 23:25:14,697][root][INFO] - Using Decayed Cosine Annealing with Warm Restarts in scheduler
+[2026-03-12 23:25:14,816][root][INFO] - Using warm-up in scheduler for 10000 steps
+[2026-03-12 23:25:14,817][root][INFO] - Using Decayed Cosine Annealing with Warm Restarts in scheduler
+[2026-03-12 23:25:14,820][root][INFO] - Using warm-up in scheduler for 10000 steps
+[2026-03-12 23:25:14,820][root][INFO] - Using Decayed Cosine Annealing with Warm Restarts in scheduler
+[2026-03-12 23:25:15,029][root][INFO] - Using warm-up in scheduler for 10000 steps
+[2026-03-12 23:25:15,031][root][INFO] - Using Decayed Cosine Annealing with Warm Restarts in scheduler
+
+  | Name  | Type                            | Params
+----------------------------------------------------------
+0 | model | SurvStreamGPTForCausalModelling | 101 M 
+----------------------------------------------------------
+101 M     Trainable params
+222       Non-trainable params
+101 M     Total params
+407.064   Total estimated model params size (MB)
+Restored all states from the checkpoint at /Data0/swangek_data/991/CPRD/output/checkpoints/last.ckpt
+Training: |          | 0/? [00:00<?, ?it/s]Training:   0%|          | 0/11215 [00:00<?, ?it/s]Epoch 1:   0%|          | 0/11215 [00:00<?, ?it/s] /Data0/swangek_data/conda_envs/survivehr/lib/python3.10/site-packages/pytorch_lightning/loops/training_epoch_loop.py:154: You're resuming from a checkpoint that ended before the epoch ended. This can cause unreliable results if further training is done. Consider using an end-of-epoch checkpoint
+
+Validation: |          | 0/? [00:00<?, ?it/s][A
+Validation:   0%|          | 0/15 [00:00<?, ?it/s][A
+Validation DataLoader 0:   0%|          | 0/15 [00:00<?, ?it/s][A
+Validation DataLoader 0:   7%|▋         | 1/15 [00:02<00:36,  0.38it/s][A
+                                                                       [AEpoch 1:   0%|          | 0/11215 [00:06<?, ?it/s, v_num=juab]Epoch 1, global step 13259: 'val_loss' was not in top 1
+Epoch 1: |          | 12501/? [00:34<00:00, 364.60it/s, v_num=juab]Epoch 1: |          | 12501/? [00:34<00:00, 364.48it/s, v_num=juab]Epoch 1: |          | 12501/? [00:34<00:00, 364.47it/s, v_num=juab]Epoch 1:   0%|          | 0/11215 [00:00<?, ?it/s, v_num=juab]     Epoch 2:   0%|          | 0/11215 [00:00<?, ?it/s, v_num=juab][2026-03-12 23:26:01,752][torch.nn.parallel.distributed][INFO] - Reducer buckets have been rebuilt in this iteration.
+[2026-03-12 23:26:01,804][torch.nn.parallel.distributed][INFO] - Reducer buckets have been rebuilt in this iteration.
+[2026-03-12 23:26:01,822][torch.nn.parallel.distributed][INFO] - Reducer buckets have been rebuilt in this iteration.
+[2026-03-12 23:26:01,889][torch.nn.parallel.distributed][INFO] - Reducer buckets have been rebuilt in this iteration.
+Epoch 2:   0%|          | 1/11215 [00:07<23:48:51,  0.13it/s, v_num=juab]Epoch 2:   0%|          | 1/11215 [00:07<23:51:50,  0.13it/s, v_num=juab]Epoch 2:   0%|          | 2/11215 [00:12<19:18:28,  0.16it/s, v_num=juab]Epoch 2:   0%|          | 2/11215 [00:12<19:20:02,  0.16it/s, v_num=juab]Epoch 2:   0%|          | 3/11215 [00:17<18:01:45,  0.17it/s, v_num=juab]Epoch 2:   0%|          | 3/11215 [00:17<18:01:50,  0.17it/s, v_num=juab]Epoch 2:   0%|          | 4/11215 [00:27<21:01:18,  0.15it/s, v_num=juab]Epoch 2:   0%|          | 4/11215 [00:27<21:01:23,  0.15it/s, v_num=juab]Epoch 2:   0%|          | 5/11215 [00:36<22:56:09,  0.14it/s, v_num=juab]Epoch 2:   0%|          | 5/11215 [00:36<22:56:45,  0.14it/s, v_num=juab]Epoch 2:   0%|          | 6/11215 [00:41<21:43:01,  0.14it/s, v_num=juab]Epoch 2:   0%|          | 6/11215 [00:41<21:43:05,  0.14it/s, v_num=juab]Epoch 2:   0%|          | 7/11215 [00:46<20:49:23,  0.15it/s, v_num=juab]Epoch 2:   0%|          | 7/11215 [00:46<20:49:26,  0.15it/s, v_num=juab]Epoch 2:   0%|          | 8/11215 [00:52<20:20:35,  0.15it/s, v_num=juab]Epoch 2:   0%|          | 8/11215 [00:52<20:20:37,  0.15it/s, v_num=juab]Epoch 2:   0%|          | 9/11215 [00:57<20:00:15,  0.16it/s, v_num=juab]Epoch 2:   0%|          | 9/11215 [00:57<20:00:17,  0.16it/s, v_num=juab]Epoch 2:   0%|          | 10/11215 [01:03<19:41:54,  0.16it/s, v_num=juab]Epoch 2:   0%|          | 10/11215 [01:03<19:41:56,  0.16it/s, v_num=juab]Epoch 2:   0%|          | 11/11215 [01:08<19:22:28,  0.16it/s, v_num=juab]Epoch 2:   0%|          | 11/11215 [01:08<19:22:30,  0.16it/s, v_num=juab]Epoch 2:   0%|          | 12/11215 [01:14<19:16:53,  0.16it/s, v_num=juab]Epoch 2:   0%|          | 12/11215 [01:14<19:16:55,  0.16it/s, v_num=juab]Epoch 2:   0%|          | 13/11215 [01:19<18:59:54,  0.16it/s, v_num=juab]Epoch 2:   0%|          | 13/11215 [01:19<18:59:55,  0.16it/s, v_num=juab]Epoch 2:   0%|          | 14/11215 [01:24<18:48:16,  0.17it/s, v_num=juab]Epoch 2:   0%|          | 14/11215 [01:24<18:48:17,  0.17it/s, v_num=juab]Epoch 2:   0%|          | 15/11215 [01:30<18:43:44,  0.17it/s, v_num=juab]Epoch 2:   0%|          | 15/11215 [01:30<18:43:46,  0.17it/s, v_num=juab]Epoch 2:   0%|          | 16/11215 [01:38<19:11:32,  0.16it/s, v_num=juab]Epoch 2:   0%|          | 16/11215 [01:38<19:11:33,  0.16it/s, v_num=juab]Epoch 2:   0%|          | 17/11215 [01:43<18:59:28,  0.16it/s, v_num=juab]Epoch 2:   0%|          | 17/11215 [01:43<18:59:29,  0.16it/s, v_num=juab]Epoch 2:   0%|          | 18/11215 [01:48<18:49:00,  0.17it/s, v_num=juab]Epoch 2:   0%|          | 18/11215 [01:48<18:49:01,  0.17it/s, v_num=juab]Epoch 2:   0%|          | 19/11215 [01:53<18:38:26,  0.17it/s, v_num=juab]Epoch 2:   0%|          | 19/11215 [01:53<18:38:27,  0.17it/s, v_num=juab]Epoch 2:   0%|          | 20/11215 [01:59<18:33:44,  0.17it/s, v_num=juab]Epoch 2:   0%|          | 20/11215 [01:59<18:33:45,  0.17it/s, v_num=juab]Epoch 2:   0%|          | 21/11215 [02:05<18:33:30,  0.17it/s, v_num=juab]Epoch 2:   0%|          | 21/11215 [02:05<18:33:30,  0.17it/s, v_num=juab]Epoch 2:   0%|          | 22/11215 [02:10<18:23:30,  0.17it/s, v_num=juab]Epoch 2:   0%|          | 22/11215 [02:10<18:23:31,  0.17it/s, v_num=juab]Epoch 2:   0%|          | 23/11215 [02:19<18:53:22,  0.16it/s, v_num=juab]Epoch 2:   0%|          | 23/11215 [02:19<18:53:23,  0.16it/s, v_num=juab]Epoch 2:   0%|          | 24/11215 [02:25<18:50:58,  0.16it/s, v_num=juab]Epoch 2:   0%|          | 24/11215 [02:25<18:50:59,  0.16it/s, v_num=juab]Epoch 2:   0%|          | 25/11215 [02:31<18:47:12,  0.17it/s, v_num=juab]Epoch 2:   0%|          | 25/11215 [02:31<18:47:12,  0.17it/s, v_num=juab]Epoch 2:   0%|          | 26/11215 [02:36<18:41:44,  0.17it/s, v_num=juab]Epoch 2:   0%|          | 26/11215 [02:36<18:41:45,  0.17it/s, v_num=juab]Epoch 2:   0%|          | 27/11215 [02:41<18:37:39,  0.17it/s, v_num=juab]Epoch 2:   0%|          | 27/11215 [02:41<18:37:40,  0.17it/s, v_num=juab]Epoch 2:   0%|          | 28/11215 [02:47<18:34:35,  0.17it/s, v_num=juab]Epoch 2:   0%|          | 28/11215 [02:47<18:34:36,  0.17it/s, v_num=juab]Epoch 2:   0%|          | 29/11215 [02:52<18:30:13,  0.17it/s, v_num=juab]Epoch 2:   0%|          | 29/11215 [02:52<18:30:14,  0.17it/s, v_num=juab]Epoch 2:   0%|          | 30/11215 [02:57<18:24:15,  0.17it/s, v_num=juab]Epoch 2:   0%|          | 30/11215 [02:57<18:24:15,  0.17it/s, v_num=juab]Epoch 2:   0%|          | 31/11215 [03:02<18:18:09,  0.17it/s, v_num=juab]Epoch 2:   0%|          | 31/11215 [03:02<18:18:09,  0.17it/s, v_num=juab]Epoch 2:   0%|          | 32/11215 [03:07<18:12:09,  0.17it/s, v_num=juab]Epoch 2:   0%|          | 32/11215 [03:07<18:12:09,  0.17it/s, v_num=juab]Epoch 2:   0%|          | 33/11215 [03:12<18:07:41,  0.17it/s, v_num=juab]Epoch 2:   0%|          | 33/11215 [03:12<18:07:41,  0.17it/s, v_num=juab]Epoch 2:   0%|          | 34/11215 [03:17<18:01:44,  0.17it/s, v_num=juab]Epoch 2:   0%|          | 34/11215 [03:17<18:01:44,  0.17it/s, v_num=juab]Epoch 2:   0%|          | 35/11215 [03:25<18:15:04,  0.17it/s, v_num=juab]Epoch 2:   0%|          | 35/11215 [03:25<18:15:04,  0.17it/s, v_num=juab]Epoch 2:   0%|          | 36/11215 [03:30<18:09:53,  0.17it/s, v_num=juab]Epoch 2:   0%|          | 36/11215 [03:30<18:09:53,  0.17it/s, v_num=juab]Epoch 2:   0%|          | 37/11215 [03:35<18:06:21,  0.17it/s, v_num=juab]Epoch 2:   0%|          | 37/11215 [03:35<18:06:21,  0.17it/s, v_num=juab]Epoch 2:   0%|          | 38/11215 [03:40<17:59:43,  0.17it/s, v_num=juab]Epoch 2:   0%|          | 38/11215 [03:40<17:59:43,  0.17it/s, v_num=juab]Epoch 2:   0%|          | 39/11215 [03:45<17:54:52,  0.17it/s, v_num=juab]Epoch 2:   0%|          | 39/11215 [03:45<17:54:52,  0.17it/s, v_num=juab]Epoch 2:   0%|          | 40/11215 [03:50<17:52:31,  0.17it/s, v_num=juab]Epoch 2:   0%|          | 40/11215 [03:50<17:52:32,  0.17it/s, v_num=juab]Epoch 2:   0%|          | 41/11215 [03:55<17:49:31,  0.17it/s, v_num=juab]Epoch 2:   0%|          | 41/11215 [03:55<17:49:31,  0.17it/s, v_num=juab]Epoch 2:   0%|          | 42/11215 [04:04<18:02:58,  0.17it/s, v_num=juab]Epoch 2:   0%|          | 42/11215 [04:04<18:02:58,  0.17it/s, v_num=juab]Epoch 2:   0%|          | 43/11215 [04:09<18:00:31,  0.17it/s, v_num=juab]Epoch 2:   0%|          | 43/11215 [04:09<18:00:31,  0.17it/s, v_num=juab]Epoch 2:   0%|          | 44/11215 [04:15<17:59:33,  0.17it/s, v_num=juab]Epoch 2:   0%|          | 44/11215 [04:15<17:59:34,  0.17it/s, v_num=juab]Epoch 2:   0%|          | 45/11215 [04:20<17:56:24,  0.17it/s, v_num=juab]Epoch 2:   0%|          | 45/11215 [04:20<17:56:24,  0.17it/s, v_num=juab]Epoch 2:   0%|          | 46/11215 [04:25<17:53:07,  0.17it/s, v_num=juab]Epoch 2:   0%|          | 46/11215 [04:25<17:53:08,  0.17it/s, v_num=juab]Epoch 2:   0%|          | 47/11215 [04:29<17:47:55,  0.17it/s, v_num=juab]Epoch 2:   0%|          | 47/11215 [04:29<17:47:56,  0.17it/s, v_num=juab]Epoch 2:   0%|          | 48/11215 [04:34<17:44:12,  0.17it/s, v_num=juab]Epoch 2:   0%|          | 48/11215 [04:34<17:44:12,  0.17it/s, v_num=juab]Epoch 2:   0%|          | 49/11215 [04:40<17:45:51,  0.17it/s, v_num=juab]Epoch 2:   0%|          | 49/11215 [04:40<17:45:51,  0.17it/s, v_num=juab]Epoch 2:   0%|          | 50/11215 [04:46<17:45:36,  0.17it/s, v_num=juab]Epoch 2:   0%|          | 50/11215 [04:46<17:45:36,  0.17it/s, v_num=juab]Epoch 2:   0%|          | 51/11215 [04:51<17:43:16,  0.17it/s, v_num=juab]Epoch 2:   0%|          | 51/11215 [04:51<17:43:16,  0.17it/s, v_num=juab]Epoch 2:   0%|          | 52/11215 [04:56<17:41:42,  0.18it/s, v_num=juab]Epoch 2:   0%|          | 52/11215 [04:56<17:41:42,  0.18it/s, v_num=juab]Epoch 2:   0%|          | 53/11215 [05:05<17:51:11,  0.17it/s, v_num=juab]Epoch 2:   0%|          | 53/11215 [05:05<17:51:11,  0.17it/s, v_num=juab]Epoch 2:   0%|          | 54/11215 [05:09<17:47:05,  0.17it/s, v_num=juab]Epoch 2:   0%|          | 54/11215 [05:09<17:47:05,  0.17it/s, v_num=juab]Epoch 2:   0%|          | 55/11215 [05:15<17:45:37,  0.17it/s, v_num=juab]Epoch 2:   0%|          | 55/11215 [05:15<17:45:37,  0.17it/s, v_num=juab]Epoch 2:   0%|          | 56/11215 [05:21<17:46:28,  0.17it/s, v_num=juab]Epoch 2:   0%|          | 56/11215 [05:21<17:46:32,  0.17it/s, v_num=juab]Epoch 2:   1%|          | 57/11215 [05:25<17:43:14,  0.17it/s, v_num=juab]Epoch 2:   1%|          | 57/11215 [05:25<17:43:14,  0.17it/s, v_num=juab]Epoch 2:   1%|          | 58/11215 [05:30<17:39:38,  0.18it/s, v_num=juab]Epoch 2:   1%|          | 58/11215 [05:30<17:39:38,  0.18it/s, v_num=juab]Epoch 2:   1%|          | 59/11215 [05:35<17:38:07,  0.18it/s, v_num=juab]Epoch 2:   1%|          | 59/11215 [05:35<17:38:08,  0.18it/s, v_num=juab]Epoch 2:   1%|          | 60/11215 [05:43<17:45:41,  0.17it/s, v_num=juab]Epoch 2:   1%|          | 60/11215 [05:43<17:45:41,  0.17it/s, v_num=juab]Epoch 2:   1%|          | 61/11215 [05:52<17:54:14,  0.17it/s, v_num=juab]Epoch 2:   1%|          | 61/11215 [05:52<17:54:15,  0.17it/s, v_num=juab]Epoch 2:   1%|          | 62/11215 [05:57<17:52:26,  0.17it/s, v_num=juab]Epoch 2:   1%|          | 62/11215 [05:57<17:52:26,  0.17it/s, v_num=juab]Epoch 2:   1%|          | 63/11215 [06:02<17:49:49,  0.17it/s, v_num=juab]Epoch 2:   1%|          | 63/11215 [06:02<17:49:49,  0.17it/s, v_num=juab]Epoch 2:   1%|          | 64/11215 [06:07<17:47:15,  0.17it/s, v_num=juab]Epoch 2:   1%|          | 64/11215 [06:07<17:47:16,  0.17it/s, v_num=juab]Epoch 2:   1%|          | 65/11215 [06:12<17:45:59,  0.17it/s, v_num=juab]Epoch 2:   1%|          | 65/11215 [06:12<17:45:59,  0.17it/s, v_num=juab]Epoch 2:   1%|          | 66/11215 [06:17<17:43:52,  0.17it/s, v_num=juab]Epoch 2:   1%|          | 66/11215 [06:17<17:43:52,  0.17it/s, v_num=juab]Epoch 2:   1%|          | 67/11215 [06:23<17:42:59,  0.17it/s, v_num=juab]Epoch 2:   1%|          | 67/11215 [06:23<17:42:59,  0.17it/s, v_num=juab]Epoch 2:   1%|          | 68/11215 [06:28<17:42:40,  0.17it/s, v_num=juab]Epoch 2:   1%|          | 68/11215 [06:28<17:42:41,  0.17it/s, v_num=juab]Epoch 2:   1%|          | 69/11215 [06:34<17:40:49,  0.18it/s, v_num=juab]Epoch 2:   1%|          | 69/11215 [06:34<17:40:49,  0.18it/s, v_num=juab]Epoch 2:   1%|          | 70/11215 [06:39<17:39:01,  0.18it/s, v_num=juab]Epoch 2:   1%|          | 70/11215 [06:39<17:39:02,  0.18it/s, v_num=juab]Epoch 2:   1%|          | 71/11215 [06:44<17:36:51,  0.18it/s, v_num=juab]Epoch 2:   1%|          | 71/11215 [06:44<17:36:51,  0.18it/s, v_num=juab]Epoch 2:   1%|          | 72/11215 [06:52<17:44:15,  0.17it/s, v_num=juab]Epoch 2:   1%|          | 72/11215 [06:52<17:44:15,  0.17it/s, v_num=juab]Epoch 2:   1%|          | 73/11215 [06:56<17:40:23,  0.18it/s, v_num=juab]Epoch 2:   1%|          | 73/11215 [06:56<17:40:23,  0.18it/s, v_num=juab]Epoch 2:   1%|          | 74/11215 [07:02<17:39:32,  0.18it/s, v_num=juab]Epoch 2:   1%|          | 74/11215 [07:02<17:39:33,  0.18it/s, v_num=juab]Epoch 2:   1%|          | 75/11215 [07:07<17:38:10,  0.18it/s, v_num=juab]Epoch 2:   1%|          | 75/11215 [07:07<17:38:11,  0.18it/s, v_num=juab]Epoch 2:   1%|          | 76/11215 [07:12<17:36:50,  0.18it/s, v_num=juab]Epoch 2:   1%|          | 76/11215 [07:12<17:36:51,  0.18it/s, v_num=juab]Epoch 2:   1%|          | 77/11215 [07:18<17:36:45,  0.18it/s, v_num=juab]Epoch 2:   1%|          | 77/11215 [07:18<17:36:45,  0.18it/s, v_num=juab]Epoch 2:   1%|          | 78/11215 [07:23<17:35:37,  0.18it/s, v_num=juab]Epoch 2:   1%|          | 78/11215 [07:23<17:35:37,  0.18it/s, v_num=juab]Epoch 2:   1%|          | 79/11215 [07:31<17:40:59,  0.17it/s, v_num=juab]Epoch 2:   1%|          | 79/11215 [07:31<17:40:59,  0.17it/s, v_num=juab]Epoch 2:   1%|          | 80/11215 [07:39<17:45:55,  0.17it/s, v_num=juab]Epoch 2:   1%|          | 80/11215 [07:39<17:45:55,  0.17it/s, v_num=juab]/Data0/swangek_data/conda_envs/survivehr/lib/python3.10/site-packages/pytorch_lightning/loops/optimization/automatic.py:129: `training_step` returned `None`. If this was on purpose, ignore this warning...
+Epoch 2:   1%|          | 81/11215 [07:41<17:37:57,  0.18it/s, v_num=juab]Epoch 2:   1%|          | 81/11215 [07:41<17:37:58,  0.18it/s, v_num=juab]Epoch 2:   1%|          | 82/11215 [07:46<17:36:38,  0.18it/s, v_num=juab]Epoch 2:   1%|          | 82/11215 [07:46<17:36:38,  0.18it/s, v_num=juab]Epoch 2:   1%|          | 83/11215 [07:52<17:35:59,  0.18it/s, v_num=juab]Epoch 2:   1%|          | 83/11215 [07:52<17:35:59,  0.18it/s, v_num=juab]Epoch 2:   1%|          | 84/11215 [07:56<17:33:19,  0.18it/s, v_num=juab]Epoch 2:   1%|          | 84/11215 [07:56<17:33:19,  0.18it/s, v_num=juab]Epoch 2:   1%|          | 85/11215 [08:01<17:31:35,  0.18it/s, v_num=juab]Epoch 2:   1%|          | 85/11215 [08:01<17:31:35,  0.18it/s, v_num=juab]Epoch 2:   1%|          | 86/11215 [08:07<17:31:10,  0.18it/s, v_num=juab]Epoch 2:   1%|          | 86/11215 [08:07<17:31:10,  0.18it/s, v_num=juab]Epoch 2:   1%|          | 87/11215 [08:13<17:31:25,  0.18it/s, v_num=juab]Epoch 2:   1%|          | 87/11215 [08:13<17:31:27,  0.18it/s, v_num=juab]Epoch 2:   1%|          | 88/11215 [08:18<17:30:28,  0.18it/s, v_num=juab]Epoch 2:   1%|          | 88/11215 [08:18<17:30:28,  0.18it/s, v_num=juab]Epoch 2:   1%|          | 89/11215 [08:23<17:29:40,  0.18it/s, v_num=juab]Epoch 2:   1%|          | 89/11215 [08:23<17:29:40,  0.18it/s, v_num=juab]Epoch 2:   1%|          | 90/11215 [08:29<17:29:16,  0.18it/s, v_num=juab]Epoch 2:   1%|          | 90/11215 [08:29<17:29:16,  0.18it/s, v_num=juab]Epoch 2:   1%|          | 91/11215 [08:34<17:27:50,  0.18it/s, v_num=juab]Epoch 2:   1%|          | 91/11215 [08:34<17:27:50,  0.18it/s, v_num=juab]Epoch 2:   1%|          | 92/11215 [08:42<17:33:39,  0.18it/s, v_num=juab]Epoch 2:   1%|          | 92/11215 [08:42<17:33:39,  0.18it/s, v_num=juab]Epoch 2:   1%|          | 93/11215 [08:47<17:31:37,  0.18it/s, v_num=juab]Epoch 2:   1%|          | 93/11215 [08:47<17:31:37,  0.18it/s, v_num=juab]Epoch 2:   1%|          | 94/11215 [08:52<17:30:47,  0.18it/s, v_num=juab]Epoch 2:   1%|          | 94/11215 [08:52<17:30:47,  0.18it/s, v_num=juab]Epoch 2:   1%|          | 95/11215 [08:57<17:29:29,  0.18it/s, v_num=juab]Epoch 2:   1%|          | 95/11215 [08:57<17:29:29,  0.18it/s, v_num=juab]Epoch 2:   1%|          | 96/11215 [09:03<17:28:49,  0.18it/s, v_num=juab]Epoch 2:   1%|          | 96/11215 [09:03<17:28:49,  0.18it/s, v_num=juab]Epoch 2:   1%|          | 97/11215 [09:09<17:29:22,  0.18it/s, v_num=juab]Epoch 2:   1%|          | 97/11215 [09:09<17:29:22,  0.18it/s, v_num=juab]Epoch 2:   1%|          | 98/11215 [09:15<17:29:23,  0.18it/s, v_num=juab]Epoch 2:   1%|          | 98/11215 [09:15<17:29:24,  0.18it/s, v_num=juab]Epoch 2:   1%|          | 99/11215 [09:23<17:34:03,  0.18it/s, v_num=juab]Epoch 2:   1%|          | 99/11215 [09:23<17:34:03,  0.18it/s, v_num=juab]Epoch 2:   1%|          | 100/11215 [09:31<17:39:17,  0.17it/s, v_num=juab]Epoch 2:   1%|          | 100/11215 [09:31<17:39:17,  0.17it/s, v_num=juab]Epoch 2:   1%|          | 101/11215 [09:37<17:38:44,  0.17it/s, v_num=juab]Epoch 2:   1%|          | 101/11215 [09:37<17:38:45,  0.17it/s, v_num=juab]Epoch 2:   1%|          | 102/11215 [09:42<17:38:27,  0.17it/s, v_num=juab]Epoch 2:   1%|          | 102/11215 [09:42<17:38:27,  0.17it/s, v_num=juab]Epoch 2:   1%|          | 103/11215 [09:48<17:38:16,  0.18it/s, v_num=juab]Epoch 2:   1%|          | 103/11215 [09:48<17:38:16,  0.18it/s, v_num=juab]Epoch 2:   1%|          | 104/11215 [09:54<17:38:53,  0.17it/s, v_num=juab]Epoch 2:   1%|          | 104/11215 [09:54<17:38:53,  0.17it/s, v_num=juab]Epoch 2:   1%|          | 105/11215 [09:59<17:37:19,  0.18it/s, v_num=juab]Epoch 2:   1%|          | 105/11215 [09:59<17:37:19,  0.18it/s, v_num=juab]Epoch 2:   1%|          | 106/11215 [10:04<17:35:34,  0.18it/s, v_num=juab]Epoch 2:   1%|          | 106/11215 [10:04<17:35:35,  0.18it/s, v_num=juab]Epoch 2:   1%|          | 107/11215 [10:09<17:33:45,  0.18it/s, v_num=juab]Epoch 2:   1%|          | 107/11215 [10:09<17:33:45,  0.18it/s, v_num=juab]Epoch 2:   1%|          | 108/11215 [10:13<17:32:12,  0.18it/s, v_num=juab]Epoch 2:   1%|          | 108/11215 [10:13<17:32:12,  0.18it/s, v_num=juab]Epoch 2:   1%|          | 109/11215 [10:18<17:30:25,  0.18it/s, v_num=juab]Epoch 2:   1%|          | 109/11215 [10:18<17:30:25,  0.18it/s, v_num=juab]Epoch 2:   1%|          | 110/11215 [10:23<17:29:54,  0.18it/s, v_num=juab]Epoch 2:   1%|          | 110/11215 [10:23<17:29:54,  0.18it/s, v_num=juab]Epoch 2:   1%|          | 111/11215 [10:32<17:33:50,  0.18it/s, v_num=juab]Epoch 2:   1%|          | 111/11215 [10:32<17:33:51,  0.18it/s, v_num=juab]Epoch 2:   1%|          | 112/11215 [10:37<17:32:36,  0.18it/s, v_num=juab]Epoch 2:   1%|          | 112/11215 [10:37<17:32:36,  0.18it/s, v_num=juab]Epoch 2:   1%|          | 113/11215 [10:41<17:30:53,  0.18it/s, v_num=juab]Epoch 2:   1%|          | 113/11215 [10:41<17:30:54,  0.18it/s, v_num=juab]Epoch 2:   1%|          | 114/11215 [10:46<17:30:01,  0.18it/s, v_num=juab]Epoch 2:   1%|          | 114/11215 [10:46<17:30:01,  0.18it/s, v_num=juab]Epoch 2:   1%|          | 115/11215 [10:52<17:29:06,  0.18it/s, v_num=juab]Epoch 2:   1%|          | 115/11215 [10:52<17:29:06,  0.18it/s, v_num=juab]Epoch 2:   1%|          | 116/11215 [10:57<17:27:43,  0.18it/s, v_num=juab]Epoch 2:   1%|          | 116/11215 [10:57<17:27:43,  0.18it/s, v_num=juab]Epoch 2:   1%|          | 117/11215 [11:04<17:31:07,  0.18it/s, v_num=juab]Epoch 2:   1%|          | 117/11215 [11:04<17:31:07,  0.18it/s, v_num=juab]Epoch 2:   1%|          | 118/11215 [11:13<17:35:30,  0.18it/s, v_num=juab]Epoch 2:   1%|          | 118/11215 [11:13<17:35:30,  0.18it/s, v_num=juab]Epoch 2:   1%|          | 119/11215 [11:18<17:34:41,  0.18it/s, v_num=juab]Epoch 2:   1%|          | 119/11215 [11:18<17:34:41,  0.18it/s, v_num=juab]Epoch 2:   1%|          | 120/11215 [11:23<17:33:09,  0.18it/s, v_num=juab]Epoch 2:   1%|          | 120/11215 [11:23<17:33:09,  0.18it/s, v_num=juab]Epoch 2:   1%|          | 121/11215 [11:28<17:31:33,  0.18it/s, v_num=juab]Epoch 2:   1%|          | 121/11215 [11:28<17:31:33,  0.18it/s, v_num=juab]Epoch 2:   1%|          | 122/11215 [11:33<17:31:00,  0.18it/s, v_num=juab]Epoch 2:   1%|          | 122/11215 [11:33<17:31:00,  0.18it/s, v_num=juab]Epoch 2:   1%|          | 123/11215 [11:38<17:29:43,  0.18it/s, v_num=juab]Epoch 2:   1%|          | 123/11215 [11:38<17:29:43,  0.18it/s, v_num=juab]Epoch 2:   1%|          | 124/11215 [11:43<17:28:47,  0.18it/s, v_num=juab]Epoch 2:   1%|          | 124/11215 [11:43<17:28:48,  0.18it/s, v_num=juab]Epoch 2:   1%|          | 125/11215 [11:48<17:27:41,  0.18it/s, v_num=juab]Epoch 2:   1%|          | 125/11215 [11:48<17:27:41,  0.18it/s, v_num=juab]Epoch 2:   1%|          | 126/11215 [11:53<17:26:06,  0.18it/s, v_num=juab]Epoch 2:   1%|          | 126/11215 [11:53<17:26:07,  0.18it/s, v_num=juab]Epoch 2:   1%|          | 127/11215 [11:58<17:24:53,  0.18it/s, v_num=juab]Epoch 2:   1%|          | 127/11215 [11:58<17:24:53,  0.18it/s, v_num=juab]Epoch 2:   1%|          | 128/11215 [12:02<17:23:25,  0.18it/s, v_num=juab]Epoch 2:   1%|          | 128/11215 [12:02<17:23:25,  0.18it/s, v_num=juab]Epoch 2:   1%|          | 129/11215 [12:07<17:22:32,  0.18it/s, v_num=juab]Epoch 2:   1%|          | 129/11215 [12:07<17:22:32,  0.18it/s, v_num=juab]Epoch 2:   1%|          | 130/11215 [12:16<17:26:53,  0.18it/s, v_num=juab]Epoch 2:   1%|          | 130/11215 [12:16<17:26:53,  0.18it/s, v_num=juab]Epoch 2:   1%|          | 131/11215 [12:21<17:26:07,  0.18it/s, v_num=juab]Epoch 2:   1%|          | 131/11215 [12:21<17:26:08,  0.18it/s, v_num=juab]Epoch 2:   1%|          | 132/11215 [12:26<17:25:11,  0.18it/s, v_num=juab]Epoch 2:   1%|          | 132/11215 [12:26<17:25:11,  0.18it/s, v_num=juab]Epoch 2:   1%|          | 133/11215 [12:31<17:24:17,  0.18it/s, v_num=juab]Epoch 2:   1%|          | 133/11215 [12:31<17:24:17,  0.18it/s, v_num=juab]Epoch 2:   1%|          | 134/11215 [12:37<17:24:02,  0.18it/s, v_num=juab]Epoch 2:   1%|          | 134/11215 [12:37<17:24:02,  0.18it/s, v_num=juab]Epoch 2:   1%|          | 135/11215 [12:42<17:23:20,  0.18it/s, v_num=juab]Epoch 2:   1%|          | 135/11215 [12:42<17:23:20,  0.18it/s, v_num=juab]Epoch 2:   1%|          | 136/11215 [12:51<17:26:57,  0.18it/s, v_num=juab]Epoch 2:   1%|          | 136/11215 [12:51<17:26:57,  0.18it/s, v_num=juab]Epoch 2:   1%|          | 137/11215 [12:59<17:30:23,  0.18it/s, v_num=juab]Epoch 2:   1%|          | 137/11215 [12:59<17:30:23,  0.18it/s, v_num=juab]Epoch 2:   1%|          | 138/11215 [13:04<17:29:43,  0.18it/s, v_num=juab]Epoch 2:   1%|          | 138/11215 [13:04<17:29:43,  0.18it/s, v_num=juab]Epoch 2:   1%|          | 139/11215 [13:09<17:29:05,  0.18it/s, v_num=juab]Epoch 2:   1%|          | 139/11215 [13:09<17:29:05,  0.18it/s, v_num=juab]Epoch 2:   1%|          | 140/11215 [13:15<17:28:45,  0.18it/s, v_num=juab]Epoch 2:   1%|          | 140/11215 [13:15<17:28:45,  0.18it/s, v_num=juab]Epoch 2:   1%|▏         | 141/11215 [13:20<17:28:05,  0.18it/s, v_num=juab]Epoch 2:   1%|▏         | 141/11215 [13:20<17:28:06,  0.18it/s, v_num=juab]Epoch 2:   1%|▏         | 142/11215 [13:25<17:26:52,  0.18it/s, v_num=juab]Epoch 2:   1%|▏         | 142/11215 [13:25<17:26:52,  0.18it/s, v_num=juab]Epoch 2:   1%|▏         | 143/11215 [13:30<17:26:18,  0.18it/s, v_num=juab]Epoch 2:   1%|▏         | 143/11215 [13:30<17:26:19,  0.18it/s, v_num=juab]

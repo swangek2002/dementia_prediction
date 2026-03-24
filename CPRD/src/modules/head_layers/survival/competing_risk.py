@@ -59,6 +59,7 @@ class ODESurvCompetingRiskLayer(nn.Module):
                 is_generation: bool = False,                    # Whether we forward every step (True) of seq_len, or just the final step (False)
                 return_cdf: bool = False,
                 return_loss: bool = True,
+                sample_weights: Optional[torch.tensor] = None,  # (M,) per-sample loss weights for sparsity-aware weighting
                 ):
         r"""
 
@@ -105,10 +106,8 @@ class ODESurvCompetingRiskLayer(nn.Module):
                 tte_deltas[tte_deltas == 0] += exp_dist.sample(tte_deltas[tte_deltas == 0].shape).to(tte_deltas.device)
 
             if return_loss:
-                # Calculate losses, excluding masked values. Each sr_ode returns the sum over observed events
-                #    to be consistent with other heads, we scale by number of observed values to obtain per SR-model mean
-                #    and we sum across the mixture of survival ODEs
-                surv_loss = [self.sr_ode.loss(in_hidden_state, tte_deltas, k) / k.shape[0]]
+                surv_loss = [self.sr_ode.loss(in_hidden_state, tte_deltas, k,
+                                              sample_weights=sample_weights) / k.shape[0]]
             else:
                 surv_loss = None
 
@@ -127,13 +126,12 @@ class ODESurvCompetingRiskLayer(nn.Module):
             in_hidden_state = hidden_states[:, -1, :]                      # torch.Size([bsz, hid_dim])
             
             if return_loss:
-                # Forward the last state. This will be used for few-shot training a clinical prediction model.
-                # Note: Padding doesn't matter as all the padded hidden_state values share the same value as the last observation's hidden state
                 assert target_tokens is not None
                 assert target_ages is not None
                 assert attention_mask is None
 
-                surv_loss = [self.sr_ode.loss(in_hidden_state, target_ages.reshape(-1), target_tokens.reshape(-1)) / target_tokens.shape[0]]
+                surv_loss = [self.sr_ode.loss(in_hidden_state, target_ages.reshape(-1), target_tokens.reshape(-1),
+                                              sample_weights=sample_weights) / target_tokens.shape[0]]
                 
             else:
                 # Another use case for is_generation = True is that we are simply generating future trajectories. 
@@ -168,7 +166,7 @@ class ODESurvCompetingRiskLayer(nn.Module):
         # Batched predict: Cannot make all predictions at once due to memory constraints.
         # With 108K output dims and n=15 quadrature points, each element expands to
         # pred_bsz * 15 * 108K floats inside the ODE. 64 keeps peak alloc under ~200 MiB.
-        pred_bsz = 64
+        pred_bsz = 16
         pred = []
         pi = []
         for H_test_batched, t_test_batched in zip(torch.split(H_test, pred_bsz), torch.split(t_test, pred_bsz)):

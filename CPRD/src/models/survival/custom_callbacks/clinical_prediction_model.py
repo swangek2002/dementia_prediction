@@ -183,7 +183,6 @@ class PerformanceMetrics(Callback):
         # For each of the DeSurv output curves, which we want to evaluate separately
         #   1) collect the targets which are relevant to that curve. 
         if self.log_individual:
-            assert pred_surv_pis is None, "Individual logging is not supported for Competing-Risk models."
             
             for _desurv_index, _outcome_cdf in enumerate(pred_surv_CDFs):
                 
@@ -196,20 +195,20 @@ class PerformanceMetrics(Callback):
                         _outcome_labels += (target_tokens == _outcome_token)             # 1 if == _outcome_token else 0
                         _outcome_tokens.append(_outcome_token)
     
-                # Plot the outcome curve
+                # Use a short suffix to avoid filename-too-long errors
+                _suffix = f"_risk{_desurv_index}_{len(_outcome_tokens)}codes"
                 if plot_outcome_curves:
                     self.plot_outcome_curve(_outcome_cdf, 
                                             _outcome_labels, 
                                             _trainer, 
-                                            log_name=log_name+f"_{_outcome_tokens}",
-                                            ylabel=r"$F_{" + f"{','.join([str(i) for i in _outcome_tokens])}" + r"}(t)$")
-                # Log metrics
-                self.get_metrics(_outcome_cdf, #  if pred_surv_pis is None else _outcome_cdf / pred_surv_pis[_desurv_index], 
+                                            log_name=log_name+_suffix,
+                                            ylabel=r"$F_{" + f"risk{_desurv_index}" + r"}(t)$")
+                self.get_metrics(_outcome_cdf,
                                  _outcome_labels,
                                  target_ages, 
                                  _trainer, 
                                  _pl_module, 
-                                 log_name+f"_{_outcome_tokens}")
+                                 log_name+_suffix)
 
     def on_validation_batch_end(self, trainer, pl_module, outputs, batch, batch_idx):
         # Run callback
@@ -221,12 +220,12 @@ class PerformanceMetrics(Callback):
                           )
 
     def on_test_batch_end(self, trainer, pl_module, outputs, batch, batch_idx):
-        # Run callback
+        # Run callback (disable plots when many outcome tokens to avoid filename-too-long errors)
         self.run_callback(_trainer=trainer, 
                           _pl_module = pl_module,
                           batch=batch,
                           log_name = "Test:OutcomePerformanceMetrics", 
-                          plot_outcome_curves = True
+                          plot_outcome_curves = len(self.outcome_tokens) <= 5,
                           )
 
 class PerformanceValueMetrics(Callback):

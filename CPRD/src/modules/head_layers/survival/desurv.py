@@ -146,8 +146,7 @@ class ODESurvSingle(nn.Module):
         # wrap back for original optimize code
         return self.forward(x, t)
 
-    def loss(self, x, t, k):
-        # print(f"x: {x.shape}, t:{t.shape} k:{k.shape}")
+    def loss(self, x, t, k, sample_weights=None):
         x = x.to(self.net.device)
         t = t.to(self.net.device)
         k = k.to(self.net.device)
@@ -158,8 +157,11 @@ class ODESurvSingle(nn.Module):
         censterm = torch.tensor(0)
         cens_ids = torch.where(k == 0)[0]
         if torch.numel(cens_ids) != 0:
-            cdf_cens = self.net.forward(x[cens_ids, :], t[cens_ids, :]).squeeze()
-            censterm = torch.log(1 - cdf_cens + eps).sum()
+            cdf_cens = self.net.forward(x[cens_ids, :], t[cens_ids, :]).squeeze().clamp(0, 1 - eps)
+            per_sample_cens = torch.log(1 - cdf_cens + eps)
+            if sample_weights is not None:
+                per_sample_cens = per_sample_cens * sample_weights[cens_ids].to(self.net.device)
+            censterm = per_sample_cens.sum()
 
         uncensterm = torch.tensor(0)
         uncens_ids = torch.where(k == 1)[0]
@@ -167,8 +169,12 @@ class ODESurvSingle(nn.Module):
             cdf_uncens = self.net.forward(x[uncens_ids, :], t[uncens_ids, :]).squeeze()
             if not self.modified:
                 cdf_uncens = cdf_uncens ** 2
-            dudt_uncens = self.net.ode_mapping(x[uncens_ids, :], t[uncens_ids, :]).squeeze()
-            uncensterm = (torch.log(1 - cdf_uncens + eps) + torch.log(dudt_uncens + eps)).sum()
+            cdf_uncens = cdf_uncens.clamp(0, 1 - eps)
+            dudt_uncens = self.net.ode_mapping(x[uncens_ids, :], t[uncens_ids, :]).squeeze().clamp(min=eps)
+            per_sample_uncens = torch.log(1 - cdf_uncens + eps) + torch.log(dudt_uncens + eps)
+            if sample_weights is not None:
+                per_sample_uncens = per_sample_uncens * sample_weights[uncens_ids].to(self.net.device)
+            uncensterm = per_sample_uncens.sum()
 
         return -(censterm + uncensterm)
 
@@ -268,7 +274,7 @@ class ODESurvMultiple(nn.Module):
         # wrap back for original optimize code
         return self.forward(x, t)
 
-    def loss(self, x, t, k):
+    def loss(self, x, t, k, sample_weights=None):
 
         t = t.unsqueeze(1)
         eps = 1e-8
@@ -277,8 +283,11 @@ class ODESurvMultiple(nn.Module):
         cens_ids = torch.where(k == 0)[0]
         if torch.numel(cens_ids) != 0:
             cif_cens = self.forward(x[cens_ids, :], t[cens_ids, 0])[0]
-            cdf_cens = cif_cens.sum(dim=1)
-            censterm = torch.log(1 - cdf_cens + eps).sum()
+            cdf_cens = cif_cens.sum(dim=1).clamp(0, 1 - eps)
+            per_sample_cens = torch.log(1 - cdf_cens + eps)
+            if sample_weights is not None:
+                per_sample_cens = per_sample_cens * sample_weights[cens_ids]
+            censterm = per_sample_cens.sum()
 
         # Sparse uncensored term: instead of computing all 108K output columns,
         # only compute the columns corresponding to events that actually occurred.
@@ -302,9 +311,12 @@ class ODESurvMultiple(nn.Module):
             pi = self.get_pi(x_u)
             pi_sel = pi[torch.arange(len(x_u), device=x.device), k_raw]
 
-            uncensterm = (torch.log(1 - cdf_sel + eps)
-                          + torch.log(dudt_sel + eps)
-                          + torch.log(pi_sel + eps)).sum()
+            per_sample_uncens = (torch.log(1 - cdf_sel + eps)
+                                 + torch.log(dudt_sel + eps)
+                                 + torch.log(pi_sel + eps))
+            if sample_weights is not None:
+                per_sample_uncens = per_sample_uncens * sample_weights[uncens_mask]
+            uncensterm = per_sample_uncens.sum()
 
         return -(censterm + uncensterm)
 

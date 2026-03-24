@@ -63,6 +63,8 @@ class CausalExperiment(pl.LightningModule):
         super().__init__()
         self.save_hyperparameters()
         self.cfg = cfg
+        self.oom_skip_count = 0
+        self.oom_total_steps = 0
         self.model = SurvStreamGPTForCausalModelling(cfg, vocab_size,
                                                      concurrent_strategy=concurrent_strategy,
                                                      num_static_covariates=cfg.data.num_static_covariates)
@@ -87,15 +89,18 @@ class CausalExperiment(pl.LightningModule):
                           )
 
     def training_step(self, batch, batch_idx):
+        self.oom_total_steps += 1
+
         try:
             _, loss_dict, _ = self(batch)
             loss = loss_dict['loss']
         except torch.cuda.OutOfMemoryError:
-            print(f"\n[WARNING] OOM at batch {batch_idx}. Clearing cache and skipping this batch.")
+            self.oom_skip_count += 1
+            oom_pct = 100.0 * self.oom_skip_count / self.oom_total_steps
+            print(f"\n[OOM] batch {batch_idx} skipped | "
+                  f"total skipped: {self.oom_skip_count}/{self.oom_total_steps} ({oom_pct:.1f}%)")
             torch.cuda.empty_cache()
-            
-            # Since we are in DDP, we must ensure all ranks return None if any rank OOMs
-            # to prevent deadlocks during gradient synchronization.
+
             oom_tensor = torch.tensor(1, device=self.device, dtype=torch.long)
             if torch.distributed.is_initialized():
                 torch.distributed.all_reduce(oom_tensor, op=torch.distributed.ReduceOp.SUM)
@@ -106,6 +111,10 @@ class CausalExperiment(pl.LightningModule):
         if torch.distributed.is_initialized():
             torch.distributed.all_reduce(oom_tensor, op=torch.distributed.ReduceOp.SUM)
         if oom_tensor.item() > 0:
+            self.oom_skip_count += 1
+            oom_pct = 100.0 * self.oom_skip_count / self.oom_total_steps
+            print(f"\n[OOM] batch {batch_idx} skipped (other rank OOM) | "
+                  f"total skipped: {self.oom_skip_count}/{self.oom_total_steps} ({oom_pct:.1f}%)")
             return None
 
         # Sync NaN across ranks: if any rank has NaN, all must return None to avoid DDP deadlock.
@@ -133,7 +142,7 @@ class CausalExperiment(pl.LightningModule):
         return loss_dict['loss'] 
 
     def configure_optimizers(self):
-        optimizer = torch.optim.AdamW(self.parameters(), lr=self.cfg.optim.learning_rate, fused=True)
+        optimizer = torch.optim.AdamW(self.parameters(), lr=self.cfg.optim.learning_rate)
 
         schedulers = []
         milestones = []
@@ -276,12 +285,23 @@ def setup_causal_experiment(cfg, dm, vocab_size, checkpoint=None, logger=None):
         filename=cfg.experiment.run_id,
         verbose=cfg.experiment.verbose,
         monitor="val_loss",
+        save_top_k=3,
         save_last=True,
+        every_n_train_steps=1000,
+    )
+    checkpoint_epoch_callback = pl.callbacks.ModelCheckpoint(
+        dirpath=cfg.experiment.ckpt_dir,
+        filename=cfg.experiment.run_id + "-epoch{epoch:02d}",
+        verbose=cfg.experiment.verbose,
+        monitor="val_loss",  # <-- 必须加上这一行才能用 save_top_k
+        save_top_k=5,
+        every_n_epochs=1,
     )
 
     lr_monitor = pl.callbacks.LearningRateMonitor(logging_interval='step')
 
     callbacks = [checkpoint_callback,
+                 checkpoint_epoch_callback,
                  lr_monitor,
                  ]
 

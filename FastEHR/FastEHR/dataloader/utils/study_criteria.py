@@ -194,11 +194,11 @@ class index_inclusion_method():
             patients_with_index_age
             .filter(
                 pl.col('INDEX_DATE') >= pl.lit(self._study_period[0])
-                .str.strptime(pl.Date, fmt="%F")
+                .str.to_date(format="%F")
             )
             .filter(
                 pl.col('INDEX_DATE') <= pl.lit(self._study_period[1])
-                .str.strptime(pl.Date, fmt="%F")
+                .str.to_date(format="%F")
             )
         )
 
@@ -257,11 +257,11 @@ class index_inclusion_method():
             patients_with_index_event
             .filter(
                 pl.col('DATE') >= pl.lit(self._study_period[0])
-                .str.strptime(pl.Date, fmt="%F")
+                .str.to_date(format="%F")
             )
             .filter(
                 pl.col('DATE') <= pl.lit(self._study_period[1])
-                .str.strptime(pl.Date, fmt="%F")
+                .str.to_date(format="%F")
             )
         )
 
@@ -373,7 +373,7 @@ class index_inclusion_method():
         patients_with_target = (
             lazy_combined_frame
             .filter(pl.col("DATE") > pl.col("INDEX_DATE"))
-            .filter(pl.col("DATE") <= pl.lit(self._study_period[1]).str.strptime(pl.Date, fmt="%F"))
+            .filter(pl.col("DATE") <= pl.lit(self._study_period[1]).str.to_date(format="%F"))
             .select(pl.col('PATIENT_ID'))  # get the patient list
             .unique()
         )
@@ -401,7 +401,7 @@ class index_inclusion_method():
         lazy_combined_frame_outcomes = (
             lazy_combined_frame_outcomes
             .filter(pl.col("DATE") > pl.col("INDEX_DATE"))
-            .filter(pl.col("DATE") <= pl.lit(self._study_period[1]).str.strptime(pl.Date, fmt="%F"))
+            .filter(pl.col("DATE") <= pl.lit(self._study_period[1]).str.to_date(format="%F"))
         )
 
         # Get outcomes
@@ -416,8 +416,7 @@ class index_inclusion_method():
             # Keep chronologically last event experienced by patient
             lazy_combined_frame_last_event_in_study = (
                 lazy_combined_frame
-                .filter(pl.col("DATE") <= pl.lit(self._study_period[1]).str.strptime(pl.Date,
-                                                                                     fmt="%F"))  # Only look at events within study period
+                .filter(pl.col("DATE") <= pl.lit(self._study_period[1]).str.to_date(format="%F"))  # Only look at events within study period
                 .sort(["PRACTICE_ID", "PATIENT_ID", "DATE"])  # Sort to ensure date order within patients
                 .unique(subset=["PRACTICE_ID", "PATIENT_ID"], keep="last")
             )

@@ -1,0 +1,1253 @@
+[swangek@frontier 991]$ cd /Data0/swangek_data/991/CPRD/examples/modelling
+/SurvivEHR
+[swangek@frontier SurvivEHR]$
+[swangek@frontier SurvivEHR]$ /usr/bin/env CUDA_VISIBLE_DEVICES=0,1,2,3 \
+?   PYTHONPATH=/Data0/swangek_data/991/FastEHR:/Data0/swangek_data/991/CPR
+D \
+?   /Data0/swangek_data/conda_envs/survivehr/bin/python \
+?   run_experiment.py --config-name=config_CompetingRisk11M \
+?   data.batch_size=8 optim.accumulate_grad_batches=2 |& tee train_log.txt
+
+/Data0/swangek_data/conda_envs/survivehr/lib/python3.10/site-packages/ligh
+tning_fabric/__init__.py:40: pkg_resources is deprecated as an API. See ht
+tps://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources p
+ackage is slated for removal as early as 2025-11-30. Refrain from using th
+is package or pin to Setuptools<81.
+[2026-03-10 17:53:04,900][root][INFO] - Running cr on 48 CPUs and 4 GPUs
+[2026-03-10 17:53:04,905][root][INFO] - ==================================
+==================================================================
+[2026-03-10 17:53:04,905][root][INFO] - # Loading DataModule for dataset /
+Data0/swangek_data/991/CPRD/data/FoundationalModel/PreTrain/. This will be
+ loaded in causal form.
+[2026-03-10 17:53:04,905][root][INFO] - ==================================
+==================================================================
+[2026-03-10 17:53:35,879][root][INFO] - Using meta information from /Data0
+/swangek_data/991/CPRD/data/FoundationalModel/PreTrain/meta_information_cu
+stom.pickle
+[2026-03-10 17:53:35,883][root][INFO] - Using train file-row count dict fr
+om /Data0/swangek_data/991/CPRD/data/FoundationalModel/PreTrain/file_row_c
+ount_dict_train.pickle
+[2026-03-10 17:53:35,883][root][INFO] - Using test file-row count dict fro
+m /Data0/swangek_data/991/CPRD/data/FoundationalModel/PreTrain/file_row_co
+unt_dict_test.pickle
+[2026-03-10 17:53:35,884][root][INFO] - Using val file-row count dict from
+ /Data0/swangek_data/991/CPRD/data/FoundationalModel/PreTrain/file_row_cou
+nt_dict_val.pickle
+[2026-03-10 17:53:35,952][root][INFO] - Tokenzier created based on 373,927
+,777 tokens
+[2026-03-10 17:53:36,072][root][INFO] - Using tabular tokenizer, created f
+rom meta information and containing 108118 tokens
+[2026-03-10 17:53:36,072][root][INFO] - Set seed to 1337
+[2026-03-10 17:53:36,073][root][INFO] - Loaded /Data0/swangek_data/991/CPR
+D/data/FoundationalModel/PreTrain/split=train/ dataset
+[2026-03-10 17:53:36,073][root][INFO] - Pre-loading 1807 parquet files int
+o memory...
+[2026-03-10 17:54:12,551][root][INFO] - Pre-loaded 1807 files into memory
+[2026-03-10 17:54:12,552][root][INFO] - with 448,572 samples
+[2026-03-10 17:54:13,087][root][INFO] - Set seed to 42
+[2026-03-10 17:54:13,087][root][INFO] - Loaded /Data0/swangek_data/991/CPR
+D/data/FoundationalModel/PreTrain/split=test/ dataset
+[2026-03-10 17:54:13,087][root][INFO] - Pre-loading 113 parquet files into
+ memory...
+[2026-03-10 17:54:15,448][root][INFO] - Pre-loaded 113 files into memory
+[2026-03-10 17:54:15,448][root][INFO] - with 28,182 samples
+[2026-03-10 17:54:15,973][root][INFO] - Set seed to 42
+[2026-03-10 17:54:15,974][root][INFO] - Loaded /Data0/swangek_data/991/CPR
+D/data/FoundationalModel/PreTrain/split=val/ dataset
+[2026-03-10 17:54:15,974][root][INFO] - Pre-loading 102 parquet files into
+ memory...
+[2026-03-10 17:54:17,365][root][INFO] - Pre-loaded 102 files into memory
+[2026-03-10 17:54:17,366][root][INFO] - with 25,136 samples
+[2026-03-10 17:54:17,891][root][INFO] - Creating unsupervised collator for
+ DataModule
+[2026-03-10 17:54:23,398][root][INFO] - is_decoder: true
+data:
+  batch_size: 8
+  unk_freq_threshold: 0.0
+  min_workers: 12
+  global_diagnoses: false
+  repeating_events: true
+  path_to_db: /Data0/swangek_data/991/CPRD/data/example_exercise_database.
+db
+  path_to_ds: /Data0/swangek_data/991/CPRD/data/FoundationalModel/PreTrain
+/
+  meta_information_path: /Data0/swangek_data/991/CPRD/data/FoundationalMod
+el/PreTrain/meta_information_custom.pickle
+  subsample_training: null
+  num_static_covariates: 27
+experiment:
+  type: pre-train
+  project_name: SurvivEHR
+  run_id: crPreTrain_small_1337
+  fine_tune_id: null
+  notes: null
+  tags: null
+  train: true
+  test: true
+  verbose: true
+  seed: 1337
+  log: true
+  log_dir: /Data0/swangek_data/991/CPRD/output/
+  ckpt_dir: /Data0/swangek_data/991/CPRD/output/checkpoints/
+fine_tuning:
+  fine_tune_outcomes: null
+  custom_outcome_method:
+    _target_: null
+  custom_stratification_method:
+    _target_: null
+  use_callbacks:
+    hidden_embedding:
+      num_batches: 0
+      mask_static: false
+      mask_value: false
+    performance_metrics: true
+    rmst: false
+  compression_layer: false
+  llrd: null
+  PEFT:
+    method: null
+    adapter_dim: 8
+  backbone:
+    linear_probe_epochs: 0
+    unfreeze_top_k: null
+  head:
+    surv_weight: 1
+    value_weight: 0
+    learning_rate: 0.0005
+optim:
+  num_epochs: 1
+  learning_rate: 0.0003
+  scheduler_warmup: true
+  scheduler: decaycawarmrestarts
+  scheduler_periods: 10000
+  learning_rate_decay: 0.8
+  val_check_interval: 2500
+  early_stop: true
+  early_stop_patience: 30
+  log_every_n_steps: 20
+  limit_val_batches: 0.025
+  limit_test_batches: null
+  accumulate_grad_batches: 2
+transformer:
+  block_type: Neo
+  block_size: 256
+  n_layer: 6
+  n_head: 6
+  n_embd: 384
+  layer_norm_bias: false
+  attention_type: global
+  bias: true
+  dropout: 0.0
+  attention_dropout: 0.0
+  resid_dropout: 0.0
+  private_heads: 0
+head:
+  SurvLayer: cr
+  surv_weight: 1
+  tokens_for_univariate_regression: <9247 token IDs omitted>
+  value_weight: 0.1
+
+[2026-03-10 17:54:23,400][root][INFO] - ==================================
+==================================================================
+[2026-03-10 17:54:23,400][root][INFO] - # Pre-training experiment
+[2026-03-10 17:54:23,400][root][INFO] - ==================================
+==================================================================
+[2026-03-10 17:54:23,400][root][INFO] - Creating new pre-trained model at
+the path /Data0/swangek_data/991/CPRD/output/checkpoints/crPreTrain_small_
+1337.ckpt.
+[2026-03-10 17:54:23,401][root][INFO] - # This will create / evaluate a pr
+e-trained Foundation Model on a causal (next-event prediction) modelling t
+ask.
+[2026-03-10 17:54:23,419][torch.distributed.nn.jit.instantiator][INFO] - C
+reated a temporary directory at /tmp/tmp1f_t5zlb
+[2026-03-10 17:54:23,420][torch.distributed.nn.jit.instantiator][INFO] - W
+riting /tmp/tmp1f_t5zlb/_remote_module_non_scriptable.py
+[2026-03-10 17:54:23,833][root][INFO] - Using Temporal Positional Encoding
+. This module uses the patient's age at an event within their time series.
+[2026-03-10 17:54:25,053][root][INFO] - Using a DeSurv Competing-Risk head
+.
+[2026-03-10 17:54:25,054][root][INFO] -         With concurrent strategy=a
+dd_noise for handling simultaneous events.
+[2026-03-10 17:54:25,054][root][INFO] -         Evaluating on a time grid
+between [0.0, 1.0] with 1000 intervals
+[2026-03-10 17:54:26,142][root][INFO] - Created PerformanceMetrics callbac
+k for causal self-supervised tasks.
+[2026-03-10 17:54:26,142][root][INFO] -
+[2026-03-10 17:54:26,143][root][INFO] - GPu job
+[2026-03-10 17:54:26,143][root][INFO] - Using ddp strategy
+Using 16bit Automatic Mixed Precision (AMP)
+GPU available: True (cuda), used: True
+TPU available: False, using: 0 TPU cores
+IPU available: False, using: 0 IPUs
+HPU available: False, using: 0 HPUs
+[2026-03-10 17:54:26,160][root][INFO] - Training model.
+Initializing distributed: GLOBAL_RANK: 0, MEMBER: 1/4
+/Data0/swangek_data/conda_envs/survivehr/lib/python3.10/site-packages/ligh
+tning_fabric/__init__.py:40: pkg_resources is deprecated as an API. See ht
+tps://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources p
+ackage is slated for removal as early as 2025-11-30. Refrain from using th
+is package or pin to Setuptools<81.
+/Data0/swangek_data/conda_envs/survivehr/lib/python3.10/site-packages/ligh
+tning_fabric/__init__.py:40: pkg_resources is deprecated as an API. See ht
+tps://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources p
+ackage is slated for removal as early as 2025-11-30. Refrain from using th
+is package or pin to Setuptools<81.
+/Data0/swangek_data/conda_envs/survivehr/lib/python3.10/site-packages/ligh
+tning_fabric/__init__.py:40: pkg_resources is deprecated as an API. See ht
+tps://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources p
+ackage is slated for removal as early as 2025-11-30. Refrain from using th
+is package or pin to Setuptools<81.
+[2026-03-10 17:54:41,671][root][INFO] - Running cr on 48 CPUs and 4 GPUs
+[2026-03-10 17:54:41,676][root][INFO] - ==================================
+==================================================================
+[2026-03-10 17:54:41,676][root][INFO] - # Loading DataModule for dataset /
+Data0/swangek_data/991/CPRD/data/FoundationalModel/PreTrain/. This will be
+ loaded in causal form.
+[2026-03-10 17:54:41,676][root][INFO] - ==================================
+==================================================================
+[2026-03-10 17:54:42,129][root][INFO] - Running cr on 48 CPUs and 4 GPUs
+[2026-03-10 17:54:42,134][root][INFO] - ==================================
+==================================================================
+[2026-03-10 17:54:42,134][root][INFO] - # Loading DataModule for dataset /
+Data0/swangek_data/991/CPRD/data/FoundationalModel/PreTrain/. This will be
+ loaded in causal form.
+[2026-03-10 17:54:42,134][root][INFO] - ==================================
+==================================================================
+[2026-03-10 17:54:42,444][root][INFO] - Running cr on 48 CPUs and 4 GPUs
+[2026-03-10 17:54:42,449][root][INFO] - ==================================
+==================================================================
+[2026-03-10 17:54:42,449][root][INFO] - # Loading DataModule for dataset /
+Data0/swangek_data/991/CPRD/data/FoundationalModel/PreTrain/. This will be
+ loaded in causal form.
+[2026-03-10 17:54:42,449][root][INFO] - ==================================
+==================================================================
+[2026-03-10 17:55:13,217][root][INFO] - Using meta information from /Data0
+/swangek_data/991/CPRD/data/FoundationalModel/PreTrain/meta_information_cu
+stom.pickle
+[2026-03-10 17:55:13,219][root][INFO] - Using train file-row count dict fr
+om /Data0/swangek_data/991/CPRD/data/FoundationalModel/PreTrain/file_row_c
+ount_dict_train.pickle
+[2026-03-10 17:55:13,219][root][INFO] - Using test file-row count dict fro
+m /Data0/swangek_data/991/CPRD/data/FoundationalModel/PreTrain/file_row_co
+unt_dict_test.pickle
+[2026-03-10 17:55:13,219][root][INFO] - Using val file-row count dict from
+ /Data0/swangek_data/991/CPRD/data/FoundationalModel/PreTrain/file_row_cou
+nt_dict_val.pickle
+[2026-03-10 17:55:13,258][root][INFO] - Tokenzier created based on 373,927
+,777 tokens
+[2026-03-10 17:55:13,323][root][INFO] - Using tabular tokenizer, created f
+rom meta information and containing 108118 tokens
+[2026-03-10 17:55:13,323][root][INFO] - Set seed to 1337
+[2026-03-10 17:55:13,324][root][INFO] - Loaded /Data0/swangek_data/991/CPR
+D/data/FoundationalModel/PreTrain/split=train/ dataset
+[2026-03-10 17:55:13,324][root][INFO] - Pre-loading 1807 parquet files int
+o memory...
+[2026-03-10 17:55:13,493][root][INFO] - Using meta information from /Data0
+/swangek_data/991/CPRD/data/FoundationalModel/PreTrain/meta_information_cu
+stom.pickle
+[2026-03-10 17:55:13,494][root][INFO] - Using train file-row count dict fr
+om /Data0/swangek_data/991/CPRD/data/FoundationalModel/PreTrain/file_row_c
+ount_dict_train.pickle
+[2026-03-10 17:55:13,494][root][INFO] - Using test file-row count dict fro
+m /Data0/swangek_data/991/CPRD/data/FoundationalModel/PreTrain/file_row_co
+unt_dict_test.pickle
+[2026-03-10 17:55:13,494][root][INFO] - Using val file-row count dict from
+ /Data0/swangek_data/991/CPRD/data/FoundationalModel/PreTrain/file_row_cou
+nt_dict_val.pickle
+[2026-03-10 17:55:13,536][root][INFO] - Tokenzier created based on 373,927
+,777 tokens
+[2026-03-10 17:55:13,610][root][INFO] - Using tabular tokenizer, created f
+rom meta information and containing 108118 tokens
+[2026-03-10 17:55:13,610][root][INFO] - Set seed to 1337
+[2026-03-10 17:55:13,611][root][INFO] - Loaded /Data0/swangek_data/991/CPR
+D/data/FoundationalModel/PreTrain/split=train/ dataset
+[2026-03-10 17:55:13,611][root][INFO] - Pre-loading 1807 parquet files int
+o memory...
+[2026-03-10 17:55:13,878][root][INFO] - Using meta information from /Data0
+/swangek_data/991/CPRD/data/FoundationalModel/PreTrain/meta_information_cu
+stom.pickle
+[2026-03-10 17:55:13,879][root][INFO] - Using train file-row count dict fr
+om /Data0/swangek_data/991/CPRD/data/FoundationalModel/PreTrain/file_row_c
+ount_dict_train.pickle
+[2026-03-10 17:55:13,879][root][INFO] - Using test file-row count dict fro
+m /Data0/swangek_data/991/CPRD/data/FoundationalModel/PreTrain/file_row_co
+unt_dict_test.pickle
+[2026-03-10 17:55:13,879][root][INFO] - Using val file-row count dict from
+ /Data0/swangek_data/991/CPRD/data/FoundationalModel/PreTrain/file_row_cou
+nt_dict_val.pickle
+[2026-03-10 17:55:13,922][root][INFO] - Tokenzier created based on 373,927
+,777 tokens
+[2026-03-10 17:55:13,985][root][INFO] - Using tabular tokenizer, created f
+rom meta information and containing 108118 tokens
+[2026-03-10 17:55:13,986][root][INFO] - Set seed to 1337
+[2026-03-10 17:55:13,986][root][INFO] - Loaded /Data0/swangek_data/991/CPR
+D/data/FoundationalModel/PreTrain/split=train/ dataset
+[2026-03-10 17:55:13,986][root][INFO] - Pre-loading 1807 parquet files int
+o memory...
+[2026-03-10 17:55:47,555][root][INFO] - Pre-loaded 1807 files into memory
+[2026-03-10 17:55:47,555][root][INFO] - with 448,572 samples
+[2026-03-10 17:55:48,122][root][INFO] - Set seed to 42
+[2026-03-10 17:55:48,122][root][INFO] - Loaded /Data0/swangek_data/991/CPR
+D/data/FoundationalModel/PreTrain/split=test/ dataset
+[2026-03-10 17:55:48,122][root][INFO] - Pre-loading 113 parquet files into
+ memory...
+[2026-03-10 17:55:50,202][root][INFO] - Pre-loaded 1807 files into memory
+[2026-03-10 17:55:50,203][root][INFO] - with 448,572 samples
+[2026-03-10 17:55:50,257][root][INFO] - Pre-loaded 113 files into memory
+[2026-03-10 17:55:50,257][root][INFO] - with 28,182 samples
+[2026-03-10 17:55:50,681][root][INFO] - Pre-loaded 1807 files into memory
+[2026-03-10 17:55:50,682][root][INFO] - with 448,572 samples
+[2026-03-10 17:55:50,820][root][INFO] - Set seed to 42
+[2026-03-10 17:55:50,820][root][INFO] - Loaded /Data0/swangek_data/991/CPR
+D/data/FoundationalModel/PreTrain/split=val/ dataset
+[2026-03-10 17:55:50,820][root][INFO] - Pre-loading 102 parquet files into
+ memory...
+[2026-03-10 17:55:50,891][root][INFO] - Set seed to 42
+[2026-03-10 17:55:50,891][root][INFO] - Loaded /Data0/swangek_data/991/CPR
+D/data/FoundationalModel/PreTrain/split=test/ dataset
+[2026-03-10 17:55:50,891][root][INFO] - Pre-loading 113 parquet files into
+ memory...
+[2026-03-10 17:55:51,310][root][INFO] - Set seed to 42
+[2026-03-10 17:55:51,310][root][INFO] - Loaded /Data0/swangek_data/991/CPR
+D/data/FoundationalModel/PreTrain/split=test/ dataset
+[2026-03-10 17:55:51,310][root][INFO] - Pre-loading 113 parquet files into
+ memory...
+[2026-03-10 17:55:52,082][root][INFO] - Pre-loaded 102 files into memory
+[2026-03-10 17:55:52,082][root][INFO] - with 25,136 samples
+[2026-03-10 17:55:52,624][root][INFO] - Creating unsupervised collator for
+ DataModule
+[2026-03-10 17:55:53,258][root][INFO] - Pre-loaded 113 files into memory
+[2026-03-10 17:55:53,258][root][INFO] - with 28,182 samples
+[2026-03-10 17:55:53,712][root][INFO] - Pre-loaded 113 files into memory
+[2026-03-10 17:55:53,713][root][INFO] - with 28,182 samples
+[2026-03-10 17:55:53,998][root][INFO] - Set seed to 42
+[2026-03-10 17:55:53,999][root][INFO] - Loaded /Data0/swangek_data/991/CPR
+D/data/FoundationalModel/PreTrain/split=val/ dataset
+[2026-03-10 17:55:53,999][root][INFO] - Pre-loading 102 parquet files into
+ memory...
+[2026-03-10 17:55:54,410][root][INFO] - Set seed to 42
+[2026-03-10 17:55:54,411][root][INFO] - Loaded /Data0/swangek_data/991/CPR
+D/data/FoundationalModel/PreTrain/split=val/ dataset
+[2026-03-10 17:55:54,411][root][INFO] - Pre-loading 102 parquet files into
+ memory...
+[2026-03-10 17:55:55,439][root][INFO] - Pre-loaded 102 files into memory
+[2026-03-10 17:55:55,439][root][INFO] - with 25,136 samples
+[2026-03-10 17:55:55,819][root][INFO] - Pre-loaded 102 files into memory
+[2026-03-10 17:55:55,819][root][INFO] - with 25,136 samples
+[2026-03-10 17:55:56,122][root][INFO] - Creating unsupervised collator for
+ DataModule
+[2026-03-10 17:55:56,463][root][INFO] - Creating unsupervised collator for
+ DataModule
+[2026-03-10 17:55:57,846][root][INFO] - is_decoder: true
+data:
+  batch_size: 8
+  unk_freq_threshold: 0.0
+  min_workers: 12
+  global_diagnoses: false
+  repeating_events: true
+  path_to_db: /Data0/swangek_data/991/CPRD/data/example_exercise_database.
+db
+  path_to_ds: /Data0/swangek_data/991/CPRD/data/FoundationalModel/PreTrain
+/
+  meta_information_path: /Data0/swangek_data/991/CPRD/data/FoundationalMod
+el/PreTrain/meta_information_custom.pickle
+  subsample_training: null
+  num_static_covariates: 27
+experiment:
+  type: pre-train
+  project_name: SurvivEHR
+  run_id: crPreTrain_small_1337
+  fine_tune_id: null
+  notes: null
+  tags: null
+  train: true
+  test: true
+  verbose: true
+  seed: 1337
+  log: true
+  log_dir: /Data0/swangek_data/991/CPRD/output/
+  ckpt_dir: /Data0/swangek_data/991/CPRD/output/checkpoints/
+fine_tuning:
+  fine_tune_outcomes: null
+  custom_outcome_method:
+    _target_: null
+  custom_stratification_method:
+    _target_: null
+  use_callbacks:
+    hidden_embedding:
+      num_batches: 0
+      mask_static: false
+      mask_value: false
+    performance_metrics: true
+    rmst: false
+  compression_layer: false
+  llrd: null
+  PEFT:
+    method: null
+    adapter_dim: 8
+  backbone:
+    linear_probe_epochs: 0
+    unfreeze_top_k: null
+  head:
+    surv_weight: 1
+    value_weight: 0
+    learning_rate: 0.0005
+optim:
+  num_epochs: 1
+  learning_rate: 0.0003
+  scheduler_warmup: true
+  scheduler: decaycawarmrestarts
+  scheduler_periods: 10000
+  learning_rate_decay: 0.8
+  val_check_interval: 2500
+  early_stop: true
+  early_stop_patience: 30
+  log_every_n_steps: 20
+  limit_val_batches: 0.025
+  limit_test_batches: null
+  accumulate_grad_batches: 2
+transformer:
+  block_type: Neo
+  block_size: 256
+  n_layer: 6
+  n_head: 6
+  n_embd: 384
+  layer_norm_bias: false
+  attention_type: global
+  bias: true
+  dropout: 0.0
+  attention_dropout: 0.0
+  resid_dropout: 0.0
+  private_heads: 0
+head:
+  SurvLayer: cr
+  surv_weight: 1
+  tokens_for_univariate_regression: <9247 token IDs omitted>
+  value_weight: 0.1
+
+[2026-03-10 17:55:57,849][root][INFO] - ==================================
+==================================================================
+[2026-03-10 17:55:57,849][root][INFO] - # Pre-training experiment
+[2026-03-10 17:55:57,850][root][INFO] - ==================================
+==================================================================
+[2026-03-10 17:55:57,850][root][INFO] - Creating new pre-trained model at
+the path /Data0/swangek_data/991/CPRD/output/checkpoints/crPreTrain_small_
+1337.ckpt.
+[2026-03-10 17:55:57,850][root][INFO] - # This will create / evaluate a pr
+e-trained Foundation Model on a causal (next-event prediction) modelling t
+ask.
+[2026-03-10 17:55:57,863][torch.distributed.nn.jit.instantiator][INFO] - C
+reated a temporary directory at /tmp/tmpcp5hykp0
+[2026-03-10 17:55:57,863][torch.distributed.nn.jit.instantiator][INFO] - W
+riting /tmp/tmpcp5hykp0/_remote_module_non_scriptable.py
+[2026-03-10 17:55:58,366][root][INFO] - Using Temporal Positional Encoding
+. This module uses the patient's age at an event within their time series.
+[2026-03-10 17:55:59,843][root][INFO] - Using a DeSurv Competing-Risk head
+.
+[2026-03-10 17:55:59,843][root][INFO] -         With concurrent strategy=a
+dd_noise for handling simultaneous events.
+[2026-03-10 17:55:59,843][root][INFO] -         Evaluating on a time grid
+between [0.0, 1.0] with 1000 intervals
+[2026-03-10 17:56:01,278][root][INFO] - Created PerformanceMetrics callbac
+k for causal self-supervised tasks.
+[2026-03-10 17:56:01,278][root][INFO] -
+[2026-03-10 17:56:01,278][root][INFO] - GPu job
+[2026-03-10 17:56:01,278][root][INFO] - Using ddp strategy
+[2026-03-10 17:56:01,296][root][INFO] - Training model.
+[2026-03-10 17:56:01,514][root][INFO] - is_decoder: true
+data:
+  batch_size: 8
+  unk_freq_threshold: 0.0
+  min_workers: 12
+  global_diagnoses: false
+  repeating_events: true
+  path_to_db: /Data0/swangek_data/991/CPRD/data/example_exercise_database.
+db
+  path_to_ds: /Data0/swangek_data/991/CPRD/data/FoundationalModel/PreTrain
+/
+  meta_information_path: /Data0/swangek_data/991/CPRD/data/FoundationalMod
+el/PreTrain/meta_information_custom.pickle
+  subsample_training: null
+  num_static_covariates: 27
+experiment:
+  type: pre-train
+  project_name: SurvivEHR
+  run_id: crPreTrain_small_1337
+  fine_tune_id: null
+  notes: null
+  tags: null
+  train: true
+  test: true
+  verbose: true
+  seed: 1337
+  log: true
+  log_dir: /Data0/swangek_data/991/CPRD/output/
+  ckpt_dir: /Data0/swangek_data/991/CPRD/output/checkpoints/
+fine_tuning:
+  fine_tune_outcomes: null
+  custom_outcome_method:
+    _target_: null
+  custom_stratification_method:
+    _target_: null
+  use_callbacks:
+    hidden_embedding:
+      num_batches: 0
+      mask_static: false
+      mask_value: false
+    performance_metrics: true
+    rmst: false
+  compression_layer: false
+  llrd: null
+  PEFT:
+    method: null
+    adapter_dim: 8
+  backbone:
+    linear_probe_epochs: 0
+    unfreeze_top_k: null
+  head:
+    surv_weight: 1
+    value_weight: 0
+    learning_rate: 0.0005
+optim:
+  num_epochs: 1
+  learning_rate: 0.0003
+  scheduler_warmup: true
+  scheduler: decaycawarmrestarts
+  scheduler_periods: 10000
+  learning_rate_decay: 0.8
+  val_check_interval: 2500
+  early_stop: true
+  early_stop_patience: 30
+  log_every_n_steps: 20
+  limit_val_batches: 0.025
+  limit_test_batches: null
+  accumulate_grad_batches: 2
+transformer:
+  block_type: Neo
+  block_size: 256
+  n_layer: 6
+  n_head: 6
+  n_embd: 384
+  layer_norm_bias: false
+  attention_type: global
+  bias: true
+  dropout: 0.0
+  attention_dropout: 0.0
+  resid_dropout: 0.0
+  private_heads: 0
+head:
+  SurvLayer: cr
+  surv_weight: 1
+  tokens_for_univariate_regression: <9247 token IDs omitted>
+  value_weight: 0.1
+
+[2026-03-10 17:56:01,516][root][INFO] - ==================================
+==================================================================
+[2026-03-10 17:56:01,516][root][INFO] - # Pre-training experiment
+[2026-03-10 17:56:01,517][root][INFO] - ==================================
+==================================================================
+[2026-03-10 17:56:01,517][root][INFO] - Creating new pre-trained model at
+the path /Data0/swangek_data/991/CPRD/output/checkpoints/crPreTrain_small_
+1337.ckpt.
+[2026-03-10 17:56:01,517][root][INFO] - # This will create / evaluate a pr
+e-trained Foundation Model on a causal (next-event prediction) modelling t
+ask.
+[2026-03-10 17:56:01,532][torch.distributed.nn.jit.instantiator][INFO] - C
+reated a temporary directory at /tmp/tmp_i_g194y
+[2026-03-10 17:56:01,532][torch.distributed.nn.jit.instantiator][INFO] - W
+riting /tmp/tmp_i_g194y/_remote_module_non_scriptable.py
+Initializing distributed: GLOBAL_RANK: 3, MEMBER: 4/4
+[2026-03-10 17:56:01,581][torch.distributed.distributed_c10d][INFO] - Adde
+d key: store_based_barrier_key:1 to store for rank: 3
+[2026-03-10 17:56:02,047][root][INFO] - Using Temporal Positional Encoding
+. This module uses the patient's age at an event within their time series.
+[2026-03-10 17:56:02,099][root][INFO] - is_decoder: true
+data:
+  batch_size: 8
+  unk_freq_threshold: 0.0
+  min_workers: 12
+  global_diagnoses: false
+  repeating_events: true
+  path_to_db: /Data0/swangek_data/991/CPRD/data/example_exercise_database.
+db
+  path_to_ds: /Data0/swangek_data/991/CPRD/data/FoundationalModel/PreTrain
+/
+  meta_information_path: /Data0/swangek_data/991/CPRD/data/FoundationalMod
+el/PreTrain/meta_information_custom.pickle
+  subsample_training: null
+  num_static_covariates: 27
+experiment:
+  type: pre-train
+  project_name: SurvivEHR
+  run_id: crPreTrain_small_1337
+  fine_tune_id: null
+  notes: null
+  tags: null
+  train: true
+  test: true
+  verbose: true
+  seed: 1337
+  log: true
+  log_dir: /Data0/swangek_data/991/CPRD/output/
+  ckpt_dir: /Data0/swangek_data/991/CPRD/output/checkpoints/
+fine_tuning:
+  fine_tune_outcomes: null
+  custom_outcome_method:
+    _target_: null
+  custom_stratification_method:
+    _target_: null
+  use_callbacks:
+    hidden_embedding:
+      num_batches: 0
+      mask_static: false
+      mask_value: false
+    performance_metrics: true
+    rmst: false
+  compression_layer: false
+  llrd: null
+  PEFT:
+    method: null
+    adapter_dim: 8
+  backbone:
+    linear_probe_epochs: 0
+    unfreeze_top_k: null
+  head:
+    surv_weight: 1
+    value_weight: 0
+    learning_rate: 0.0005
+optim:
+  num_epochs: 1
+  learning_rate: 0.0003
+  scheduler_warmup: true
+  scheduler: decaycawarmrestarts
+  scheduler_periods: 10000
+  learning_rate_decay: 0.8
+  val_check_interval: 2500
+  early_stop: true
+  early_stop_patience: 30
+  log_every_n_steps: 20
+  limit_val_batches: 0.025
+  limit_test_batches: null
+  accumulate_grad_batches: 2
+transformer:
+  block_type: Neo
+  block_size: 256
+  n_layer: 6
+  n_head: 6
+  n_embd: 384
+  layer_norm_bias: false
+  attention_type: global
+  bias: true
+  dropout: 0.0
+  attention_dropout: 0.0
+  resid_dropout: 0.0
+  private_heads: 0
+head:
+  SurvLayer: cr
+  surv_weight: 1
+  tokens_for_univariate_regression: <9247 token IDs omitted>
+  value_weight: 0.1
+
+[2026-03-10 17:56:02,100][root][INFO] - ==================================
+==================================================================
+[2026-03-10 17:56:02,101][root][INFO] - # Pre-training experiment
+[2026-03-10 17:56:02,101][root][INFO] - ==================================
+==================================================================
+[2026-03-10 17:56:02,101][root][INFO] - Creating new pre-trained model at
+the path /Data0/swangek_data/991/CPRD/output/checkpoints/crPreTrain_small_
+1337.ckpt.
+[2026-03-10 17:56:02,101][root][INFO] - # This will create / evaluate a pr
+e-trained Foundation Model on a causal (next-event prediction) modelling t
+ask.
+[2026-03-10 17:56:02,114][torch.distributed.nn.jit.instantiator][INFO] - C
+reated a temporary directory at /tmp/tmpzbxecocd
+[2026-03-10 17:56:02,114][torch.distributed.nn.jit.instantiator][INFO] - W
+riting /tmp/tmpzbxecocd/_remote_module_non_scriptable.py
+[2026-03-10 17:56:02,510][root][INFO] - Using Temporal Positional Encoding
+. This module uses the patient's age at an event within their time series.
+[2026-03-10 17:56:03,239][root][INFO] - Using a DeSurv Competing-Risk head
+.
+[2026-03-10 17:56:03,239][root][INFO] -         With concurrent strategy=a
+dd_noise for handling simultaneous events.
+[2026-03-10 17:56:03,239][root][INFO] -         Evaluating on a time grid
+between [0.0, 1.0] with 1000 intervals
+[2026-03-10 17:56:03,672][root][INFO] - Using a DeSurv Competing-Risk head
+.
+[2026-03-10 17:56:03,673][root][INFO] -         With concurrent strategy=a
+dd_noise for handling simultaneous events.
+[2026-03-10 17:56:03,673][root][INFO] -         Evaluating on a time grid
+between [0.0, 1.0] with 1000 intervals
+[2026-03-10 17:56:04,346][root][INFO] - Created PerformanceMetrics callbac
+k for causal self-supervised tasks.
+[2026-03-10 17:56:04,347][root][INFO] -
+[2026-03-10 17:56:04,347][root][INFO] - GPu job
+[2026-03-10 17:56:04,347][root][INFO] - Using ddp strategy
+[2026-03-10 17:56:04,362][root][INFO] - Training model.
+Initializing distributed: GLOBAL_RANK: 2, MEMBER: 3/4
+[2026-03-10 17:56:04,610][torch.distributed.distributed_c10d][INFO] - Adde
+d key: store_based_barrier_key:1 to store for rank: 2
+[2026-03-10 17:56:04,960][root][INFO] - Created PerformanceMetrics callbac
+k for causal self-supervised tasks.
+[2026-03-10 17:56:04,961][root][INFO] -
+[2026-03-10 17:56:04,961][root][INFO] - GPu job
+[2026-03-10 17:56:04,961][root][INFO] - Using ddp strategy
+[2026-03-10 17:56:04,976][root][INFO] - Training model.
+Initializing distributed: GLOBAL_RANK: 1, MEMBER: 2/4
+[2026-03-10 17:56:05,211][torch.distributed.distributed_c10d][INFO] - Adde
+d key: store_based_barrier_key:1 to store for rank: 1
+[2026-03-10 17:56:05,214][torch.distributed.distributed_c10d][INFO] - Adde
+d key: store_based_barrier_key:1 to store for rank: 0
+[2026-03-10 17:56:05,214][torch.distributed.distributed_c10d][INFO] - Rank
+ 0: Completed store-based barrier for key:store_based_barrier_key:1 with 4
+ nodes.
+--------------------------------------------------------------------------
+--------------------------
+distributed_backend=nccl
+All distributed processes registered. Starting with 4 processes
+--------------------------------------------------------------------------
+--------------------------
+
+[2026-03-10 17:56:05,221][torch.distributed.distributed_c10d][INFO] - Rank
+ 1: Completed store-based barrier for key:store_based_barrier_key:1 with 4
+ nodes.
+[2026-03-10 17:56:05,223][torch.distributed.distributed_c10d][INFO] - Rank
+ 3: Completed store-based barrier for key:store_based_barrier_key:1 with 4
+ nodes.
+[2026-03-10 17:56:05,223][torch.distributed.distributed_c10d][INFO] - Rank
+ 2: Completed store-based barrier for key:store_based_barrier_key:1 with 4
+ nodes.
+wandb: WARNING The anonymous setting has no effect and will be removed in
+a future version.
+wandb: [wandb.login()] Loaded credentials for https://api.wandb.ai from /h
+ome/swangek/.netrc.
+wandb: Currently logged in as: swangek2002 (swangek2002-hong-kong-universi
+ty-of-science-and-technology) to https://api.wandb.ai. Use `wandb login --
+relogin` to force relogin
+wandb: setting up run 41z3g2kv
+wandb: Tracking run with wandb version 0.25.0
+wandb: Run data is saved locally in /Data0/swangek_data/991/CPRD/output/wa
+ndb/run-20260310_175606-41z3g2kv
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run crPreTrain_small_1337
+wandb: ⭐️ View project at https://wandb.ai/swangek2002-hong-kong-universit
+y-of-science-and-technology/SurvivEHR
+wandb: 🚀 View run at https://wandb.ai/swangek2002-hong-kong-university-of
+-science-and-technology/SurvivEHR/runs/41z3g2kv
+LOCAL_RANK: 0 - CUDA_VISIBLE_DEVICES: [0,1,2,3]
+LOCAL_RANK: 3 - CUDA_VISIBLE_DEVICES: [0,1,2,3]
+LOCAL_RANK: 1 - CUDA_VISIBLE_DEVICES: [0,1,2,3]
+LOCAL_RANK: 2 - CUDA_VISIBLE_DEVICES: [0,1,2,3]
+[2026-03-10 17:56:14,150][root][INFO] - Using warm-up in scheduler for 100
+00 steps
+[2026-03-10 17:56:14,150][root][INFO] - Using Decayed Cosine Annealing wit
+h Warm Restarts in scheduler
+[2026-03-10 17:56:14,238][root][INFO] - Using warm-up in scheduler for 100
+00 steps
+[2026-03-10 17:56:14,238][root][INFO] - Using Decayed Cosine Annealing wit
+h Warm Restarts in scheduler
+[2026-03-10 17:56:14,324][root][INFO] - Using warm-up in scheduler for 100
+00 steps
+[2026-03-10 17:56:14,325][root][INFO] - Using Decayed Cosine Annealing wit
+h Warm Restarts in scheduler
+[2026-03-10 17:56:14,344][root][INFO] - Using warm-up in scheduler for 100
+00 steps
+[2026-03-10 17:56:14,345][root][INFO] - Using Decayed Cosine Annealing wit
+h Warm Restarts in scheduler
+
+  | Name  | Type                            | Params
+----------------------------------------------------------
+0 | model | SurvStreamGPTForCausalModelling | 101 M
+----------------------------------------------------------
+101 M     Trainable params
+222       Non-trainable params
+101 M     Total params
+407.064   Total estimated model params size (MB)
+Sanity Checking DataLoader 0:  50%|█████     | 1/2 [00:13<00:13,  0.07it/s
+Sanity Checking DataLoader 0: 100%|██████████| 2/2 [00:25<00:00,  0.08it/s
+
+Epoch 0:   0%|          | 2/14018 [00:52<102:30:41,  0.04it/s, v_num=g2kv]
+[2026-03-10 17:57:47,844][torch.nn.parallel.distributed][INFO] - Reducer b
+uckets have been rebuilt in this iteration.
+[2026-03-10 17:57:47,929][torch.nn.parallel.distributed][INFO] - Reducer b
+uckets have been rebuilt in this iteration.
+[2026-03-10 17:57:47,970][torch.nn.parallel.distributed][INFO] - Reducer b
+uckets have been rebuilt in this iteration.
+[2026-03-10 17:57:47,976][torch.nn.parallel.distributed][INFO] - Reducer b
+uckets have been rebuilt in this iteration.
+Epoch 0:   0%|          | 10/14018 [04:29<104:49:03,  0.04it/s, v_num=g2kv
+Epoch 0:   0%|          | 10/14018 [04:29<104:49:10,  0.04it/s, v_num=g2kv
+Epoch 0:   0%|          | 11/14018 [04:54<104:17:18,  0.04it/s, v_num=g2kv
+Epoch 0:   0%|          | 11/14018 [04:54<104:17:26,  0.04it/s, v_num=g2kv
+Epoch 0:   0%|          | 12/14018 [05:21<104:13:46,  0.04it/s, v_num=g2kv
+Epoch 0:   0%|          | 12/14018 [05:21<104:15:46,  0.04it/s, v_num=g2kv
+Epoch 0:   0%|          | 13/14018 [05:46<103:49:37,  0.04it/s, v_num=g2kv
+Epoch 0:   0%|          | 13/14018 [05:46<103:49:51,  0.04it/s, v_num=g2kv
+Epoch 0:   0%|          | 14/14018 [06:13<103:50:02,  0.04it/s, v_num=g2kv
+Epoch 0:   0%|          | 14/14018 [06:13<103:52:11,  0.04it/s, v_num=g2kv
+Epoch 0:   0%|          | 15/14018 [06:42<104:28:16,  0.04it/s, v_num=g2kv
+Epoch 0:   0%|          | 15/14018 [06:42<104:28:38,  0.04it/s, v_num=g2kv
+Epoch 0:   0%|          | 16/14018 [07:09<104:31:14,  0.04it/s, v_num=g2kv
+Epoch 0:   0%|          | 16/14018 [07:10<104:32:51,  0.04it/s, v_num=g2kv
+Epoch 0:   0%|          | 17/14018 [07:35<104:08:29,  0.04it/s, v_num=g2kv
+Epoch 0:   0%|          | 17/14018 [07:35<104:08:33,  0.04it/s, v_num=g2kv
+Epoch 0:   0%|          | 18/14018 [08:01<104:04:22,  0.04it/s, v_num=g2kv
+Epoch 0:   0%|          | 18/14018 [08:01<104:06:09,  0.04it/s, v_num=g2kv
+Epoch 0:   0%|          | 19/14018 [08:27<103:47:38,  0.04it/s, v_num=g2kv
+Epoch 0:   0%|          | 19/14018 [08:27<103:47:43,  0.04it/s, v_num=g2kv
+Epoch 0:   0%|          | 20/14018 [08:54<103:49:43,  0.04it/s, v_num=g2kv
+Epoch 0:   0%|          | 20/14018 [08:54<103:51:28,  0.04it/s, v_num=g2kv
+Epoch 0:   0%|          | 21/14018 [09:19<103:35:36,  0.04it/s, v_num=g2kv
+Epoch 0:   0%|          | 21/14018 [09:19<103:35:45,  0.04it/s, v_num=g2kv
+Epoch 0:   0%|          | 22/14018 [09:45<103:32:53,  0.04it/s, v_num=g2kv
+Epoch 0:   0%|          | 22/14018 [09:46<103:34:30,  0.04it/s, v_num=g2kv
+Epoch 0:   0%|          | 23/14018 [10:11<103:19:33,  0.04it/s, v_num=g2kv
+Epoch 0:   0%|          | 23/14018 [10:11<103:19:44,  0.04it/s, v_num=g2kv
+Epoch 0:   0%|          | 24/14018 [10:38<103:24:44,  0.04it/s, v_num=g2kv
+Epoch 0:   0%|          | 24/14018 [10:38<103:26:12,  0.04it/s, v_num=g2kv
+Epoch 0:   0%|          | 25/14018 [11:03<103:11:01,  0.04it/s, v_num=g2kv
+Epoch 0:   0%|          | 25/14018 [11:03<103:12:22,  0.04it/s, v_num=g2kv
+Epoch 0:   0%|          | 26/14018 [11:37<104:12:20,  0.04it/s, v_num=g2kv
+Epoch 0:   0%|          | 26/14018 [11:37<104:13:35,  0.04it/s, v_num=g2kv
+Epoch 0:   0%|          | 27/14018 [12:02<104:01:28,  0.04it/s, v_num=g2kv
+Epoch 0:   0%|          | 27/14018 [12:02<104:01:49,  0.04it/s, v_num=g2kv
+Epoch 0:   0%|          | 28/14018 [12:29<104:00:02,  0.04it/s, v_num=g2kv
+Epoch 0:   0%|          | 28/14018 [12:29<104:01:16,  0.04it/s, v_num=g2kv
+Epoch 0:   0%|          | 29/14018 [12:55<103:53:49,  0.04it/s, v_num=g2kv
+Epoch 0:   0%|          | 29/14018 [12:55<103:53:52,  0.04it/s, v_num=g2kv
+Epoch 0:   0%|          | 30/14018 [13:22<103:53:42,  0.04it/s, v_num=g2kv
+Epoch 0:   0%|          | 30/14018 [13:22<103:54:50,  0.04it/s, v_num=g2kv
+Epoch 0:   0%|          | 31/14018 [13:47<103:43:43,  0.04it/s, v_num=g2kv
+Epoch 0:   0%|          | 31/14018 [13:47<103:43:51,  0.04it/s, v_num=g2kv
+Epoch 0:   0%|          | 32/14018 [14:15<103:48:30,  0.04it/s, v_num=g2kv
+Epoch 0:   0%|          | 32/14018 [14:15<103:49:18,  0.04it/s, v_num=g2kv
+Epoch 0:   0%|          | 33/14018 [14:40<103:37:54,  0.04it/s, v_num=g2kv
+Epoch 0:   0%|          | 33/14018 [14:40<103:37:56,  0.04it/s, v_num=g2kv
+Epoch 0:   0%|          | 34/14018 [15:06<103:36:15,  0.04it/s, v_num=g2kv
+Epoch 0:   0%|          | 34/14018 [15:06<103:37:08,  0.04it/s, v_num=g2kv
+Epoch 0:   0%|          | 35/14018 [15:32<103:26:35,  0.04it/s, v_num=g2kv
+Epoch 0:   0%|          | 35/14018 [15:32<103:26:36,  0.04it/s, v_num=g2kv
+Epoch 0:   0%|          | 36/14018 [16:00<103:38:38,  0.04it/s, v_num=g2kv
+Epoch 0:   0%|          | 36/14018 [16:00<103:39:27,  0.04it/s, v_num=g2kv
+Epoch 0:   0%|          | 37/14018 [16:29<103:50:46,  0.04it/s, v_num=g2kv
+Epoch 0:   0%|          | 37/14018 [16:29<103:50:49,  0.04it/s, v_num=g2kv
+Epoch 0:   0%|          | 38/14018 [16:57<103:56:37,  0.04it/s, v_num=g2kv
+Epoch 0:   0%|          | 38/14018 [16:57<103:57:21,  0.04it/s, v_num=g2kv
+Epoch 0:   0%|          | 39/14018 [17:22<103:46:28,  0.04it/s, v_num=g2kv
+Epoch 0:   0%|          | 39/14018 [17:22<103:46:32,  0.04it/s, v_num=g2kv
+Epoch 0:   0%|          | 40/14018 [17:49<103:51:14,  0.04it/s, v_num=g2kv
+Epoch 0:   0%|          | 40/14018 [17:50<103:51:55,  0.04it/s, v_num=g2kv
+Epoch 0:   0%|          | 41/14018 [18:15<103:42:34,  0.04it/s, v_num=g2kv
+Epoch 0:   0%|          | 41/14018 [18:15<103:42:36,  0.04it/s, v_num=g2kv
+Epoch 0:   0%|          | 42/14018 [18:42<103:44:24,  0.04it/s, v_num=g2kv
+Epoch 0:   0%|          | 42/14018 [18:42<103:45:02,  0.04it/s, v_num=g2kv
+Epoch 0:   0%|          | 43/14018 [19:07<103:34:18,  0.04it/s, v_num=g2kv
+Epoch 0:   0%|          | 43/14018 [19:07<103:34:19,  0.04it/s, v_num=g2kv
+Epoch 0:   0%|          | 44/14018 [19:35<103:39:49,  0.04it/s, v_num=g2kv
+Epoch 0:   0%|          | 44/14018 [19:35<103:40:26,  0.04it/s, v_num=g2kv
+Epoch 0:   0%|          | 45/14018 [20:00<103:30:39,  0.04it/s, v_num=g2kv
+Epoch 0:   0%|          | 45/14018 [20:00<103:30:40,  0.04it/s, v_num=g2kv
+Epoch 0:   0%|          | 46/14018 [20:27<103:35:39,  0.04it/s, v_num=g2kv
+Epoch 0:   0%|          | 46/14018 [20:27<103:36:15,  0.04it/s, v_num=g2kv
+Epoch 0:   0%|          | 47/14018 [20:52<103:25:45,  0.04it/s, v_num=g2kv
+Epoch 0:   0%|          | 47/14018 [20:52<103:26:20,  0.04it/s, v_num=g2kv
+Epoch 0:   0%|          | 48/14018 [21:26<104:02:36,  0.04it/s, v_num=g2kv
+Epoch 0:   0%|          | 48/14018 [21:26<104:02:38,  0.04it/s, v_num=g2kv
+Epoch 0:   0%|          | 49/14018 [21:51<103:52:01,  0.04it/s, v_num=g2kv
+Epoch 0:   0%|          | 49/14018 [21:51<103:52:01,  0.04it/s, v_num=g2kv
+Epoch 0:   0%|          | 50/14018 [22:18<103:53:27,  0.04it/s, v_num=g2kv
+Epoch 0:   0%|          | 50/14018 [22:18<103:53:59,  0.04it/s, v_num=g2kv
+Epoch 0:   0%|          | 51/14018 [22:43<103:44:55,  0.04it/s, v_num=g2kv
+Epoch 0:   0%|          | 51/14018 [22:43<103:44:56,  0.04it/s, v_num=g2kv
+Epoch 0:   0%|          | 52/14018 [23:11<103:46:58,  0.04it/s, v_num=g2kv
+Epoch 0:   0%|          | 52/14018 [23:11<103:47:30,  0.04it/s, v_num=g2kv
+Epoch 0:   0%|          | 53/14018 [23:35<103:37:41,  0.04it/s, v_num=g2kv
+Epoch 0:   0%|          | 53/14018 [23:35<103:37:43,  0.04it/s, v_num=g2kv
+Epoch 0:   0%|          | 54/14018 [24:03<103:39:19,  0.04it/s, v_num=g2kv
+Epoch 0:   0%|          | 54/14018 [24:03<103:39:20,  0.04it/s, v_num=g2kv
+Epoch 0:   0%|          | 55/14018 [24:27<103:31:17,  0.04it/s, v_num=g2kv
+Epoch 0:   0%|          | 55/14018 [24:27<103:31:18,  0.04it/s, v_num=g2kv
+Epoch 0:   0%|          | 56/14018 [24:55<103:32:52,  0.04it/s, v_num=g2kv
+Epoch 0:   0%|          | 56/14018 [24:55<103:33:22,  0.04it/s, v_num=g2kv
+Epoch 0:   0%|          | 57/14018 [25:19<103:24:22,  0.04it/s, v_num=g2kv
+Epoch 0:   0%|          | 57/14018 [25:19<103:24:23,  0.04it/s, v_num=g2kv
+Epoch 0:   0%|          | 58/14018 [25:46<103:25:22,  0.04it/s, v_num=g2kv
+Epoch 0:   0%|          | 58/14018 [25:47<103:25:50,  0.04it/s, v_num=g2kv
+Epoch 0:   0%|          | 59/14018 [26:15<103:31:45,  0.04it/s, v_num=g2kv
+Epoch 0:   0%|          | 59/14018 [26:15<103:31:46,  0.04it/s, v_num=g2kv
+Epoch 0:   0%|          | 60/14018 [26:42<103:33:18,  0.04it/s, v_num=g2kv
+Epoch 0:   0%|          | 60/14018 [26:42<103:33:45,  0.04it/s, v_num=g2kv
+Epoch 0:   0%|          | 61/14018 [27:07<103:25:23,  0.04it/s, v_num=g2kv
+Epoch 0:   0%|          | 61/14018 [27:07<103:25:26,  0.04it/s, v_num=g2kv
+Epoch 0:   0%|          | 62/14018 [27:34<103:28:03,  0.04it/s, v_num=g2kv
+Epoch 0:   0%|          | 62/14018 [27:34<103:28:26,  0.04it/s, v_num=g2kv
+Epoch 0:   0%|          | 63/14018 [27:59<103:21:32,  0.04it/s, v_num=g2kv
+Epoch 0:   0%|          | 63/14018 [27:59<103:21:33,  0.04it/s, v_num=g2kv
+Epoch 0:   0%|          | 64/14018 [28:27<103:23:17,  0.04it/s, v_num=g2kv
+Epoch 0:   0%|          | 64/14018 [28:27<103:23:43,  0.04it/s, v_num=g2kv
+Epoch 0:   0%|          | 65/14018 [28:51<103:15:36,  0.04it/s, v_num=g2kv
+Epoch 0:   0%|          | 65/14018 [28:51<103:16:02,  0.04it/s, v_num=g2kv
+Epoch 0:   0%|          | 66/14018 [29:18<103:17:10,  0.04it/s, v_num=g2kv
+Epoch 0:   0%|          | 66/14018 [29:19<103:17:35,  0.04it/s, v_num=g2kv
+Epoch 0:   0%|          | 67/14018 [29:43<103:10:52,  0.04it/s, v_num=g2kv
+Epoch 0:   0%|          | 67/14018 [29:43<103:11:09,  0.04it/s, v_num=g2kv
+Epoch 0:   0%|          | 68/14018 [30:11<103:12:37,  0.04it/s, v_num=g2kv
+Epoch 0:   0%|          | 68/14018 [30:11<103:13:01,  0.04it/s, v_num=g2kv
+Epoch 0:   0%|          | 69/14018 [30:35<103:05:31,  0.04it/s, v_num=g2kv
+Epoch 0:   0%|          | 69/14018 [30:35<103:05:54,  0.04it/s, v_num=g2kv
+Epoch 0:   0%|          | 70/14018 [31:06<103:18:32,  0.04it/s, v_num=g2kv
+Epoch 0:   0%|          | 70/14018 [31:06<103:18:56,  0.04it/s, v_num=g2kv
+Epoch 0:   1%|          | 71/14018 [31:31<103:12:42,  0.04it/s, v_num=g2kv
+Epoch 0:   1%|          | 71/14018 [31:31<103:13:04,  0.04it/s, v_num=g2kv
+Epoch 0:   1%|          | 72/14018 [31:58<103:14:33,  0.04it/s, v_num=g2kv
+Epoch 0:   1%|          | 72/14018 [31:58<103:14:56,  0.04it/s, v_num=g2kv
+Epoch 0:   1%|          | 73/14018 [32:23<103:07:41,  0.04it/s, v_num=g2kv
+Epoch 0:   1%|          | 73/14018 [32:23<103:08:04,  0.04it/s, v_num=g2kv
+Epoch 0:   1%|          | 74/14018 [32:50<103:09:07,  0.04it/s, v_num=g2kv
+Epoch 0:   1%|          | 74/14018 [32:50<103:09:29,  0.04it/s, v_num=g2kv
+Epoch 0:   1%|          | 75/14018 [33:15<103:03:22,  0.04it/s, v_num=g2kv
+Epoch 0:   1%|          | 75/14018 [33:15<103:03:43,  0.04it/s, v_num=g2kv
+Epoch 0:   1%|          | 76/14018 [33:42<103:05:09,  0.04it/s, v_num=g2kv
+Epoch 0:   1%|          | 76/14018 [33:43<103:05:30,  0.04it/s, v_num=g2kv
+Epoch 0:   1%|          | 77/14018 [34:07<102:58:41,  0.04it/s, v_num=g2kv
+Epoch 0:   1%|          | 77/14018 [34:07<102:59:02,  0.04it/s, v_num=g2kv
+Epoch 0:   1%|          | 78/14018 [34:35<103:00:49,  0.04it/s, v_num=g2kv
+Epoch 0:   1%|          | 78/14018 [34:35<103:00:50,  0.04it/s, v_num=g2kv
+Epoch 0:   1%|          | 79/14018 [35:00<102:55:34,  0.04it/s, v_num=g2kv
+Epoch 0:   1%|          | 79/14018 [35:00<102:55:35,  0.04it/s, v_num=g2kv
+Epoch 0:   1%|          | 80/14018 [35:27<102:57:01,  0.04it/s, v_num=g2kv
+Epoch 0:   1%|          | 80/14018 [35:27<102:57:22,  0.04it/s, v_num=g2kv
+Epoch 0:   1%|          | 81/14018 [35:55<103:01:01,  0.04it/s, v_num=g2kv
+Epoch 0:   1%|          | 81/14018 [35:55<103:01:02,  0.04it/s, v_num=g2kv
+Epoch 0:   1%|          | 82/14018 [36:24<103:06:33,  0.04it/s, v_num=g2kv
+Epoch 0:   1%|          | 82/14018 [36:24<103:06:53,  0.04it/s, v_num=g2kv
+Epoch 0:   1%|          | 83/14018 [36:49<103:01:43,  0.04it/s, v_num=g2kv
+Epoch 0:   1%|          | 83/14018 [36:49<103:01:44,  0.04it/s, v_num=g2kv
+Epoch 0:   1%|          | 84/14018 [37:16<103:03:12,  0.04it/s, v_num=g2kv
+Epoch 0:   1%|          | 84/14018 [37:16<103:03:32,  0.04it/s, v_num=g2kv
+Epoch 0:   1%|          | 85/14018 [37:41<102:57:17,  0.04it/s, v_num=g2kv
+Epoch 0:   1%|          | 85/14018 [37:41<102:57:18,  0.04it/s, v_num=g2kv
+Epoch 0:   1%|          | 86/14018 [38:08<102:58:12,  0.04it/s, v_num=g2kv
+Epoch 0:   1%|          | 86/14018 [38:08<102:58:31,  0.04it/s, v_num=g2kv
+Epoch 0:   1%|          | 87/14018 [38:33<102:53:21,  0.04it/s, v_num=g2kv
+Epoch 0:   1%|          | 87/14018 [38:33<102:53:34,  0.04it/s, v_num=g2kv
+Epoch 0:   1%|          | 88/14018 [39:00<102:54:58,  0.04it/s, v_num=g2kv
+Epoch 0:   1%|          | 88/14018 [39:00<102:55:16,  0.04it/s, v_num=g2kv
+Epoch 0:   1%|          | 89/14018 [39:25<102:49:27,  0.04it/s, v_num=g2kv
+Epoch 0:   1%|          | 89/14018 [39:25<102:49:45,  0.04it/s, v_num=g2kv
+Epoch 0:   1%|          | 90/14018 [39:52<102:50:52,  0.04it/s, v_num=g2kv
+Epoch 0:   1%|          | 90/14018 [39:52<102:51:11,  0.04it/s, v_num=g2kv
+Epoch 0:   1%|          | 91/14018 [40:17<102:46:15,  0.04it/s, v_num=g2kv
+Epoch 0:   1%|          | 91/14018 [40:17<102:46:16,  0.04it/s, v_num=g2kv
+Epoch 0:   1%|          | 92/14018 [40:48<102:55:55,  0.04it/s, v_num=g2kv
+Epoch 0:   1%|          | 92/14018 [40:48<102:56:13,  0.04it/s, v_num=g2kv
+Epoch 0:   1%|          | 93/14018 [41:12<102:51:03,  0.04it/s, v_num=g2kv
+Epoch 0:   1%|          | 93/14018 [41:12<102:51:03,  0.04it/s, v_num=g2kv
+Epoch 0:   1%|          | 94/14018 [41:40<102:52:21,  0.04it/s, v_num=g2kv
+Epoch 0:   1%|          | 94/14018 [41:40<102:52:39,  0.04it/s, v_num=g2kv
+Epoch 0:   1%|          | 95/14018 [42:05<102:47:57,  0.04it/s, v_num=g2kv
+Epoch 0:   1%|          | 95/14018 [42:05<102:47:57,  0.04it/s, v_num=g2kv
+Epoch 0:   1%|          | 96/14018 [42:32<102:49:14,  0.04it/s, v_num=g2kv
+Epoch 0:   1%|          | 96/14018 [42:32<102:49:32,  0.04it/s, v_num=g2kv
+Epoch 0:   1%|          | 97/14018 [42:57<102:44:26,  0.04it/s, v_num=g2kv
+Epoch 0:   1%|          | 97/14018 [42:57<102:44:27,  0.04it/s, v_num=g2kv
+Epoch 0:   1%|          | 98/14018 [43:24<102:45:35,  0.04it/s, v_num=g2kv
+Epoch 0:   1%|          | 98/14018 [43:24<102:45:36,  0.04it/s, v_num=g2kv
+Epoch 0:   1%|          | 99/14018 [43:49<102:41:39,  0.04it/s, v_num=g2kv
+Epoch 0:   1%|          | 99/14018 [43:49<102:41:40,  0.04it/s, v_num=g2kv
+Epoch 0:   1%|          | 100/14018 [44:17<102:44:44,  0.04it/s, v_num=g2k
+Epoch 0:   1%|          | 100/14018 [44:17<102:45:00,  0.04it/s, v_num=g2k
+Epoch 0:   1%|          | 101/14018 [44:42<102:40:04,  0.04it/s, v_num=g2k
+Epoch 0:   1%|          | 101/14018 [44:42<102:40:04,  0.04it/s, v_num=g2k
+Epoch 0:   1%|          | 102/14018 [45:11<102:46:29,  0.04it/s, v_num=g2k
+Epoch 0:   1%|          | 102/14018 [45:12<102:46:45,  0.04it/s, v_num=g2k
+Epoch 0:   1%|          | 103/14018 [45:40<102:49:34,  0.04it/s, v_num=g2k
+Epoch 0:   1%|          | 103/14018 [45:40<102:49:49,  0.04it/s, v_num=g2k
+Epoch 0:   1%|          | 104/14018 [46:09<102:54:40,  0.04it/s, v_num=g2k
+Epoch 0:   1%|          | 104/14018 [46:09<102:54:56,  0.04it/s, v_num=g2k
+Epoch 0:   1%|          | 105/14018 [46:34<102:50:24,  0.04it/s, v_num=g2k
+Epoch 0:   1%|          | 105/14018 [46:34<102:50:24,  0.04it/s, v_num=g2k
+Epoch 0:   1%|          | 106/14018 [47:01<102:51:00,  0.04it/s, v_num=g2k
+Epoch 0:   1%|          | 106/14018 [47:01<102:51:15,  0.04it/s, v_num=g2k
+Epoch 0:   1%|          | 107/14018 [47:26<102:47:02,  0.04it/s, v_num=g2k
+Epoch 0:   1%|          | 107/14018 [47:26<102:47:03,  0.04it/s, v_num=g2k
+Epoch 0:   1%|          | 108/14018 [47:53<102:48:04,  0.04it/s, v_num=g2k
+Epoch 0:   1%|          | 108/14018 [47:53<102:48:19,  0.04it/s, v_num=g2k
+Epoch 0:   1%|          | 109/14018 [48:18<102:43:52,  0.04it/s, v_num=g2k
+Epoch 0:   1%|          | 109/14018 [48:18<102:43:53,  0.04it/s, v_num=g2k
+Epoch 0:   1%|          | 110/14018 [48:45<102:44:23,  0.04it/s, v_num=g2k
+Epoch 0:   1%|          | 110/14018 [48:45<102:44:38,  0.04it/s, v_num=g2k
+Epoch 0:   1%|          | 111/14018 [49:10<102:40:26,  0.04it/s, v_num=g2k
+Epoch 0:   1%|          | 111/14018 [49:10<102:40:36,  0.04it/s, v_num=g2k
+Epoch 0:   1%|          | 112/14018 [49:37<102:41:34,  0.04it/s, v_num=g2k
+Epoch 0:   1%|          | 112/14018 [49:37<102:41:48,  0.04it/s, v_num=g2k
+Epoch 0:   1%|          | 113/14018 [50:02<102:37:10,  0.04it/s, v_num=g2k
+Epoch 0:   1%|          | 113/14018 [50:02<102:37:25,  0.04it/s, v_num=g2k
+Epoch 0:   1%|          | 114/14018 [50:35<102:51:21,  0.04it/s, v_num=g2k
+Epoch 0:   1%|          | 114/14018 [50:36<102:51:35,  0.04it/s, v_num=g2k
+Epoch 0:   1%|          | 115/14018 [51:00<102:47:13,  0.04it/s, v_num=g2k
+Epoch 0:   1%|          | 115/14018 [51:00<102:47:14,  0.04it/s, v_num=g2k
+Epoch 0:   1%|          | 116/14018 [51:28<102:48:06,  0.04it/s, v_num=g2k
+Epoch 0:   1%|          | 116/14018 [51:28<102:48:20,  0.04it/s, v_num=g2k
+Epoch 0:   1%|          | 117/14018 [51:52<102:44:02,  0.04it/s, v_num=g2k
+Epoch 0:   1%|          | 117/14018 [51:52<102:44:16,  0.04it/s, v_num=g2k
+Epoch 0:   1%|          | 118/14018 [52:20<102:44:54,  0.04it/s, v_num=g2k
+Epoch 0:   1%|          | 118/14018 [52:20<102:45:08,  0.04it/s, v_num=g2k
+Epoch 0:   1%|          | 119/14018 [52:44<102:40:48,  0.04it/s, v_num=g2k
+Epoch 0:   1%|          | 119/14018 [52:44<102:41:01,  0.04it/s, v_num=g2k
+Epoch 0:   1%|          | 120/14018 [53:12<102:41:53,  0.04it/s, v_num=g2k
+Epoch 0:   1%|          | 120/14018 [53:12<102:42:07,  0.04it/s, v_num=g2k
+Epoch 0:   1%|          | 121/14018 [53:37<102:37:59,  0.04it/s, v_num=g2k
+Epoch 0:   1%|          | 121/14018 [53:37<102:38:12,  0.04it/s, v_num=g2k
+Epoch 0:   1%|          | 122/14018 [54:04<102:39:12,  0.04it/s, v_num=g2k
+Epoch 0:   1%|          | 122/14018 [54:04<102:39:25,  0.04it/s, v_num=g2k
+Epoch 0:   1%|          | 123/14018 [54:29<102:35:27,  0.04it/s, v_num=g2k
+Epoch 0:   1%|          | 123/14018 [54:29<102:35:28,  0.04it/s, v_num=g2k
+Epoch 0:   1%|          | 124/14018 [54:56<102:36:20,  0.04it/s, v_num=g2k
+Epoch 0:   1%|          | 124/14018 [54:56<102:36:33,  0.04it/s, v_num=g2k
+Epoch 0:   1%|          | 125/14018 [55:24<102:39:00,  0.04it/s, v_num=g2k
+Epoch 0:   1%|          | 125/14018 [55:24<102:39:12,  0.04it/s, v_num=g2k
+Epoch 0:   1%|          | 126/14018 [55:52<102:40:16,  0.04it/s, v_num=g2k
+Epoch 0:   1%|          | 126/14018 [55:52<102:40:29,  0.04it/s, v_num=g2k
+Epoch 0:   1%|          | 127/14018 [56:17<102:36:24,  0.04it/s, v_num=g2k
+Epoch 0:   1%|          | 127/14018 [56:17<102:36:37,  0.04it/s, v_num=g2k
+Epoch 0:   1%|          | 128/14018 [56:44<102:37:22,  0.04it/s, v_num=g2k
+Epoch 0:   1%|          | 128/14018 [56:44<102:37:35,  0.04it/s, v_num=g2k
+Epoch 0:   1%|          | 129/14018 [57:09<102:33:55,  0.04it/s, v_num=g2k
+Epoch 0:   1%|          | 129/14018 [57:09<102:34:08,  0.04it/s, v_num=g2k
+Epoch 0:   1%|          | 130/14018 [57:36<102:34:57,  0.04it/s, v_num=g2k
+Epoch 0:   1%|          | 130/14018 [57:36<102:35:09,  0.04it/s, v_num=g2k
+Epoch 0:   1%|          | 131/14018 [58:01<102:31:14,  0.04it/s, v_num=g2k
+Epoch 0:   1%|          | 131/14018 [58:01<102:31:26,  0.04it/s, v_num=g2k
+Epoch 0:   1%|          | 132/14018 [58:29<102:32:24,  0.04it/s, v_num=g2k
+Epoch 0:   1%|          | 132/14018 [58:29<102:32:37,  0.04it/s, v_num=g2k
+Epoch 0:   1%|          | 133/14018 [58:53<102:28:47,  0.04it/s, v_num=g2k
+Epoch 0:   1%|          | 133/14018 [58:53<102:28:59,  0.04it/s, v_num=g2k
+Epoch 0:   1%|          | 134/14018 [59:21<102:29:57,  0.04it/s, v_num=g2k
+Epoch 0:   1%|          | 134/14018 [59:21<102:30:10,  0.04it/s, v_num=g2k
+Epoch 0:   1%|          | 135/14018 [59:46<102:26:21,  0.04it/s, v_num=g2k
+Epoch 0:   1%|          | 135/14018 [59:46<102:26:33,  0.04it/s, v_num=g2k
+Epoch 0:   1%|          | 136/14018 [1:00:16<102:33:15,  0.04it/s, v_num=g
+Epoch 0:   1%|          | 136/14018 [1:00:17<102:33:27,  0.04it/s, v_num=g
+Epoch 0:   1%|          | 137/14018 [1:00:41<102:30:08,  0.04it/s, v_num=g
+Epoch 0:   1%|          | 137/14018 [1:00:42<102:30:16,  0.04it/s, v_num=g
+Epoch 0:   1%|          | 138/14018 [1:01:09<102:31:18,  0.04it/s, v_num=g
+Epoch 0:   1%|          | 138/14018 [1:01:09<102:31:30,  0.04it/s, v_num=g
+Epoch 0:   1%|          | 139/14018 [1:01:34<102:27:43,  0.04it/s, v_num=g
+Epoch 0:   1%|          | 139/14018 [1:01:34<102:27:54,  0.04it/s, v_num=g
+Epoch 0:   1%|          | 140/14018 [1:02:01<102:28:41,  0.04it/s, v_num=g
+Epoch 0:   1%|          | 140/14018 [1:02:01<102:28:52,  0.04it/s, v_num=g
+Epoch 0:   1%|          | 141/14018 [1:02:26<102:25:30,  0.04it/s, v_num=g
+Epoch 0:   1%|          | 141/14018 [1:02:26<102:25:41,  0.04it/s, v_num=g
+Epoch 0:   1%|          | 142/14018 [1:02:54<102:26:45,  0.04it/s, v_num=g
+Epoch 0:   1%|          | 142/14018 [1:02:54<102:26:57,  0.04it/s, v_num=g
+Epoch 0:   1%|          | 143/14018 [1:03:18<102:23:16,  0.04it/s, v_num=g
+Epoch 0:   1%|          | 143/14018 [1:03:18<102:23:28,  0.04it/s, v_num=g
+Epoch 0:   1%|          | 144/14018 [1:03:46<102:24:11,  0.04it/s, v_num=g
+Epoch 0:   1%|          | 144/14018 [1:03:46<102:24:22,  0.04it/s, v_num=g
+Epoch 0:   1%|          | 145/14018 [1:04:11<102:21:11,  0.04it/s, v_num=g
+Epoch 0:   1%|          | 145/14018 [1:04:11<102:21:22,  0.04it/s, v_num=g
+Epoch 0:   1%|          | 146/14018 [1:04:38<102:22:07,  0.04it/s, v_num=g
+Epoch 0:   1%|          | 146/14018 [1:04:38<102:22:19,  0.04it/s, v_num=g
+Epoch 0:   1%|          | 147/14018 [1:05:06<102:23:49,  0.04it/s, v_num=g
+Epoch 0:   1%|          | 147/14018 [1:05:06<102:24:00,  0.04it/s, v_num=g
+Epoch 0:   1%|          | 148/14018 [1:05:41<102:36:21,  0.04it/s, v_num=g
+Epoch 0:   1%|          | 148/14018 [1:05:41<102:36:33,  0.04it/s, v_num=g
+Epoch 0:   1%|          | 149/14018 [1:06:10<102:39:22,  0.04it/s, v_num=g
+Epoch 0:   1%|          | 149/14018 [1:06:10<102:39:22,  0.04it/s, v_num=g
+Epoch 0:   1%|          | 150/14018 [1:06:41<102:46:14,  0.04it/s, v_num=g
+Epoch 0:   1%|          | 150/14018 [1:06:41<102:46:25,  0.04it/s, v_num=g
+Epoch 0:   1%|          | 151/14018 [1:07:10<102:48:59,  0.04it/s, v_num=g
+Epoch 0:   1%|          | 151/14018 [1:07:10<102:49:00,  0.04it/s, v_num=g
+Epoch 0:   1%|          | 152/14018 [1:07:42<102:55:50,  0.04it/s, v_num=g
+Epoch 0:   1%|          | 152/14018 [1:07:42<102:56:01,  0.04it/s, v_num=g
+Epoch 0:   1%|          | 153/14018 [1:08:08<102:55:45,  0.04it/s, v_num=g
+Epoch 0:   1%|          | 153/14018 [1:08:09<102:55:56,  0.04it/s, v_num=g
+Epoch 0:   1%|          | 154/14018 [1:08:36<102:56:08,  0.04it/s, v_num=g
+Epoch 0:   1%|          | 154/14018 [1:08:36<102:56:19,  0.04it/s, v_num=g
+Epoch 0:   1%|          | 155/14018 [1:09:01<102:53:13,  0.04it/s, v_num=g
+Epoch 0:   1%|          | 155/14018 [1:09:01<102:53:13,  0.04it/s, v_num=g
+Epoch 0:   1%|          | 156/14018 [1:09:28<102:53:43,  0.04it/s, v_num=g
+Epoch 0:   1%|          | 156/14018 [1:09:28<102:53:54,  0.04it/s, v_num=g
+Epoch 0:   1%|          | 157/14018 [1:09:53<102:50:22,  0.04it/s, v_num=g
+Epoch 0:   1%|          | 157/14018 [1:09:53<102:50:32,  0.04it/s, v_num=g
+Epoch 0:   1%|          | 158/14018 [1:10:24<102:55:52,  0.04it/s, v_num=g
+Epoch 0:   1%|          | 158/14018 [1:10:24<102:56:02,  0.04it/s, v_num=g
+Epoch 0:   1%|          | 159/14018 [1:10:49<102:52:41,  0.04it/s, v_num=g
+Epoch 0:   1%|          | 159/14018 [1:10:49<102:52:44,  0.04it/s, v_num=g
+Epoch 0:   1%|          | 160/14018 [1:11:16<102:53:11,  0.04it/s, v_num=g
+Epoch 0:   1%|          | 160/14018 [1:11:16<102:53:21,  0.04it/s, v_num=g
+Epoch 0:   1%|          | 161/14018 [1:11:41<102:50:04,  0.04it/s, v_num=g
+Epoch 0:   1%|          | 161/14018 [1:11:41<102:50:13,  0.04it/s, v_num=g
+Epoch 0:   1%|          | 162/14018 [1:12:08<102:50:28,  0.04it/s, v_num=g
+Epoch 0:   1%|          | 162/14018 [1:12:08<102:50:38,  0.04it/s, v_num=g
+Epoch 0:   1%|          | 163/14018 [1:12:33<102:47:11,  0.04it/s, v_num=g
+Epoch 0:   1%|          | 163/14018 [1:12:33<102:47:21,  0.04it/s, v_num=g
+Epoch 0:   1%|          | 164/14018 [1:13:00<102:47:57,  0.04it/s, v_num=g
+Epoch 0:   1%|          | 164/14018 [1:13:01<102:48:07,  0.04it/s, v_num=g
+Epoch 0:   1%|          | 165/14018 [1:13:25<102:44:52,  0.04it/s, v_num=g
+Epoch 0:   1%|          | 165/14018 [1:13:25<102:44:52,  0.04it/s, v_num=g
+Epoch 0:   1%|          | 166/14018 [1:13:53<102:45:17,  0.04it/s, v_num=g
+Epoch 0:   1%|          | 166/14018 [1:13:53<102:45:27,  0.04it/s, v_num=g
+Epoch 0:   1%|          | 167/14018 [1:14:17<102:42:06,  0.04it/s, v_num=g
+Epoch 0:   1%|          | 167/14018 [1:14:17<102:42:16,  0.04it/s, v_num=g
+Epoch 0:   1%|          | 168/14018 [1:14:45<102:42:55,  0.04it/s, v_num=g
+Epoch 0:   1%|          | 168/14018 [1:14:45<102:43:04,  0.04it/s, v_num=g
+Epoch 0:   1%|          | 169/14018 [1:15:13<102:44:16,  0.04it/s, v_num=g
+Epoch 0:   1%|          | 169/14018 [1:15:13<102:44:25,  0.04it/s, v_num=g
+Epoch 0:   1%|          | 170/14018 [1:15:46<102:52:37,  0.04it/s, v_num=g
+Epoch 0:   1%|          | 170/14018 [1:15:46<102:52:46,  0.04it/s, v_num=g
+Epoch 0:   1%|          | 171/14018 [1:16:11<102:49:37,  0.04it/s, v_num=g
+Epoch 0:   1%|          | 171/14018 [1:16:11<102:49:37,  0.04it/s, v_num=g
+Epoch 0:   1%|          | 172/14018 [1:16:38<102:49:43,  0.04it/s, v_num=g
+Epoch 0:   1%|          | 172/14018 [1:16:38<102:49:53,  0.04it/s, v_num=g
+Epoch 0:   1%|          | 173/14018 [1:17:03<102:46:40,  0.04it/s, v_num=g
+Epoch 0:   1%|          | 173/14018 [1:17:03<102:46:49,  0.04it/s, v_num=g
+Epoch 0:   1%|          | 174/14018 [1:17:30<102:47:10,  0.04it/s, v_num=g
+Epoch 0:   1%|          | 174/14018 [1:17:30<102:47:20,  0.04it/s, v_num=g
+Epoch 0:   1%|          | 175/14018 [1:17:55<102:44:07,  0.04it/s, v_num=g
+Epoch 0:   1%|          | 175/14018 [1:17:55<102:44:17,  0.04it/s, v_num=g
+Epoch 0:   1%|▏         | 176/14018 [1:18:25<102:47:40,  0.04it/s, v_num=g
+Epoch 0:   1%|▏         | 176/14018 [1:18:25<102:47:50,  0.04it/s, v_num=g
+Epoch 0:   1%|▏         | 177/14018 [1:18:53<102:49:04,  0.04it/s, v_num=g
+Epoch 0:   1%|▏         | 177/14018 [1:18:53<102:49:04,  0.04it/s, v_num=g
+Epoch 0:   1%|▏         | 178/14018 [1:19:22<102:52:14,  0.04it/s, v_num=g
+Epoch 0:   1%|▏         | 178/14018 [1:19:23<102:52:23,  0.04it/s, v_num=g
+Epoch 0:   1%|▏         | 179/14018 [1:19:47<102:49:28,  0.04it/s, v_num=g
+Epoch 0:   1%|▏         | 179/14018 [1:19:48<102:49:37,  0.04it/s, v_num=g
+Epoch 0:   1%|▏         | 180/14018 [1:20:18<102:54:09,  0.04it/s, v_num=g
+Epoch 0:   1%|▏         | 180/14018 [1:20:18<102:54:18,  0.04it/s, v_num=g
+Epoch 0:   1%|▏         | 181/14018 [1:20:43<102:51:13,  0.04it/s, v_num=g
+Epoch 0:   1%|▏         | 181/14018 [1:20:43<102:51:22,  0.04it/s, v_num=g
+Epoch 0:   1%|▏         | 182/14018 [1:21:11<102:51:55,  0.04it/s, v_num=g
+Epoch 0:   1%|▏         | 182/14018 [1:21:11<102:52:04,  0.04it/s, v_num=g
+Epoch 0:   1%|▏         | 183/14018 [1:21:36<102:49:21,  0.04it/s, v_num=g
+Epoch 0:   1%|▏         | 183/14018 [1:21:36<102:49:30,  0.04it/s, v_num=g
+Epoch 0:   1%|▏         | 184/14018 [1:22:03<102:49:43,  0.04it/s, v_num=g
+Epoch 0:   1%|▏         | 184/14018 [1:22:03<102:49:52,  0.04it/s, v_num=g
+Epoch 0:   1%|▏         | 185/14018 [1:22:28<102:46:49,  0.04it/s, v_num=g
+Epoch 0:   1%|▏         | 185/14018 [1:22:28<102:46:50,  0.04it/s, v_num=g
+Epoch 0:   1%|▏         | 186/14018 [1:22:55<102:46:44,  0.04it/s, v_num=g
+Epoch 0:   1%|▏         | 186/14018 [1:22:55<102:46:52,  0.04it/s, v_num=g
+Epoch 0:   1%|▏         | 187/14018 [1:23:20<102:44:08,  0.04it/s, v_num=g
+Epoch 0:   1%|▏         | 187/14018 [1:23:20<102:44:12,  0.04it/s, v_num=g
+Epoch 0:   1%|▏         | 188/14018 [1:23:47<102:44:33,  0.04it/s, v_num=g
+Epoch 0:   1%|▏         | 188/14018 [1:23:48<102:44:42,  0.04it/s, v_num=g
+Epoch 0:   1%|▏         | 189/14018 [1:24:12<102:41:41,  0.04it/s, v_num=g
+Epoch 0:   1%|▏         | 189/14018 [1:24:12<102:41:42,  0.04it/s, v_num=g
+Epoch 0:   1%|▏         | 190/14018 [1:24:39<102:41:53,  0.04it/s, v_num=g
+Epoch 0:   1%|▏         | 190/14018 [1:24:40<102:42:02,  0.04it/s, v_num=g
+Epoch 0:   1%|▏         | 191/14018 [1:25:08<102:43:15,  0.04it/s, v_num=g
+Epoch 0:   1%|▏         | 191/14018 [1:25:08<102:43:23,  0.04it/s, v_num=g
+Epoch 0:   1%|▏         | 192/14018 [1:25:38<102:47:14,  0.04it/s, v_num=g
+Epoch 0:   1%|▏         | 192/14018 [1:25:38<102:47:23,  0.04it/s, v_num=g
+Epoch 0:   1%|▏         | 193/14018 [1:26:03<102:44:24,  0.04it/s, v_num=g
+Epoch 0:   1%|▏         | 193/14018 [1:26:03<102:44:32,  0.04it/s, v_num=g
+Epoch 0:   1%|▏         | 194/14018 [1:26:30<102:44:37,  0.04it/s, v_num=g
+Epoch 0:   1%|▏         | 194/14018 [1:26:30<102:44:46,  0.04it/s, v_num=g
+Epoch 0:   1%|▏         | 195/14018 [1:26:55<102:42:06,  0.04it/s, v_num=g
+Epoch 0:   1%|▏         | 195/14018 [1:26:55<102:42:14,  0.04it/s, v_num=g
+Epoch 0:   1%|▏         | 196/14018 [1:27:23<102:43:23,  0.04it/s, v_num=g
+Epoch 0:   1%|▏         | 196/14018 [1:27:24<102:43:32,  0.04it/s, v_num=g
+Epoch 0:   1%|▏         | 197/14018 [1:27:50<102:42:22,  0.04it/s, v_num=g
+Epoch 0:   1%|▏         | 197/14018 [1:27:50<102:42:30,  0.04it/s, v_num=g
+Epoch 0:   1%|▏         | 198/14018 [1:28:18<102:44:04,  0.04it/s, v_num=g
+Epoch 0:   1%|▏         | 198/14018 [1:28:18<102:44:12,  0.04it/s, v_num=g
+Epoch 0:   1%|▏         | 199/14018 [1:28:43<102:41:20,  0.04it/s, v_num=g
+Epoch 0:   1%|▏         | 199/14018 [1:28:43<102:41:28,  0.04it/s, v_num=g
+Epoch 0:   1%|▏         | 200/14018 [1:29:11<102:42:21,  0.04it/s, v_num=g
+Epoch 0:   1%|▏         | 200/14018 [1:29:11<102:42:29,  0.04it/s, v_num=g
+Epoch 0:   1%|▏         | 201/14018 [1:29:37<102:40:37,  0.04it/s, v_num=g
+Epoch 0:   1%|▏         | 201/14018 [1:29:37<102:40:45,  0.04it/s, v_num=g
+Epoch 0:   1%|▏         | 202/14018 [1:30:08<102:45:21,  0.04it/s, v_num=g
+Epoch 0:   1%|▏         | 202/14018 [1:30:08<102:45:29,  0.04it/s, v_num=g
+Epoch 0:   1%|▏         | 203/14018 [1:30:33<102:42:20,  0.04it/s, v_num=g
+Epoch 0:   1%|▏         | 203/14018 [1:30:33<102:42:25,  0.04it/s, v_num=g
+Epoch 0:   1%|▏         | 204/14018 [1:31:00<102:42:22,  0.04it/s, v_num=g
+Epoch 0:   1%|▏         | 204/14018 [1:31:00<102:42:30,  0.04it/s, v_num=g
+Epoch 0:   1%|▏         | 205/14018 [1:31:25<102:39:42,  0.04it/s, v_num=g
+Epoch 0:   1%|▏         | 205/14018 [1:31:25<102:39:50,  0.04it/s, v_num=g
+Epoch 0:   1%|▏         | 206/14018 [1:31:54<102:42:47,  0.04it/s, v_num=g
+Epoch 0:   1%|▏         | 206/14018 [1:31:55<102:42:55,  0.04it/s, v_num=g
+Epoch 0:   1%|▏         | 207/14018 [1:32:19<102:39:50,  0.04it/s, v_num=g
+Epoch 0:   1%|▏         | 207/14018 [1:32:19<102:39:57,  0.04it/s, v_num=g
+Epoch 0:   1%|▏         | 208/14018 [1:32:46<102:39:51,  0.04it/s, v_num=g
+Epoch 0:   1%|▏         | 208/14018 [1:32:46<102:39:59,  0.04it/s, v_num=g
+Epoch 0:   1%|▏         | 209/14018 [1:33:15<102:41:29,  0.04it/s, v_num=g
+Epoch 0:   1%|▏         | 209/14018 [1:33:15<102:41:36,  0.04it/s, v_num=g
+Epoch 0:   1%|▏         | 210/14018 [1:33:46<102:45:49,  0.04it/s, v_num=g
+Epoch 0:   1%|▏         | 210/14018 [1:33:46<102:45:57,  0.04it/s, v_num=g
+Epoch 0:   2%|▏         | 211/14018 [1:34:14<102:47:11,  0.04it/s, v_num=g
+Epoch 0:   2%|▏         | 211/14018 [1:34:14<102:47:19,  0.04it/s, v_num=g
+Epoch 0:   2%|▏         | 212/14018 [1:34:45<102:51:25,  0.04it/s, v_num=g
+Epoch 0:   2%|▏         | 212/14018 [1:34:46<102:51:33,  0.04it/s, v_num=g
+Epoch 0:   2%|▏         | 213/14018 [1:35:14<102:52:44,  0.04it/s, v_num=g
+Epoch 0:   2%|▏         | 213/14018 [1:35:14<102:52:51,  0.04it/s, v_num=g
+Epoch 0:   2%|▏         | 214/14018 [1:35:48<103:00:29,  0.04it/s, v_num=g
+Epoch 0:   2%|▏         | 214/14018 [1:35:48<103:00:37,  0.04it/s, v_num=g
+Epoch 0:   2%|▏         | 215/14018 [1:36:17<103:01:38,  0.04it/s, v_num=g
+Epoch 0:   2%|▏         | 215/14018 [1:36:17<103:01:46,  0.04it/s, v_num=g
+Epoch 0:   2%|▏         | 216/14018 [1:36:48<103:05:45,  0.04it/s, v_num=g
+Epoch 0:   2%|▏         | 216/14018 [1:36:48<103:05:53,  0.04it/s, v_num=g
+Epoch 0:   2%|▏         | 217/14018 [1:37:16<103:06:55,  0.04it/s, v_num=g
+Epoch 0:   2%|▏         | 217/14018 [1:37:16<103:06:56,  0.04it/s, v_num=g
+Epoch 0:   2%|▏         | 218/14018 [1:37:47<103:10:46,  0.04it/s, v_num=g
+Epoch 0:   2%|▏         | 218/14018 [1:37:47<103:10:54,  0.04it/s, v_num=g
+Epoch 0:   2%|▏         | 219/14018 [1:38:16<103:11:52,  0.04it/s, v_num=g
+Epoch 0:   2%|▏         | 219/14018 [1:38:16<103:11:52,  0.04it/s, v_num=g
+Epoch 0:   2%|▏         | 220/14018 [1:38:47<103:15:35,  0.04it/s, v_num=g
+Epoch 0:   2%|▏         | 220/14018 [1:38:47<103:15:43,  0.04it/s, v_num=g
+Epoch 0:   2%|▏         | 221/14018 [1:39:11<103:12:58,  0.04it/s, v_num=g
+Epoch 0:   2%|▏         | 221/14018 [1:39:12<103:13:05,  0.04it/s, v_num=g
+Epoch 0:   2%|▏         | 222/14018 [1:39:39<103:13:11,  0.04it/s, v_num=g
+Epoch 0:   2%|▏         | 222/14018 [1:39:39<103:13:19,  0.04it/s, v_num=g
+Epoch 0:   2%|▏         | 223/14018 [1:40:04<103:10:18,  0.04it/s, v_num=g
+Epoch 0:   2%|▏         | 223/14018 [1:40:04<103:10:22,  0.04it/s, v_num=g
+Epoch 0:   2%|▏         | 224/14018 [1:40:35<103:14:04,  0.04it/s, v_num=g
+Epoch 0:   2%|▏         | 224/14018 [1:40:35<103:14:11,  0.04it/s, v_num=g
+Epoch 0:   2%|▏         | 225/14018 [1:41:00<103:11:36,  0.04it/s, v_num=g
+Epoch 0:   2%|▏         | 225/14018 [1:41:00<103:11:36,  0.04it/s, v_num=g
+Epoch 0:   2%|▏         | 226/14018 [1:41:27<103:11:43,  0.04it/s, v_num=g
+Epoch 0:   2%|▏         | 226/14018 [1:41:27<103:11:51,  0.04it/s, v_num=g
+Epoch 0:   2%|▏         | 227/14018 [1:41:52<103:08:51,  0.04it/s, v_num=g
+Epoch 0:   2%|▏         | 227/14018 [1:41:52<103:08:58,  0.04it/s, v_num=g
+Epoch 0:   2%|▏         | 228/14018 [1:42:19<103:09:01,  0.04it/s, v_num=g
+Epoch 0:   2%|▏         | 228/14018 [1:42:19<103:09:09,  0.04it/s, v_num=g
+Epoch 0:   2%|▏         | 229/14018 [1:42:44<103:06:24,  0.04it/s, v_num=g
+Epoch 0:   2%|▏         | 229/14018 [1:42:44<103:06:31,  0.04it/s, v_num=g
+Epoch 0:   2%|▏         | 230/14018 [1:43:11<103:06:13,  0.04it/s, v_num=g
+Epoch 0:   2%|▏         | 230/14018 [1:43:11<103:06:20,  0.04it/s, v_num=g
+Epoch 0:   2%|▏         | 231/14018 [1:43:36<103:03:33,  0.04it/s, v_num=g
+Epoch 0:   2%|▏         | 231/14018 [1:43:36<103:03:34,  0.04it/s, v_num=g
+Epoch 0:   2%|▏         | 232/14018 [1:44:03<103:03:41,  0.04it/s, v_num=g
+Epoch 0:   2%|▏         | 232/14018 [1:44:03<103:03:48,  0.04it/s, v_num=g
+Epoch 0:   2%|▏         | 233/14018 [1:44:28<103:01:04,  0.04it/s, v_num=g
+Epoch 0:   2%|▏         | 233/14018 [1:44:28<103:01:05,  0.04it/s, v_num=g
+Epoch 0:   2%|▏         | 234/14018 [1:44:55<103:01:04,  0.04it/s, v_num=g
+Epoch 0:   2%|▏         | 234/14018 [1:44:55<103:01:11,  0.04it/s, v_num=g
+Epoch 0:   2%|▏         | 235/14018 [1:45:24<103:01:55,  0.04it/s, v_num=g
+Epoch 0:   2%|▏         | 235/14018 [1:45:24<103:01:55,  0.04it/s, v_num=g
+Epoch 0:   2%|▏         | 236/14018 [1:45:53<103:03:35,  0.04it/s, v_num=g
+Epoch 0:   2%|▏         | 236/14018 [1:45:53<103:03:39,  0.04it/s, v_num=g
+Epoch 0:   2%|▏         | 237/14018 [1:46:17<103:01:04,  0.04it/s, v_num=g
+Epoch 0:   2%|▏         | 237/14018 [1:46:17<103:01:04,  0.04it/s, v_num=g
+Epoch 0:   2%|▏         | 238/14018 [1:46:45<103:01:07,  0.04it/s, v_num=g
+Epoch 0:   2%|▏         | 238/14018 [1:46:45<103:01:14,  0.04it/s, v_num=g
+Epoch 0:   2%|▏         | 239/14018 [1:47:10<102:58:31,  0.04it/s, v_num=g
+Epoch 0:   2%|▏         | 239/14018 [1:47:10<102:58:31,  0.04it/s, v_num=g
+Epoch 0:   2%|▏         | 240/14018 [1:47:37<102:58:40,  0.04it/s, v_num=g
+Epoch 0:   2%|▏         | 240/14018 [1:47:37<102:58:47,  0.04it/s, v_num=g
+Epoch 0:   2%|▏         | 241/14018 [1:48:05<102:59:15,  0.04it/s, v_num=g
+Epoch 0:   2%|▏         | 241/14018 [1:48:05<102:59:15,  0.04it/s, v_num=g
+Epoch 0:   2%|▏         | 242/14018 [1:48:35<103:01:31,  0.04it/s, v_num=g
+Epoch 0:   2%|▏         | 242/14018 [1:48:35<103:01:37,  0.04it/s, v_num=g
+Epoch 0:   2%|▏         | 243/14018 [1:49:03<103:02:00,  0.04it/s, v_num=g
+Epoch 0:   2%|▏         | 243/14018 [1:49:03<103:02:00,  0.04it/s, v_num=g
+Epoch 0:   2%|▏         | 244/14018 [1:49:32<103:04:03,  0.04it/s, v_num=g
+Epoch 0:   2%|▏         | 244/14018 [1:49:32<103:04:10,  0.04it/s, v_num=g
+Epoch 0:   2%|▏         | 245/14018 [1:50:00<103:04:34,  0.04it/s, v_num=g
+Epoch 0:   2%|▏         | 245/14018 [1:50:00<103:04:34,  0.04it/s, v_num=g
+Epoch 0:   2%|▏         | 246/14018 [1:50:33<103:09:55,  0.04it/s, v_num=g
+Epoch 0:   2%|▏         | 246/14018 [1:50:34<103:10:01,  0.04it/s, v_num=g
+Epoch 0:   2%|▏         | 247/14018 [1:51:01<103:10:22,  0.04it/s, v_num=g
+Epoch 0:   2%|▏         | 247/14018 [1:51:01<103:10:22,  0.04it/s, v_num=g
+2kv]
