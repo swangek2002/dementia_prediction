@@ -19,31 +19,65 @@ from SurvivEHR.src.modules.head_layers.value_layers import GaussianRegressionLay
 from SurvivEHR.examples.modelling.SurvivEHR.optimizers_fine_tuning import ConfigureFTOptimizers
 
 
-def compute_sparsity_aware_weights(
-    observation_times: torch.Tensor,
-    tau: float,
-    alpha: float,
+def compute_sample_weights(
+    t: torch.Tensor,
+    k: torch.Tensor,
+    mode: str = "none",
+    event_lambda: float = 10.0,
+    alpha: float = 2.0,
+    tau: float = 0.33,
+    w_t_max: float = 3.0,
+    w_total_max: float = 20.0,
 ) -> torch.Tensor:
-    """Compute per-sample weights using SurvDiff's sparsity-aware scheme.
+    """Compute per-sample loss weights for DeSurv NLL.
 
-    Adapted from SurvDiff (Yan et al., 2024) Equation 11 for use with
-    DeSurv NLL loss.  Samples with observation time <= tau receive full
-    weight; later samples are exponentially down-weighted to stabilise
-    gradients in the sparse tail of the survival distribution.
+    Modes:
+      "none"        -> all weights = 1 (Experiment A baseline)
+      "event_only"  -> dementia events get lambda, rest get 1 (Experiment B)
+      "reverse_saw" -> events get increasing weight with time, censored unchanged (Experiment D)
+      "combined"    -> event_only + reverse_saw together (Experiment C)
+      "saw"         -> original SurvDiff sparsity-aware weighting (exponential decay for late events)
 
     Args:
-        observation_times: (M,) tensor of event/censoring times.
-        tau: Threshold time; samples with t <= tau get weight 1.
-        alpha: Exponential decay rate for t > tau.
+        t: time-to-event values, shape (M,)
+        k: event type labels, shape (M,). 0=censored, 1=dementia, 2=death
+        mode: weighting strategy
+        event_lambda: multiplier for dementia events (k==1)
+        alpha: slope for reverse time weighting, or decay rate for saw mode
+        tau: time threshold
+        w_t_max: maximum time weight component
+        w_total_max: maximum total weight
 
     Returns:
-        (M,) tensor of non-negative weights.
+        weights: shape (M,), per-sample weights >= 1 (or <= 1 for saw mode)
     """
-    weights = torch.ones_like(observation_times)
-    late_mask = observation_times > tau
-    if late_mask.any():
-        weights[late_mask] = torch.exp(-alpha * (observation_times[late_mask] - tau))
-    return weights
+    w = torch.ones_like(t)
+
+    if mode == "none":
+        return w
+
+    if mode == "saw":
+        late_mask = t > tau
+        if late_mask.any():
+            w[late_mask] = torch.exp(-alpha * (t[late_mask] - tau))
+        return w
+
+    # --- Event-type weighting component ---
+    if mode in ("event_only", "combined"):
+        dementia_mask = (k == 1)
+        w[dementia_mask] = event_lambda
+
+    # --- Reverse time weighting component ---
+    if mode in ("reverse_saw", "combined"):
+        event_mask = (k > 0)
+        time_excess = torch.clamp(t - tau, min=0.0)
+        w_time = torch.clamp(1.0 + alpha * time_excess, max=w_t_max)
+        w[event_mask] = w[event_mask] * w_time[event_mask]
+
+    # --- Global cap ---
+    w = torch.clamp(w, max=w_total_max)
+
+    return w
 
 
 class FineTuneExperiment(pl.LightningModule):
@@ -60,13 +94,34 @@ class FineTuneExperiment(pl.LightningModule):
         self.save_hyperparameters()        
         self.cfg = cfg
 
-        # Sparsity-Aware Weighting (SurvDiff, Yan et al. 2024)
-        saw_cfg = getattr(cfg.fine_tuning, "sparsity_aware", None)
-        self.saw_enabled = getattr(saw_cfg, "enabled", False) if saw_cfg is not None else False
-        self.saw_tau = float(getattr(saw_cfg, "tau", 0.5)) if self.saw_enabled else 0.0
-        self.saw_alpha = float(getattr(saw_cfg, "alpha", 2.0)) if self.saw_enabled else 0.0
-        if self.saw_enabled:
-            logging.info(f"Sparsity-Aware Weighting enabled: tau={self.saw_tau}, alpha={self.saw_alpha}")
+        # Sample weighting configuration
+        sw_cfg = getattr(cfg.fine_tuning, "sample_weighting", None)
+        if sw_cfg is not None:
+            self.weighting_mode = str(getattr(sw_cfg, "mode", "none"))
+            self.event_lambda = float(getattr(sw_cfg, "event_lambda", 10.0))
+            self.weight_alpha = float(getattr(sw_cfg, "alpha", 2.0))
+            self.weight_tau = float(getattr(sw_cfg, "tau", 0.33))
+            self.w_t_max = float(getattr(sw_cfg, "w_t_max", 3.0))
+            self.w_total_max = float(getattr(sw_cfg, "w_total_max", 20.0))
+        else:
+            # Backwards compatibility: read old sparsity_aware config
+            saw_cfg = getattr(cfg.fine_tuning, "sparsity_aware", None)
+            saw_enabled = getattr(saw_cfg, "enabled", False) if saw_cfg is not None else False
+            if saw_enabled:
+                self.weighting_mode = "saw"
+                self.weight_alpha = float(getattr(saw_cfg, "alpha", 2.0))
+                self.weight_tau = float(getattr(saw_cfg, "tau", 0.5))
+            else:
+                self.weighting_mode = "none"
+                self.weight_alpha = 0.0
+                self.weight_tau = 0.0
+            self.event_lambda = 10.0
+            self.w_t_max = 3.0
+            self.w_total_max = 20.0
+        logging.info(f"Sample weighting mode: {self.weighting_mode}"
+                     + (f" (lambda={self.event_lambda}, alpha={self.weight_alpha}, "
+                        f"tau={self.weight_tau}, w_t_max={self.w_t_max}, w_total_max={self.w_total_max})"
+                        if self.weighting_mode != "none" else ""))
         
         ###################################
         # Load the pre-trained Transformer
@@ -220,13 +275,19 @@ class FineTuneExperiment(pl.LightningModule):
         # Attention matrix. As we have reduced to only the transition of last seen input to sequence target, nothing is masked
         target_attention_mask = torch.ones_like(target_tokens, device=self.device) == 1
 
-        # Compute sparsity-aware sample weights from observation times
+        # Compute sample weights from observation times and event types
         _sample_weights = None
-        if self.saw_enabled and return_loss:
-            _sample_weights = compute_sparsity_aware_weights(
-                target_age_delta.reshape(-1),
-                tau=self.saw_tau,
-                alpha=self.saw_alpha,
+        if self.weighting_mode != "none" and return_loss:
+            reduced_k = self.reduce_to_outcomes(target_token.reshape(-1))
+            _sample_weights = compute_sample_weights(
+                t=target_age_delta.reshape(-1),
+                k=reduced_k,
+                mode=self.weighting_mode,
+                event_lambda=self.event_lambda,
+                alpha=self.weight_alpha,
+                tau=self.weight_tau,
+                w_t_max=self.w_t_max,
+                w_total_max=self.w_total_max,
             )
 
         # survival time to event head (survival curve until next token)

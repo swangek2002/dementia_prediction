@@ -1,0 +1,1174 @@
+===== Step 2: Experiment B (event_only, lambda=3) =====
+Start: Wed Mar 25 14:35:03 EDT 2026
+  mode: event_only, event_lambda=3.0
+/Data0/swangek_data/conda_envs/survivehr/lib/python3.10/site-packages/lightning_fabric/__init__.py:40: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.
+[2026-03-25 14:35:19,408][root][INFO] - Running cr on 48 CPUs and 4 GPUs
+[2026-03-25 14:35:19,413][root][INFO] - ====================================================================================================
+[2026-03-25 14:35:19,413][root][INFO] - # Loading DataModule for dataset /Data0/swangek_data/991/CPRD/data/FoundationalModel/FineTune_Dementia_CR/. This will be loaded in supervised form.
+[2026-03-25 14:35:19,413][root][INFO] - ====================================================================================================
+[2026-03-25 14:35:50,921][root][INFO] - Using meta information from /Data0/swangek_data/991/CPRD/data/FoundationalModel/PreTrain/meta_information_custom.pickle
+[2026-03-25 14:35:50,936][root][INFO] - Using train file-row count dict from /Data0/swangek_data/991/CPRD/data/FoundationalModel/FineTune_Dementia_CR/file_row_count_dict_train.pickle
+[2026-03-25 14:35:50,937][root][INFO] - Using test file-row count dict from /Data0/swangek_data/991/CPRD/data/FoundationalModel/FineTune_Dementia_CR/file_row_count_dict_test.pickle
+[2026-03-25 14:35:50,938][root][INFO] - Using val file-row count dict from /Data0/swangek_data/991/CPRD/data/FoundationalModel/FineTune_Dementia_CR/file_row_count_dict_val.pickle
+[2026-03-25 14:35:50,976][root][INFO] - Tokenzier created based on 373,927,777 tokens
+[2026-03-25 14:35:51,049][root][INFO] - Using tabular tokenizer, created from meta information and containing 108118 tokens
+[2026-03-25 14:35:51,049][root][INFO] - Set seed to 1337
+[2026-03-25 14:35:51,050][root][INFO] - Loaded /Data0/swangek_data/991/CPRD/data/FoundationalModel/FineTune_Dementia_CR/split=train/ dataset
+[2026-03-25 14:35:51,050][root][INFO] - Pre-loading 852 parquet files into memory...
+[2026-03-25 14:36:00,066][root][INFO] - Pre-loaded 852 files into memory
+[2026-03-25 14:36:00,066][root][INFO] - with 199,698 samples
+[2026-03-25 14:36:00,612][root][INFO] - Set seed to 42
+[2026-03-25 14:36:00,612][root][INFO] - Loaded /Data0/swangek_data/991/CPRD/data/FoundationalModel/FineTune_Dementia_CR/split=test/ dataset
+[2026-03-25 14:36:00,612][root][INFO] - Pre-loading 53 parquet files into memory...
+[2026-03-25 14:36:01,106][root][INFO] - Pre-loaded 53 files into memory
+[2026-03-25 14:36:01,106][root][INFO] - with 12,524 samples
+[2026-03-25 14:36:01,637][root][INFO] - Set seed to 42
+[2026-03-25 14:36:01,637][root][INFO] - Loaded /Data0/swangek_data/991/CPRD/data/FoundationalModel/FineTune_Dementia_CR/split=val/ dataset
+[2026-03-25 14:36:01,637][root][INFO] - Pre-loading 44 parquet files into memory...
+[2026-03-25 14:36:02,152][root][INFO] - Pre-loaded 44 files into memory
+[2026-03-25 14:36:02,153][root][INFO] - with 10,369 samples
+[2026-03-25 14:36:02,712][root][INFO] - Creating supervised collator for DataModule
+[2026-03-25 14:36:02,712][root][INFO] - Scaling supervised target ages by a factor of 3.0 times the context scale.
+[2026-03-25 14:36:06,592][root][INFO] - is_decoder: true
+data:
+  batch_size: 32
+  unk_freq_threshold: 0.0
+  min_workers: 12
+  global_diagnoses: true
+  repeating_events: false
+  path_to_db: /Data0/swangek_data/991/CPRD/data/example_exercise_database.db
+  path_to_ds: /Data0/swangek_data/991/CPRD/data/FoundationalModel/FineTune_Dementia_CR/
+  meta_information_path: /Data0/swangek_data/991/CPRD/data/FoundationalModel/PreTrain/meta_information_custom.pickle
+  subsample_training: null
+  num_static_covariates: 27
+  supervised_time_scale: 3.0
+experiment:
+  type: fine-tune
+  project_name: SurvivEHR
+  run_id: crPreTrain_small_1337
+  fine_tune_id: FineTune_Dementia_CR_EventWeight
+  notes: Experiment B — event-type weighting only (lambda=3)
+  tags:
+  - dementia
+  - fine-tune
+  - competing-risk
+  - event-weight
+  - experiment-B
+  train: true
+  test: true
+  verbose: true
+  seed: 1337
+  log: true
+  log_dir: /Data0/swangek_data/991/CPRD/output/
+  ckpt_dir: /Data0/swangek_data/991/CPRD/output/checkpoints/
+fine_tuning:
+  fine_tune_outcomes:
+  - - F110.
+    - Eu00.
+    - Eu01.
+    - Eu02z
+    - Eu002
+    - E00..
+    - Eu023
+    - Eu00z
+    - Eu025
+    - Eu01z
+    - E001.
+    - F1100
+    - Eu001
+    - E004.
+    - Eu000
+    - Eu02.
+    - Eu013
+    - E000.
+    - Eu01y
+    - E001z
+    - F1101
+    - Eu020
+    - E004z
+    - E0021
+    - Eu02y
+    - Eu012
+    - Eu011
+    - E00z.
+    - E0040
+    - E003.
+    - E0020
+    - Eu057
+    - Eu04.
+    - Eu053
+    - Eu04z
+    - Eu0z.
+    - Eu060
+    - Eu054
+    - Eu05y
+    - Eu052
+    - Eu062
+  - - DEATH
+  custom_outcome_method:
+    _target_: null
+  custom_stratification_method:
+    _target_: null
+  use_callbacks:
+    hidden_embedding:
+      num_batches: 0
+      mask_static: false
+      mask_value: false
+    performance_metrics: true
+    rmst: false
+  compression_layer: false
+  llrd: null
+  PEFT:
+    method: null
+    adapter_dim: 8
+  backbone:
+    linear_probe_epochs: 0
+    unfreeze_top_k: null
+  head:
+    surv_weight: 1
+    value_weight: 0
+    learning_rate: 0.0005
+  sample_weighting:
+    mode: event_only
+    event_lambda: 3.0
+    alpha: 2.0
+    tau: 0.33
+    w_t_max: 3.0
+    w_total_max: 20.0
+optim:
+  num_epochs: 20
+  learning_rate: 5.0e-05
+  scheduler_warmup: false
+  scheduler: reduceonplateau
+  scheduler_periods: 10000
+  learning_rate_decay: 0.8
+  val_check_interval: 1.0
+  early_stop: true
+  early_stop_patience: 10
+  log_every_n_steps: 20
+  limit_val_batches: 1.0
+  limit_test_batches: null
+  accumulate_grad_batches: 4
+transformer:
+  block_type: Neo
+  block_size: 512
+  n_layer: 6
+  n_head: 6
+  n_embd: 384
+  layer_norm_bias: false
+  attention_type: global
+  bias: true
+  dropout: 0.1
+  attention_dropout: 0.1
+  resid_dropout: 0.1
+  private_heads: 0
+head:
+  SurvLayer: cr
+  surv_weight: 1
+  tokens_for_univariate_regression: <9247 token IDs omitted>
+  value_weight: 0.1
+
+[2026-03-25 14:36:06,594][root][INFO] - ====================================================================================================
+[2026-03-25 14:36:06,594][root][INFO] - # Fine-tune learning experiment with a new competing-risk head
+[2026-03-25 14:36:06,595][root][INFO] - ====================================================================================================
+[2026-03-25 14:36:06,595][root][INFO] - Creating new fine-tuned model at the path /Data0/swangek_data/991/CPRD/output/checkpoints/crPreTrain_small_1337_FineTune_Dementia_CR_EventWeight.ckpt.
+[2026-03-25 14:36:06,595][root][INFO] - This is trained from a checkpointed pre-trained causal experiment, which can be found at /Data0/swangek_data/991/CPRD/output/checkpoints/crPreTrain_small_1337.ckpt.
+[2026-03-25 14:36:06,595][root][INFO] - Setting outcome list based on cfg.fine_tuning.fine_tune_outcomes
+[2026-03-25 14:36:06,596][root][INFO] - Grouped outcomes: 2 groups, [41, 1] codes each
+[2026-03-25 14:36:06,596][root][INFO] -   Group 1: ['F110.', 'Eu00.', 'Eu01.']... -> tokens [94982, 90700, 83333]... (41 total)
+[2026-03-25 14:36:06,596][root][INFO] -   Group 2: ['DEATH']... -> tokens [108117]... (1 total)
+[2026-03-25 14:36:06,596][root][INFO] - Running competing-risk fine-tuning experiment
+[2026-03-25 14:36:06,597][root][INFO] - Loading pre-trained model from checkpoint from /Data0/swangek_data/991/CPRD/output/checkpoints/crPreTrain_small_1337.ckpt.
+[2026-03-25 14:36:19,861][torch.distributed.nn.jit.instantiator][INFO] - Created a temporary directory at /tmp/tmponuqjs30
+[2026-03-25 14:36:19,862][torch.distributed.nn.jit.instantiator][INFO] - Writing /tmp/tmponuqjs30/_remote_module_non_scriptable.py
+[2026-03-25 14:36:20,224][root][INFO] - Sample weighting mode: event_only (lambda=3.0, alpha=2.0, tau=0.33, w_t_max=3.0, w_total_max=20.0)
+[2026-03-25 14:36:20,226][root][INFO] - Using Temporal Positional Encoding. This module uses the patient's age at an event within their time series.
+[2026-03-25 14:36:21,384][root][INFO] - Using a DeSurv Competing-Risk head.
+[2026-03-25 14:36:21,384][root][INFO] - 	With concurrent strategy=None for handling simultaneous events.
+[2026-03-25 14:36:21,384][root][INFO] - 	Evaluating on a time grid between [0.0, 1.0] with 1000 intervals
+[2026-03-25 14:36:25,733][root][INFO] - Competing-risk with 2 grouped risks
+[2026-03-25 14:36:25,736][root][INFO] - Using a DeSurv Competing-Risk head.
+[2026-03-25 14:36:25,737][root][INFO] - 	With concurrent strategy=None for handling simultaneous events.
+[2026-03-25 14:36:25,737][root][INFO] - 	Evaluating on a time grid between [0.0, 1.0] with 1000 intervals
+/Data0/swangek_data/conda_envs/survivehr/lib/python3.10/site-packages/pytorch_lightning/core/saving.py:173: Found keys that are in the model state dict but not in the checkpoint: ['surv_layer.sr_ode.pinet.mapping.0.weight', 'surv_layer.sr_ode.pinet.mapping.0.bias', 'surv_layer.sr_ode.pinet.mapping.2.weight', 'surv_layer.sr_ode.pinet.mapping.2.bias', 'surv_layer.sr_ode.pinet.mapping.4.weight', 'surv_layer.sr_ode.pinet.mapping.4.bias', 'surv_layer.sr_ode.odenet.u', 'surv_layer.sr_ode.odenet.w', 'surv_layer.sr_ode.odenet.BaseNet.mapping.0.weight', 'surv_layer.sr_ode.odenet.BaseNet.mapping.0.bias', 'surv_layer.sr_ode.odenet.BaseNet.mapping.2.weight', 'surv_layer.sr_ode.odenet.BaseNet.mapping.2.bias', 'surv_layer.sr_ode.odenet.BaseNet.mapping.4.weight', 'surv_layer.sr_ode.odenet.BaseNet.mapping.4.bias']
+FineTuneExperiment(
+  (model): SurvStreamGPTForCausalModelling(
+    (transformer): TTETransformer(
+      (wpe): TemporalPositionalEncoding()
+      (wte): DataEmbeddingLayer(
+        (static_proj): Linear(in_features=27, out_features=384, bias=True)
+        (dynamic_embedding_layer): SplitDynamicEmbeddingLayer(
+          (cat_event_embed_layer): Embedding(108118, 384, padding_idx=0)
+          (cat_event_proj): Linear(in_features=384, out_features=384, bias=True)
+          (num_value_embed_layer): EmbeddingBag(108118, 384, mode='sum', padding_idx=0)
+          (num_value_proj): Linear(in_features=384, out_features=384, bias=True)
+        )
+      )
+      (drop): Dropout(p=0.1, inplace=False)
+      (blocks): ModuleList(
+        (0-5): 6 x Block(
+          (ln_1): LayerNorm((384,), eps=1e-05, elementwise_affine=True)
+          (attn): MultiHeadedSelfAttention(
+            (attn_dropout): Dropout(p=0.1, inplace=False)
+            (resid_dropout): Dropout(p=0.1, inplace=False)
+            (k_proj): Linear(in_features=384, out_features=384, bias=False)
+            (v_proj): Linear(in_features=384, out_features=384, bias=False)
+            (q_proj): Linear(in_features=384, out_features=384, bias=False)
+            (out_proj): Linear(in_features=384, out_features=384, bias=True)
+          )
+          (ln_2): LayerNorm((384,), eps=1e-05, elementwise_affine=True)
+          (mlp): MLP(
+            (c_fc): Linear(in_features=384, out_features=1536, bias=True)
+            (acti): ReLU()
+            (c_proj): Linear(in_features=1536, out_features=384, bias=True)
+            (dropout): Dropout(p=0.1, inplace=False)
+          )
+        )
+      )
+      (ln_f): LayerNorm((384,), eps=1e-05, elementwise_affine=True)
+    )
+    (surv_layer): None
+    (value_layer): None
+  )
+  (surv_layer): ODESurvCompetingRiskLayer(
+    (sr_ode): ODESurvMultiple(
+      (pinet): FCNet(
+        (mapping): Sequential(
+          (0): Linear(in_features=384, out_features=32, bias=True)
+          (1): ReLU()
+          (2): Linear(in_features=32, out_features=32, bias=True)
+          (3): ReLU()
+          (4): Linear(in_features=32, out_features=2, bias=True)
+          (5): Softmax(dim=1)
+        )
+      )
+      (odenet): CondODENet(
+        (BaseNet): FCNet(
+          (mapping): Sequential(
+            (0): Linear(in_features=385, out_features=32, bias=True)
+            (1): ReLU()
+            (2): Linear(in_features=32, out_features=32, bias=True)
+            (3): ReLU()
+            (4): Linear(in_features=32, out_features=2, bias=True)
+            (5): Softplus(beta=1, threshold=20)
+          )
+        )
+      )
+    )
+  )
+)
+[2026-03-25 14:36:26,538][root][INFO] - Created Performance metric callback. Calculating metrics for dict_keys([94982, 90700, 83333, 82288, 79247, 79414, 81371, 76690, 65087, 61743, 65752, 59774, 58547, 66370, 57197, 69130, 47122, 47100, 33641, 33592, 33667, 24477, 33593, 24425, 5939, 5938, 5937, 5840, 5839, 5838, 5837, 79092, 63579, 53968, 49807, 43765, 43764, 47123, 39510, 39509, 33642, 108117]) with map {94982: 0, 90700: 0, 83333: 0, 82288: 0, 79247: 0, 79414: 0, 81371: 0, 76690: 0, 65087: 0, 61743: 0, 65752: 0, 59774: 0, 58547: 0, 66370: 0, 57197: 0, 69130: 0, 47122: 0, 47100: 0, 33641: 0, 33592: 0, 33667: 0, 24477: 0, 33593: 0, 24425: 0, 5939: 0, 5938: 0, 5937: 0, 5840: 0, 5839: 0, 5838: 0, 5837: 0, 79092: 0, 63579: 0, 53968: 0, 49807: 0, 43765: 0, 43764: 0, 47123: 0, 39510: 0, 39509: 0, 33642: 0, 108117: 1}
+[2026-03-25 14:36:26,539][root][INFO] - GPU job — using DDP strategy on 4 GPU(s)
+GPU available: True (cuda), used: True
+TPU available: False, using: 0 TPU cores
+IPU available: False, using: 0 IPUs
+HPU available: False, using: 0 HPUs
+`Trainer(limit_val_batches=1.0)` was configured so 100% of the batches will be used..
+`Trainer(val_check_interval=1.0)` was configured so validation will run at the end of the training epoch..
+[2026-03-25 14:36:26,549][root][INFO] - Training model.
+Initializing distributed: GLOBAL_RANK: 0, MEMBER: 1/4
+/Data0/swangek_data/conda_envs/survivehr/lib/python3.10/site-packages/lightning_fabric/__init__.py:40: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.
+/Data0/swangek_data/conda_envs/survivehr/lib/python3.10/site-packages/lightning_fabric/__init__.py:40: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.
+/Data0/swangek_data/conda_envs/survivehr/lib/python3.10/site-packages/lightning_fabric/__init__.py:40: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.
+[2026-03-25 14:36:43,149][root][INFO] - Running cr on 48 CPUs and 4 GPUs
+[2026-03-25 14:36:43,155][root][INFO] - ====================================================================================================
+[2026-03-25 14:36:43,155][root][INFO] - # Loading DataModule for dataset /Data0/swangek_data/991/CPRD/data/FoundationalModel/FineTune_Dementia_CR/. This will be loaded in supervised form.
+[2026-03-25 14:36:43,155][root][INFO] - ====================================================================================================
+[2026-03-25 14:36:43,360][root][INFO] - Running cr on 48 CPUs and 4 GPUs
+[2026-03-25 14:36:43,365][root][INFO] - ====================================================================================================
+[2026-03-25 14:36:43,365][root][INFO] - # Loading DataModule for dataset /Data0/swangek_data/991/CPRD/data/FoundationalModel/FineTune_Dementia_CR/. This will be loaded in supervised form.
+[2026-03-25 14:36:43,366][root][INFO] - ====================================================================================================
+[2026-03-25 14:36:43,622][root][INFO] - Running cr on 48 CPUs and 4 GPUs
+[2026-03-25 14:36:43,627][root][INFO] - ====================================================================================================
+[2026-03-25 14:36:43,627][root][INFO] - # Loading DataModule for dataset /Data0/swangek_data/991/CPRD/data/FoundationalModel/FineTune_Dementia_CR/. This will be loaded in supervised form.
+[2026-03-25 14:36:43,627][root][INFO] - ====================================================================================================
+[2026-03-25 14:37:15,653][root][INFO] - Using meta information from /Data0/swangek_data/991/CPRD/data/FoundationalModel/PreTrain/meta_information_custom.pickle
+[2026-03-25 14:37:15,669][root][INFO] - Using train file-row count dict from /Data0/swangek_data/991/CPRD/data/FoundationalModel/FineTune_Dementia_CR/file_row_count_dict_train.pickle
+[2026-03-25 14:37:15,670][root][INFO] - Using test file-row count dict from /Data0/swangek_data/991/CPRD/data/FoundationalModel/FineTune_Dementia_CR/file_row_count_dict_test.pickle
+[2026-03-25 14:37:15,671][root][INFO] - Using val file-row count dict from /Data0/swangek_data/991/CPRD/data/FoundationalModel/FineTune_Dementia_CR/file_row_count_dict_val.pickle
+[2026-03-25 14:37:15,710][root][INFO] - Tokenzier created based on 373,927,777 tokens
+[2026-03-25 14:37:15,774][root][INFO] - Using tabular tokenizer, created from meta information and containing 108118 tokens
+[2026-03-25 14:37:15,774][root][INFO] - Set seed to 1337
+[2026-03-25 14:37:15,774][root][INFO] - Loaded /Data0/swangek_data/991/CPRD/data/FoundationalModel/FineTune_Dementia_CR/split=train/ dataset
+[2026-03-25 14:37:15,775][root][INFO] - Pre-loading 852 parquet files into memory...
+[2026-03-25 14:37:16,011][root][INFO] - Using meta information from /Data0/swangek_data/991/CPRD/data/FoundationalModel/PreTrain/meta_information_custom.pickle
+[2026-03-25 14:37:16,026][root][INFO] - Using train file-row count dict from /Data0/swangek_data/991/CPRD/data/FoundationalModel/FineTune_Dementia_CR/file_row_count_dict_train.pickle
+[2026-03-25 14:37:16,027][root][INFO] - Using test file-row count dict from /Data0/swangek_data/991/CPRD/data/FoundationalModel/FineTune_Dementia_CR/file_row_count_dict_test.pickle
+[2026-03-25 14:37:16,028][root][INFO] - Using val file-row count dict from /Data0/swangek_data/991/CPRD/data/FoundationalModel/FineTune_Dementia_CR/file_row_count_dict_val.pickle
+[2026-03-25 14:37:16,068][root][INFO] - Tokenzier created based on 373,927,777 tokens
+[2026-03-25 14:37:16,132][root][INFO] - Using tabular tokenizer, created from meta information and containing 108118 tokens
+[2026-03-25 14:37:16,132][root][INFO] - Set seed to 1337
+[2026-03-25 14:37:16,132][root][INFO] - Loaded /Data0/swangek_data/991/CPRD/data/FoundationalModel/FineTune_Dementia_CR/split=train/ dataset
+[2026-03-25 14:37:16,132][root][INFO] - Pre-loading 852 parquet files into memory...
+[2026-03-25 14:37:16,626][root][INFO] - Using meta information from /Data0/swangek_data/991/CPRD/data/FoundationalModel/PreTrain/meta_information_custom.pickle
+[2026-03-25 14:37:16,641][root][INFO] - Using train file-row count dict from /Data0/swangek_data/991/CPRD/data/FoundationalModel/FineTune_Dementia_CR/file_row_count_dict_train.pickle
+[2026-03-25 14:37:16,643][root][INFO] - Using test file-row count dict from /Data0/swangek_data/991/CPRD/data/FoundationalModel/FineTune_Dementia_CR/file_row_count_dict_test.pickle
+[2026-03-25 14:37:16,644][root][INFO] - Using val file-row count dict from /Data0/swangek_data/991/CPRD/data/FoundationalModel/FineTune_Dementia_CR/file_row_count_dict_val.pickle
+[2026-03-25 14:37:16,688][root][INFO] - Tokenzier created based on 373,927,777 tokens
+[2026-03-25 14:37:16,755][root][INFO] - Using tabular tokenizer, created from meta information and containing 108118 tokens
+[2026-03-25 14:37:16,756][root][INFO] - Set seed to 1337
+[2026-03-25 14:37:16,756][root][INFO] - Loaded /Data0/swangek_data/991/CPRD/data/FoundationalModel/FineTune_Dementia_CR/split=train/ dataset
+[2026-03-25 14:37:16,756][root][INFO] - Pre-loading 852 parquet files into memory...
+[2026-03-25 14:37:25,061][root][INFO] - Pre-loaded 852 files into memory
+[2026-03-25 14:37:25,062][root][INFO] - with 199,698 samples
+[2026-03-25 14:37:25,630][root][INFO] - Set seed to 42
+[2026-03-25 14:37:25,630][root][INFO] - Loaded /Data0/swangek_data/991/CPRD/data/FoundationalModel/FineTune_Dementia_CR/split=test/ dataset
+[2026-03-25 14:37:25,630][root][INFO] - Pre-loading 53 parquet files into memory...
+[2026-03-25 14:37:26,147][root][INFO] - Pre-loaded 53 files into memory
+[2026-03-25 14:37:26,147][root][INFO] - with 12,524 samples
+[2026-03-25 14:37:26,179][root][INFO] - Pre-loaded 852 files into memory
+[2026-03-25 14:37:26,179][root][INFO] - with 199,698 samples
+[2026-03-25 14:37:26,665][root][INFO] - Pre-loaded 852 files into memory
+[2026-03-25 14:37:26,665][root][INFO] - with 199,698 samples
+[2026-03-25 14:37:26,691][root][INFO] - Set seed to 42
+[2026-03-25 14:37:26,691][root][INFO] - Loaded /Data0/swangek_data/991/CPRD/data/FoundationalModel/FineTune_Dementia_CR/split=val/ dataset
+[2026-03-25 14:37:26,691][root][INFO] - Pre-loading 44 parquet files into memory...
+[2026-03-25 14:37:26,775][root][INFO] - Set seed to 42
+[2026-03-25 14:37:26,776][root][INFO] - Loaded /Data0/swangek_data/991/CPRD/data/FoundationalModel/FineTune_Dementia_CR/split=test/ dataset
+[2026-03-25 14:37:26,776][root][INFO] - Pre-loading 53 parquet files into memory...
+[2026-03-25 14:37:27,234][root][INFO] - Pre-loaded 44 files into memory
+[2026-03-25 14:37:27,235][root][INFO] - with 10,369 samples
+[2026-03-25 14:37:27,282][root][INFO] - Pre-loaded 53 files into memory
+[2026-03-25 14:37:27,283][root][INFO] - with 12,524 samples
+[2026-03-25 14:37:27,294][root][INFO] - Set seed to 42
+[2026-03-25 14:37:27,294][root][INFO] - Loaded /Data0/swangek_data/991/CPRD/data/FoundationalModel/FineTune_Dementia_CR/split=test/ dataset
+[2026-03-25 14:37:27,294][root][INFO] - Pre-loading 53 parquet files into memory...
+[2026-03-25 14:37:27,787][root][INFO] - Creating supervised collator for DataModule
+[2026-03-25 14:37:27,787][root][INFO] - Scaling supervised target ages by a factor of 3.0 times the context scale.
+[2026-03-25 14:37:27,793][root][INFO] - Pre-loaded 53 files into memory
+[2026-03-25 14:37:27,793][root][INFO] - with 12,524 samples
+[2026-03-25 14:37:27,922][root][INFO] - Set seed to 42
+[2026-03-25 14:37:27,922][root][INFO] - Loaded /Data0/swangek_data/991/CPRD/data/FoundationalModel/FineTune_Dementia_CR/split=val/ dataset
+[2026-03-25 14:37:27,922][root][INFO] - Pre-loading 44 parquet files into memory...
+[2026-03-25 14:37:28,365][root][INFO] - Set seed to 42
+[2026-03-25 14:37:28,366][root][INFO] - Loaded /Data0/swangek_data/991/CPRD/data/FoundationalModel/FineTune_Dementia_CR/split=val/ dataset
+[2026-03-25 14:37:28,366][root][INFO] - Pre-loading 44 parquet files into memory...
+[2026-03-25 14:37:28,447][root][INFO] - Pre-loaded 44 files into memory
+[2026-03-25 14:37:28,447][root][INFO] - with 10,369 samples
+[2026-03-25 14:37:28,952][root][INFO] - Pre-loaded 44 files into memory
+[2026-03-25 14:37:28,952][root][INFO] - with 10,369 samples
+[2026-03-25 14:37:29,234][root][INFO] - Creating supervised collator for DataModule
+[2026-03-25 14:37:29,235][root][INFO] - Scaling supervised target ages by a factor of 3.0 times the context scale.
+[2026-03-25 14:37:29,626][root][INFO] - Creating supervised collator for DataModule
+[2026-03-25 14:37:29,626][root][INFO] - Scaling supervised target ages by a factor of 3.0 times the context scale.
+[2026-03-25 14:37:31,577][root][INFO] - is_decoder: true
+data:
+  batch_size: 32
+  unk_freq_threshold: 0.0
+  min_workers: 12
+  global_diagnoses: true
+  repeating_events: false
+  path_to_db: /Data0/swangek_data/991/CPRD/data/example_exercise_database.db
+  path_to_ds: /Data0/swangek_data/991/CPRD/data/FoundationalModel/FineTune_Dementia_CR/
+  meta_information_path: /Data0/swangek_data/991/CPRD/data/FoundationalModel/PreTrain/meta_information_custom.pickle
+  subsample_training: null
+  num_static_covariates: 27
+  supervised_time_scale: 3.0
+experiment:
+  type: fine-tune
+  project_name: SurvivEHR
+  run_id: crPreTrain_small_1337
+  fine_tune_id: FineTune_Dementia_CR_EventWeight
+  notes: Experiment B — event-type weighting only (lambda=3)
+  tags:
+  - dementia
+  - fine-tune
+  - competing-risk
+  - event-weight
+  - experiment-B
+  train: true
+  test: true
+  verbose: true
+  seed: 1337
+  log: true
+  log_dir: /Data0/swangek_data/991/CPRD/output/
+  ckpt_dir: /Data0/swangek_data/991/CPRD/output/checkpoints/
+fine_tuning:
+  fine_tune_outcomes:
+  - - F110.
+    - Eu00.
+    - Eu01.
+    - Eu02z
+    - Eu002
+    - E00..
+    - Eu023
+    - Eu00z
+    - Eu025
+    - Eu01z
+    - E001.
+    - F1100
+    - Eu001
+    - E004.
+    - Eu000
+    - Eu02.
+    - Eu013
+    - E000.
+    - Eu01y
+    - E001z
+    - F1101
+    - Eu020
+    - E004z
+    - E0021
+    - Eu02y
+    - Eu012
+    - Eu011
+    - E00z.
+    - E0040
+    - E003.
+    - E0020
+    - Eu057
+    - Eu04.
+    - Eu053
+    - Eu04z
+    - Eu0z.
+    - Eu060
+    - Eu054
+    - Eu05y
+    - Eu052
+    - Eu062
+  - - DEATH
+  custom_outcome_method:
+    _target_: null
+  custom_stratification_method:
+    _target_: null
+  use_callbacks:
+    hidden_embedding:
+      num_batches: 0
+      mask_static: false
+      mask_value: false
+    performance_metrics: true
+    rmst: false
+  compression_layer: false
+  llrd: null
+  PEFT:
+    method: null
+    adapter_dim: 8
+  backbone:
+    linear_probe_epochs: 0
+    unfreeze_top_k: null
+  head:
+    surv_weight: 1
+    value_weight: 0
+    learning_rate: 0.0005
+  sample_weighting:
+    mode: event_only
+    event_lambda: 3.0
+    alpha: 2.0
+    tau: 0.33
+    w_t_max: 3.0
+    w_total_max: 20.0
+optim:
+  num_epochs: 20
+  learning_rate: 5.0e-05
+  scheduler_warmup: false
+  scheduler: reduceonplateau
+  scheduler_periods: 10000
+  learning_rate_decay: 0.8
+  val_check_interval: 1.0
+  early_stop: true
+  early_stop_patience: 10
+  log_every_n_steps: 20
+  limit_val_batches: 1.0
+  limit_test_batches: null
+  accumulate_grad_batches: 4
+transformer:
+  block_type: Neo
+  block_size: 512
+  n_layer: 6
+  n_head: 6
+  n_embd: 384
+  layer_norm_bias: false
+  attention_type: global
+  bias: true
+  dropout: 0.1
+  attention_dropout: 0.1
+  resid_dropout: 0.1
+  private_heads: 0
+head:
+  SurvLayer: cr
+  surv_weight: 1
+  tokens_for_univariate_regression: <9247 token IDs omitted>
+  value_weight: 0.1
+
+[2026-03-25 14:37:31,581][root][INFO] - ====================================================================================================
+[2026-03-25 14:37:31,581][root][INFO] - # Fine-tune learning experiment with a new competing-risk head
+[2026-03-25 14:37:31,581][root][INFO] - ====================================================================================================
+[2026-03-25 14:37:31,582][root][INFO] - Creating new fine-tuned model at the path /Data0/swangek_data/991/CPRD/output/checkpoints/crPreTrain_small_1337_FineTune_Dementia_CR_EventWeight.ckpt.
+[2026-03-25 14:37:31,582][root][INFO] - This is trained from a checkpointed pre-trained causal experiment, which can be found at /Data0/swangek_data/991/CPRD/output/checkpoints/crPreTrain_small_1337.ckpt.
+[2026-03-25 14:37:31,582][root][INFO] - Setting outcome list based on cfg.fine_tuning.fine_tune_outcomes
+[2026-03-25 14:37:31,583][root][INFO] - Grouped outcomes: 2 groups, [41, 1] codes each
+[2026-03-25 14:37:31,583][root][INFO] -   Group 1: ['F110.', 'Eu00.', 'Eu01.']... -> tokens [94982, 90700, 83333]... (41 total)
+[2026-03-25 14:37:31,583][root][INFO] -   Group 2: ['DEATH']... -> tokens [108117]... (1 total)
+[2026-03-25 14:37:31,583][root][INFO] - Running competing-risk fine-tuning experiment
+[2026-03-25 14:37:31,584][root][INFO] - Loading pre-trained model from checkpoint from /Data0/swangek_data/991/CPRD/output/checkpoints/crPreTrain_small_1337.ckpt.
+[2026-03-25 14:37:33,139][root][INFO] - is_decoder: true
+data:
+  batch_size: 32
+  unk_freq_threshold: 0.0
+  min_workers: 12
+  global_diagnoses: true
+  repeating_events: false
+  path_to_db: /Data0/swangek_data/991/CPRD/data/example_exercise_database.db
+  path_to_ds: /Data0/swangek_data/991/CPRD/data/FoundationalModel/FineTune_Dementia_CR/
+  meta_information_path: /Data0/swangek_data/991/CPRD/data/FoundationalModel/PreTrain/meta_information_custom.pickle
+  subsample_training: null
+  num_static_covariates: 27
+  supervised_time_scale: 3.0
+experiment:
+  type: fine-tune
+  project_name: SurvivEHR
+  run_id: crPreTrain_small_1337
+  fine_tune_id: FineTune_Dementia_CR_EventWeight
+  notes: Experiment B — event-type weighting only (lambda=3)
+  tags:
+  - dementia
+  - fine-tune
+  - competing-risk
+  - event-weight
+  - experiment-B
+  train: true
+  test: true
+  verbose: true
+  seed: 1337
+  log: true
+  log_dir: /Data0/swangek_data/991/CPRD/output/
+  ckpt_dir: /Data0/swangek_data/991/CPRD/output/checkpoints/
+fine_tuning:
+  fine_tune_outcomes:
+  - - F110.
+    - Eu00.
+    - Eu01.
+    - Eu02z
+    - Eu002
+    - E00..
+    - Eu023
+    - Eu00z
+    - Eu025
+    - Eu01z
+    - E001.
+    - F1100
+    - Eu001
+    - E004.
+    - Eu000
+    - Eu02.
+    - Eu013
+    - E000.
+    - Eu01y
+    - E001z
+    - F1101
+    - Eu020
+    - E004z
+    - E0021
+    - Eu02y
+    - Eu012
+    - Eu011
+    - E00z.
+    - E0040
+    - E003.
+    - E0020
+    - Eu057
+    - Eu04.
+    - Eu053
+    - Eu04z
+    - Eu0z.
+    - Eu060
+    - Eu054
+    - Eu05y
+    - Eu052
+    - Eu062
+  - - DEATH
+  custom_outcome_method:
+    _target_: null
+  custom_stratification_method:
+    _target_: null
+  use_callbacks:
+    hidden_embedding:
+      num_batches: 0
+      mask_static: false
+      mask_value: false
+    performance_metrics: true
+    rmst: false
+  compression_layer: false
+  llrd: null
+  PEFT:
+    method: null
+    adapter_dim: 8
+  backbone:
+    linear_probe_epochs: 0
+    unfreeze_top_k: null
+  head:
+    surv_weight: 1
+    value_weight: 0
+    learning_rate: 0.0005
+  sample_weighting:
+    mode: event_only
+    event_lambda: 3.0
+    alpha: 2.0
+    tau: 0.33
+    w_t_max: 3.0
+    w_total_max: 20.0
+optim:
+  num_epochs: 20
+  learning_rate: 5.0e-05
+  scheduler_warmup: false
+  scheduler: reduceonplateau
+  scheduler_periods: 10000
+  learning_rate_decay: 0.8
+  val_check_interval: 1.0
+  early_stop: true
+  early_stop_patience: 10
+  log_every_n_steps: 20
+  limit_val_batches: 1.0
+  limit_test_batches: null
+  accumulate_grad_batches: 4
+transformer:
+  block_type: Neo
+  block_size: 512
+  n_layer: 6
+  n_head: 6
+  n_embd: 384
+  layer_norm_bias: false
+  attention_type: global
+  bias: true
+  dropout: 0.1
+  attention_dropout: 0.1
+  resid_dropout: 0.1
+  private_heads: 0
+head:
+  SurvLayer: cr
+  surv_weight: 1
+  tokens_for_univariate_regression: <9247 token IDs omitted>
+  value_weight: 0.1
+
+[2026-03-25 14:37:33,142][root][INFO] - ====================================================================================================
+[2026-03-25 14:37:33,142][root][INFO] - # Fine-tune learning experiment with a new competing-risk head
+[2026-03-25 14:37:33,142][root][INFO] - ====================================================================================================
+[2026-03-25 14:37:33,143][root][INFO] - Creating new fine-tuned model at the path /Data0/swangek_data/991/CPRD/output/checkpoints/crPreTrain_small_1337_FineTune_Dementia_CR_EventWeight.ckpt.
+[2026-03-25 14:37:33,143][root][INFO] - This is trained from a checkpointed pre-trained causal experiment, which can be found at /Data0/swangek_data/991/CPRD/output/checkpoints/crPreTrain_small_1337.ckpt.
+[2026-03-25 14:37:33,143][root][INFO] - Setting outcome list based on cfg.fine_tuning.fine_tune_outcomes
+[2026-03-25 14:37:33,144][root][INFO] - Grouped outcomes: 2 groups, [41, 1] codes each
+[2026-03-25 14:37:33,144][root][INFO] -   Group 1: ['F110.', 'Eu00.', 'Eu01.']... -> tokens [94982, 90700, 83333]... (41 total)
+[2026-03-25 14:37:33,144][root][INFO] -   Group 2: ['DEATH']... -> tokens [108117]... (1 total)
+[2026-03-25 14:37:33,144][root][INFO] - Running competing-risk fine-tuning experiment
+[2026-03-25 14:37:33,144][root][INFO] - Loading pre-trained model from checkpoint from /Data0/swangek_data/991/CPRD/output/checkpoints/crPreTrain_small_1337.ckpt.
+[2026-03-25 14:37:33,646][root][INFO] - is_decoder: true
+data:
+  batch_size: 32
+  unk_freq_threshold: 0.0
+  min_workers: 12
+  global_diagnoses: true
+  repeating_events: false
+  path_to_db: /Data0/swangek_data/991/CPRD/data/example_exercise_database.db
+  path_to_ds: /Data0/swangek_data/991/CPRD/data/FoundationalModel/FineTune_Dementia_CR/
+  meta_information_path: /Data0/swangek_data/991/CPRD/data/FoundationalModel/PreTrain/meta_information_custom.pickle
+  subsample_training: null
+  num_static_covariates: 27
+  supervised_time_scale: 3.0
+experiment:
+  type: fine-tune
+  project_name: SurvivEHR
+  run_id: crPreTrain_small_1337
+  fine_tune_id: FineTune_Dementia_CR_EventWeight
+  notes: Experiment B — event-type weighting only (lambda=3)
+  tags:
+  - dementia
+  - fine-tune
+  - competing-risk
+  - event-weight
+  - experiment-B
+  train: true
+  test: true
+  verbose: true
+  seed: 1337
+  log: true
+  log_dir: /Data0/swangek_data/991/CPRD/output/
+  ckpt_dir: /Data0/swangek_data/991/CPRD/output/checkpoints/
+fine_tuning:
+  fine_tune_outcomes:
+  - - F110.
+    - Eu00.
+    - Eu01.
+    - Eu02z
+    - Eu002
+    - E00..
+    - Eu023
+    - Eu00z
+    - Eu025
+    - Eu01z
+    - E001.
+    - F1100
+    - Eu001
+    - E004.
+    - Eu000
+    - Eu02.
+    - Eu013
+    - E000.
+    - Eu01y
+    - E001z
+    - F1101
+    - Eu020
+    - E004z
+    - E0021
+    - Eu02y
+    - Eu012
+    - Eu011
+    - E00z.
+    - E0040
+    - E003.
+    - E0020
+    - Eu057
+    - Eu04.
+    - Eu053
+    - Eu04z
+    - Eu0z.
+    - Eu060
+    - Eu054
+    - Eu05y
+    - Eu052
+    - Eu062
+  - - DEATH
+  custom_outcome_method:
+    _target_: null
+  custom_stratification_method:
+    _target_: null
+  use_callbacks:
+    hidden_embedding:
+      num_batches: 0
+      mask_static: false
+      mask_value: false
+    performance_metrics: true
+    rmst: false
+  compression_layer: false
+  llrd: null
+  PEFT:
+    method: null
+    adapter_dim: 8
+  backbone:
+    linear_probe_epochs: 0
+    unfreeze_top_k: null
+  head:
+    surv_weight: 1
+    value_weight: 0
+    learning_rate: 0.0005
+  sample_weighting:
+    mode: event_only
+    event_lambda: 3.0
+    alpha: 2.0
+    tau: 0.33
+    w_t_max: 3.0
+    w_total_max: 20.0
+optim:
+  num_epochs: 20
+  learning_rate: 5.0e-05
+  scheduler_warmup: false
+  scheduler: reduceonplateau
+  scheduler_periods: 10000
+  learning_rate_decay: 0.8
+  val_check_interval: 1.0
+  early_stop: true
+  early_stop_patience: 10
+  log_every_n_steps: 20
+  limit_val_batches: 1.0
+  limit_test_batches: null
+  accumulate_grad_batches: 4
+transformer:
+  block_type: Neo
+  block_size: 512
+  n_layer: 6
+  n_head: 6
+  n_embd: 384
+  layer_norm_bias: false
+  attention_type: global
+  bias: true
+  dropout: 0.1
+  attention_dropout: 0.1
+  resid_dropout: 0.1
+  private_heads: 0
+head:
+  SurvLayer: cr
+  surv_weight: 1
+  tokens_for_univariate_regression: <9247 token IDs omitted>
+  value_weight: 0.1
+
+[2026-03-25 14:37:33,649][root][INFO] - ====================================================================================================
+[2026-03-25 14:37:33,649][root][INFO] - # Fine-tune learning experiment with a new competing-risk head
+[2026-03-25 14:37:33,649][root][INFO] - ====================================================================================================
+[2026-03-25 14:37:33,649][root][INFO] - Creating new fine-tuned model at the path /Data0/swangek_data/991/CPRD/output/checkpoints/crPreTrain_small_1337_FineTune_Dementia_CR_EventWeight.ckpt.
+[2026-03-25 14:37:33,649][root][INFO] - This is trained from a checkpointed pre-trained causal experiment, which can be found at /Data0/swangek_data/991/CPRD/output/checkpoints/crPreTrain_small_1337.ckpt.
+[2026-03-25 14:37:33,649][root][INFO] - Setting outcome list based on cfg.fine_tuning.fine_tune_outcomes
+[2026-03-25 14:37:33,650][root][INFO] - Grouped outcomes: 2 groups, [41, 1] codes each
+[2026-03-25 14:37:33,650][root][INFO] -   Group 1: ['F110.', 'Eu00.', 'Eu01.']... -> tokens [94982, 90700, 83333]... (41 total)
+[2026-03-25 14:37:33,650][root][INFO] -   Group 2: ['DEATH']... -> tokens [108117]... (1 total)
+[2026-03-25 14:37:33,651][root][INFO] - Running competing-risk fine-tuning experiment
+[2026-03-25 14:37:33,651][root][INFO] - Loading pre-trained model from checkpoint from /Data0/swangek_data/991/CPRD/output/checkpoints/crPreTrain_small_1337.ckpt.
+[2026-03-25 14:37:58,174][torch.distributed.nn.jit.instantiator][INFO] - Created a temporary directory at /tmp/tmprp9z77kv
+[2026-03-25 14:37:58,175][torch.distributed.nn.jit.instantiator][INFO] - Writing /tmp/tmprp9z77kv/_remote_module_non_scriptable.py
+[2026-03-25 14:37:58,542][root][INFO] - Sample weighting mode: event_only (lambda=3.0, alpha=2.0, tau=0.33, w_t_max=3.0, w_total_max=20.0)
+[2026-03-25 14:37:58,544][root][INFO] - Using Temporal Positional Encoding. This module uses the patient's age at an event within their time series.
+[2026-03-25 14:37:59,675][root][INFO] - Using a DeSurv Competing-Risk head.
+[2026-03-25 14:37:59,675][root][INFO] - 	With concurrent strategy=None for handling simultaneous events.
+[2026-03-25 14:37:59,675][root][INFO] - 	Evaluating on a time grid between [0.0, 1.0] with 1000 intervals
+[2026-03-25 14:38:00,043][torch.distributed.nn.jit.instantiator][INFO] - Created a temporary directory at /tmp/tmp7pbjvoyi
+[2026-03-25 14:38:00,044][torch.distributed.nn.jit.instantiator][INFO] - Writing /tmp/tmp7pbjvoyi/_remote_module_non_scriptable.py
+[2026-03-25 14:38:00,339][torch.distributed.nn.jit.instantiator][INFO] - Created a temporary directory at /tmp/tmpec3oeyqt
+[2026-03-25 14:38:00,340][torch.distributed.nn.jit.instantiator][INFO] - Writing /tmp/tmpec3oeyqt/_remote_module_non_scriptable.py
+[2026-03-25 14:38:00,429][root][INFO] - Sample weighting mode: event_only (lambda=3.0, alpha=2.0, tau=0.33, w_t_max=3.0, w_total_max=20.0)
+[2026-03-25 14:38:00,431][root][INFO] - Using Temporal Positional Encoding. This module uses the patient's age at an event within their time series.
+[2026-03-25 14:38:00,728][root][INFO] - Sample weighting mode: event_only (lambda=3.0, alpha=2.0, tau=0.33, w_t_max=3.0, w_total_max=20.0)
+[2026-03-25 14:38:00,730][root][INFO] - Using Temporal Positional Encoding. This module uses the patient's age at an event within their time series.
+[2026-03-25 14:38:01,671][root][INFO] - Using a DeSurv Competing-Risk head.
+[2026-03-25 14:38:01,671][root][INFO] - 	With concurrent strategy=None for handling simultaneous events.
+[2026-03-25 14:38:01,672][root][INFO] - 	Evaluating on a time grid between [0.0, 1.0] with 1000 intervals
+[2026-03-25 14:38:01,940][root][INFO] - Using a DeSurv Competing-Risk head.
+[2026-03-25 14:38:01,940][root][INFO] - 	With concurrent strategy=None for handling simultaneous events.
+[2026-03-25 14:38:01,940][root][INFO] - 	Evaluating on a time grid between [0.0, 1.0] with 1000 intervals
+[2026-03-25 14:38:04,194][root][INFO] - Competing-risk with 2 grouped risks
+[2026-03-25 14:38:04,197][root][INFO] - Using a DeSurv Competing-Risk head.
+[2026-03-25 14:38:04,197][root][INFO] - 	With concurrent strategy=None for handling simultaneous events.
+[2026-03-25 14:38:04,198][root][INFO] - 	Evaluating on a time grid between [0.0, 1.0] with 1000 intervals
+FineTuneExperiment(
+  (model): SurvStreamGPTForCausalModelling(
+    (transformer): TTETransformer(
+      (wpe): TemporalPositionalEncoding()
+      (wte): DataEmbeddingLayer(
+        (static_proj): Linear(in_features=27, out_features=384, bias=True)
+        (dynamic_embedding_layer): SplitDynamicEmbeddingLayer(
+          (cat_event_embed_layer): Embedding(108118, 384, padding_idx=0)
+          (cat_event_proj): Linear(in_features=384, out_features=384, bias=True)
+          (num_value_embed_layer): EmbeddingBag(108118, 384, mode='sum', padding_idx=0)
+          (num_value_proj): Linear(in_features=384, out_features=384, bias=True)
+        )
+      )
+      (drop): Dropout(p=0.1, inplace=False)
+      (blocks): ModuleList(
+        (0-5): 6 x Block(
+          (ln_1): LayerNorm((384,), eps=1e-05, elementwise_affine=True)
+          (attn): MultiHeadedSelfAttention(
+            (attn_dropout): Dropout(p=0.1, inplace=False)
+            (resid_dropout): Dropout(p=0.1, inplace=False)
+            (k_proj): Linear(in_features=384, out_features=384, bias=False)
+            (v_proj): Linear(in_features=384, out_features=384, bias=False)
+            (q_proj): Linear(in_features=384, out_features=384, bias=False)
+            (out_proj): Linear(in_features=384, out_features=384, bias=True)
+          )
+          (ln_2): LayerNorm((384,), eps=1e-05, elementwise_affine=True)
+          (mlp): MLP(
+            (c_fc): Linear(in_features=384, out_features=1536, bias=True)
+            (acti): ReLU()
+            (c_proj): Linear(in_features=1536, out_features=384, bias=True)
+            (dropout): Dropout(p=0.1, inplace=False)
+          )
+        )
+      )
+      (ln_f): LayerNorm((384,), eps=1e-05, elementwise_affine=True)
+    )
+    (surv_layer): None
+    (value_layer): None
+  )
+  (surv_layer): ODESurvCompetingRiskLayer(
+    (sr_ode): ODESurvMultiple(
+      (pinet): FCNet(
+        (mapping): Sequential(
+          (0): Linear(in_features=384, out_features=32, bias=True)
+          (1): ReLU()
+          (2): Linear(in_features=32, out_features=32, bias=True)
+          (3): ReLU()
+          (4): Linear(in_features=32, out_features=2, bias=True)
+          (5): Softmax(dim=1)
+        )
+      )
+      (odenet): CondODENet(
+        (BaseNet): FCNet(
+          (mapping): Sequential(
+            (0): Linear(in_features=385, out_features=32, bias=True)
+            (1): ReLU()
+            (2): Linear(in_features=32, out_features=32, bias=True)
+            (3): ReLU()
+            (4): Linear(in_features=32, out_features=2, bias=True)
+            (5): Softplus(beta=1, threshold=20)
+          )
+        )
+      )
+    )
+  )
+)
+[2026-03-25 14:38:04,794][root][INFO] - Created Performance metric callback. Calculating metrics for dict_keys([94982, 90700, 83333, 82288, 79247, 79414, 81371, 76690, 65087, 61743, 65752, 59774, 58547, 66370, 57197, 69130, 47122, 47100, 33641, 33592, 33667, 24477, 33593, 24425, 5939, 5938, 5937, 5840, 5839, 5838, 5837, 79092, 63579, 53968, 49807, 43765, 43764, 47123, 39510, 39509, 33642, 108117]) with map {94982: 0, 90700: 0, 83333: 0, 82288: 0, 79247: 0, 79414: 0, 81371: 0, 76690: 0, 65087: 0, 61743: 0, 65752: 0, 59774: 0, 58547: 0, 66370: 0, 57197: 0, 69130: 0, 47122: 0, 47100: 0, 33641: 0, 33592: 0, 33667: 0, 24477: 0, 33593: 0, 24425: 0, 5939: 0, 5938: 0, 5937: 0, 5840: 0, 5839: 0, 5838: 0, 5837: 0, 79092: 0, 63579: 0, 53968: 0, 49807: 0, 43765: 0, 43764: 0, 47123: 0, 39510: 0, 39509: 0, 33642: 0, 108117: 1}
+[2026-03-25 14:38:04,795][root][INFO] - GPU job — using DDP strategy on 4 GPU(s)
+[2026-03-25 14:38:04,805][root][INFO] - Training model.
+Initializing distributed: GLOBAL_RANK: 2, MEMBER: 3/4
+[2026-03-25 14:38:05,051][torch.distributed.distributed_c10d][INFO] - Added key: store_based_barrier_key:1 to store for rank: 2
+[2026-03-25 14:38:06,153][root][INFO] - Competing-risk with 2 grouped risks
+[2026-03-25 14:38:06,156][root][INFO] - Using a DeSurv Competing-Risk head.
+[2026-03-25 14:38:06,157][root][INFO] - 	With concurrent strategy=None for handling simultaneous events.
+[2026-03-25 14:38:06,157][root][INFO] - 	Evaluating on a time grid between [0.0, 1.0] with 1000 intervals
+[2026-03-25 14:38:06,508][root][INFO] - Competing-risk with 2 grouped risks
+[2026-03-25 14:38:06,512][root][INFO] - Using a DeSurv Competing-Risk head.
+[2026-03-25 14:38:06,512][root][INFO] - 	With concurrent strategy=None for handling simultaneous events.
+[2026-03-25 14:38:06,513][root][INFO] - 	Evaluating on a time grid between [0.0, 1.0] with 1000 intervals
+FineTuneExperiment(
+  (model): SurvStreamGPTForCausalModelling(
+    (transformer): TTETransformer(
+      (wpe): TemporalPositionalEncoding()
+      (wte): DataEmbeddingLayer(
+        (static_proj): Linear(in_features=27, out_features=384, bias=True)
+        (dynamic_embedding_layer): SplitDynamicEmbeddingLayer(
+          (cat_event_embed_layer): Embedding(108118, 384, padding_idx=0)
+          (cat_event_proj): Linear(in_features=384, out_features=384, bias=True)
+          (num_value_embed_layer): EmbeddingBag(108118, 384, mode='sum', padding_idx=0)
+          (num_value_proj): Linear(in_features=384, out_features=384, bias=True)
+        )
+      )
+      (drop): Dropout(p=0.1, inplace=False)
+      (blocks): ModuleList(
+        (0-5): 6 x Block(
+          (ln_1): LayerNorm((384,), eps=1e-05, elementwise_affine=True)
+          (attn): MultiHeadedSelfAttention(
+            (attn_dropout): Dropout(p=0.1, inplace=False)
+            (resid_dropout): Dropout(p=0.1, inplace=False)
+            (k_proj): Linear(in_features=384, out_features=384, bias=False)
+            (v_proj): Linear(in_features=384, out_features=384, bias=False)
+            (q_proj): Linear(in_features=384, out_features=384, bias=False)
+            (out_proj): Linear(in_features=384, out_features=384, bias=True)
+          )
+          (ln_2): LayerNorm((384,), eps=1e-05, elementwise_affine=True)
+          (mlp): MLP(
+            (c_fc): Linear(in_features=384, out_features=1536, bias=True)
+            (acti): ReLU()
+            (c_proj): Linear(in_features=1536, out_features=384, bias=True)
+            (dropout): Dropout(p=0.1, inplace=False)
+          )
+        )
+      )
+      (ln_f): LayerNorm((384,), eps=1e-05, elementwise_affine=True)
+    )
+    (surv_layer): None
+    (value_layer): None
+  )
+  (surv_layer): ODESurvCompetingRiskLayer(
+    (sr_ode): ODESurvMultiple(
+      (pinet): FCNet(
+        (mapping): Sequential(
+          (0): Linear(in_features=384, out_features=32, bias=True)
+          (1): ReLU()
+          (2): Linear(in_features=32, out_features=32, bias=True)
+          (3): ReLU()
+          (4): Linear(in_features=32, out_features=2, bias=True)
+          (5): Softmax(dim=1)
+        )
+      )
+      (odenet): CondODENet(
+        (BaseNet): FCNet(
+          (mapping): Sequential(
+            (0): Linear(in_features=385, out_features=32, bias=True)
+            (1): ReLU()
+            (2): Linear(in_features=32, out_features=32, bias=True)
+            (3): ReLU()
+            (4): Linear(in_features=32, out_features=2, bias=True)
+            (5): Softplus(beta=1, threshold=20)
+          )
+        )
+      )
+    )
+  )
+)
+[2026-03-25 14:38:06,930][root][INFO] - Created Performance metric callback. Calculating metrics for dict_keys([94982, 90700, 83333, 82288, 79247, 79414, 81371, 76690, 65087, 61743, 65752, 59774, 58547, 66370, 57197, 69130, 47122, 47100, 33641, 33592, 33667, 24477, 33593, 24425, 5939, 5938, 5937, 5840, 5839, 5838, 5837, 79092, 63579, 53968, 49807, 43765, 43764, 47123, 39510, 39509, 33642, 108117]) with map {94982: 0, 90700: 0, 83333: 0, 82288: 0, 79247: 0, 79414: 0, 81371: 0, 76690: 0, 65087: 0, 61743: 0, 65752: 0, 59774: 0, 58547: 0, 66370: 0, 57197: 0, 69130: 0, 47122: 0, 47100: 0, 33641: 0, 33592: 0, 33667: 0, 24477: 0, 33593: 0, 24425: 0, 5939: 0, 5938: 0, 5937: 0, 5840: 0, 5839: 0, 5838: 0, 5837: 0, 79092: 0, 63579: 0, 53968: 0, 49807: 0, 43765: 0, 43764: 0, 47123: 0, 39510: 0, 39509: 0, 33642: 0, 108117: 1}
+[2026-03-25 14:38:06,930][root][INFO] - GPU job — using DDP strategy on 4 GPU(s)
+[2026-03-25 14:38:06,940][root][INFO] - Training model.
+FineTuneExperiment(
+  (model): SurvStreamGPTForCausalModelling(
+    (transformer): TTETransformer(
+      (wpe): TemporalPositionalEncoding()
+      (wte): DataEmbeddingLayer(
+        (static_proj): Linear(in_features=27, out_features=384, bias=True)
+        (dynamic_embedding_layer): SplitDynamicEmbeddingLayer(
+          (cat_event_embed_layer): Embedding(108118, 384, padding_idx=0)
+          (cat_event_proj): Linear(in_features=384, out_features=384, bias=True)
+          (num_value_embed_layer): EmbeddingBag(108118, 384, mode='sum', padding_idx=0)
+          (num_value_proj): Linear(in_features=384, out_features=384, bias=True)
+        )
+      )
+      (drop): Dropout(p=0.1, inplace=False)
+      (blocks): ModuleList(
+        (0-5): 6 x Block(
+          (ln_1): LayerNorm((384,), eps=1e-05, elementwise_affine=True)
+          (attn): MultiHeadedSelfAttention(
+            (attn_dropout): Dropout(p=0.1, inplace=False)
+            (resid_dropout): Dropout(p=0.1, inplace=False)
+            (k_proj): Linear(in_features=384, out_features=384, bias=False)
+            (v_proj): Linear(in_features=384, out_features=384, bias=False)
+            (q_proj): Linear(in_features=384, out_features=384, bias=False)
+            (out_proj): Linear(in_features=384, out_features=384, bias=True)
+          )
+          (ln_2): LayerNorm((384,), eps=1e-05, elementwise_affine=True)
+          (mlp): MLP(
+            (c_fc): Linear(in_features=384, out_features=1536, bias=True)
+            (acti): ReLU()
+            (c_proj): Linear(in_features=1536, out_features=384, bias=True)
+            (dropout): Dropout(p=0.1, inplace=False)
+          )
+        )
+      )
+      (ln_f): LayerNorm((384,), eps=1e-05, elementwise_affine=True)
+    )
+    (surv_layer): None
+    (value_layer): None
+  )
+  (surv_layer): ODESurvCompetingRiskLayer(
+    (sr_ode): ODESurvMultiple(
+      (pinet): FCNet(
+        (mapping): Sequential(
+          (0): Linear(in_features=384, out_features=32, bias=True)
+          (1): ReLU()
+          (2): Linear(in_features=32, out_features=32, bias=True)
+          (3): ReLU()
+          (4): Linear(in_features=32, out_features=2, bias=True)
+          (5): Softmax(dim=1)
+        )
+      )
+      (odenet): CondODENet(
+        (BaseNet): FCNet(
+          (mapping): Sequential(
+            (0): Linear(in_features=385, out_features=32, bias=True)
+            (1): ReLU()
+            (2): Linear(in_features=32, out_features=32, bias=True)
+            (3): ReLU()
+            (4): Linear(in_features=32, out_features=2, bias=True)
+            (5): Softplus(beta=1, threshold=20)
+          )
+        )
+      )
+    )
+  )
+)
+[2026-03-25 14:38:07,110][root][INFO] - Created Performance metric callback. Calculating metrics for dict_keys([94982, 90700, 83333, 82288, 79247, 79414, 81371, 76690, 65087, 61743, 65752, 59774, 58547, 66370, 57197, 69130, 47122, 47100, 33641, 33592, 33667, 24477, 33593, 24425, 5939, 5938, 5937, 5840, 5839, 5838, 5837, 79092, 63579, 53968, 49807, 43765, 43764, 47123, 39510, 39509, 33642, 108117]) with map {94982: 0, 90700: 0, 83333: 0, 82288: 0, 79247: 0, 79414: 0, 81371: 0, 76690: 0, 65087: 0, 61743: 0, 65752: 0, 59774: 0, 58547: 0, 66370: 0, 57197: 0, 69130: 0, 47122: 0, 47100: 0, 33641: 0, 33592: 0, 33667: 0, 24477: 0, 33593: 0, 24425: 0, 5939: 0, 5938: 0, 5937: 0, 5840: 0, 5839: 0, 5838: 0, 5837: 0, 79092: 0, 63579: 0, 53968: 0, 49807: 0, 43765: 0, 43764: 0, 47123: 0, 39510: 0, 39509: 0, 33642: 0, 108117: 1}
+[2026-03-25 14:38:07,111][root][INFO] - GPU job — using DDP strategy on 4 GPU(s)
+[2026-03-25 14:38:07,122][root][INFO] - Training model.
+Initializing distributed: GLOBAL_RANK: 1, MEMBER: 2/4
+[2026-03-25 14:38:07,176][torch.distributed.distributed_c10d][INFO] - Added key: store_based_barrier_key:1 to store for rank: 1
+Initializing distributed: GLOBAL_RANK: 3, MEMBER: 4/4
+[2026-03-25 14:38:07,346][torch.distributed.distributed_c10d][INFO] - Added key: store_based_barrier_key:1 to store for rank: 3
+[2026-03-25 14:38:07,352][torch.distributed.distributed_c10d][INFO] - Rank 1: Completed store-based barrier for key:store_based_barrier_key:1 with 4 nodes.
+[2026-03-25 14:38:07,352][torch.distributed.distributed_c10d][INFO] - Rank 2: Completed store-based barrier for key:store_based_barrier_key:1 with 4 nodes.
+[2026-03-25 14:38:07,352][torch.distributed.distributed_c10d][INFO] - Added key: store_based_barrier_key:1 to store for rank: 0
+[2026-03-25 14:38:07,353][torch.distributed.distributed_c10d][INFO] - Rank 0: Completed store-based barrier for key:store_based_barrier_key:1 with 4 nodes.
+----------------------------------------------------------------------------------------------------
+distributed_backend=nccl
+All distributed processes registered. Starting with 4 processes
+----------------------------------------------------------------------------------------------------
+
+[2026-03-25 14:38:07,357][torch.distributed.distributed_c10d][INFO] - Rank 3: Completed store-based barrier for key:store_based_barrier_key:1 with 4 nodes.
+wandb: WARNING The anonymous setting has no effect and will be removed in a future version.
+wandb: [wandb.login()] Loaded credentials for https://api.wandb.ai from /home/swangek/.netrc.
+wandb: Currently logged in as: swangek2002 (swangek2002-hong-kong-university-of-science-and-technology) to https://api.wandb.ai. Use `wandb login --relogin` to force relogin
+wandb: setting up run vg56r9oc
+wandb: Tracking run with wandb version 0.25.0
+wandb: Run data is saved locally in /Data0/swangek_data/991/CPRD/output/wandb/run-20260325_143808-vg56r9oc
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run crPreTrain_small_1337_FineTune_Dementia_CR_EventWeight
+wandb: ⭐️ View project at https://wandb.ai/swangek2002-hong-kong-university-of-science-and-technology/SurvivEHR
+wandb: 🚀 View run at https://wandb.ai/swangek2002-hong-kong-university-of-science-and-technology/SurvivEHR/runs/vg56r9oc
+/Data0/swangek_data/conda_envs/survivehr/lib/python3.10/site-packages/pytorch_lightning/callbacks/model_checkpoint.py:630: Checkpoint directory /Data0/swangek_data/991/CPRD/output/checkpoints/ exists and is not empty.
+LOCAL_RANK: 1 - CUDA_VISIBLE_DEVICES: [0,1,2,3]
+LOCAL_RANK: 0 - CUDA_VISIBLE_DEVICES: [0,1,2,3]
+LOCAL_RANK: 2 - CUDA_VISIBLE_DEVICES: [0,1,2,3]
+LOCAL_RANK: 3 - CUDA_VISIBLE_DEVICES: [0,1,2,3]
+[2026-03-25 14:38:09,772][root][INFO] - No LLRD: backbone_lr=5e-05, head_lr=0.0005
+[2026-03-25 14:38:09,773][root][INFO] - opt.group[0]: lr=0.0005, wd=0.0 (n=26916)
+[2026-03-25 14:38:09,774][root][INFO] - opt.group[1]: lr=5e-05, wd=0.0 (n=93981696)
+Loading `train_dataloader` to estimate number of stepping batches.
+[2026-03-25 14:38:09,851][root][INFO] - No LLRD: backbone_lr=5e-05, head_lr=0.0005
+[2026-03-25 14:38:09,851][root][INFO] - opt.group[0]: lr=0.0005, wd=0.0 (n=26916)
+[2026-03-25 14:38:09,851][root][INFO] - opt.group[1]: lr=5e-05, wd=0.0 (n=93981696)
+[2026-03-25 14:38:09,852][root][INFO] - No LLRD: backbone_lr=5e-05, head_lr=0.0005
+[2026-03-25 14:38:09,853][root][INFO] - opt.group[0]: lr=0.0005, wd=0.0 (n=26916)
+[2026-03-25 14:38:09,853][root][INFO] - opt.group[1]: lr=5e-05, wd=0.0 (n=93981696)
+[2026-03-25 14:38:09,856][root][INFO] - No LLRD: backbone_lr=5e-05, head_lr=0.0005
+[2026-03-25 14:38:09,857][root][INFO] - opt.group[0]: lr=0.0005, wd=0.0 (n=26916)
+[2026-03-25 14:38:09,857][root][INFO] - opt.group[1]: lr=5e-05, wd=0.0 (n=93981696)
+[2026-03-25 14:38:11,798][root][INFO] - Using reduceonplateau scheduler with config {'scheduler': <torch.optim.lr_scheduler.ReduceLROnPlateau object at 0x7fd7daf0fee0>, 'interval': 'epoch', 'monitor': 'val_loss', 'frequency': 1, 'strict': True, 'name': 'reduceonplateau', 'reduce_on_plateau': True}
+[2026-03-25 14:38:11,798][root][INFO] - Using reduceonplateau scheduler with config {'scheduler': <torch.optim.lr_scheduler.ReduceLROnPlateau object at 0x7f5f1b8ac5b0>, 'interval': 'epoch', 'monitor': 'val_loss', 'frequency': 1, 'strict': True, 'name': 'reduceonplateau', 'reduce_on_plateau': True}
+[2026-03-25 14:38:11,799][root][INFO] - Using reduceonplateau scheduler with config {'scheduler': <torch.optim.lr_scheduler.ReduceLROnPlateau object at 0x7fb868707d60>, 'interval': 'epoch', 'monitor': 'val_loss', 'frequency': 1, 'strict': True, 'name': 'reduceonplateau', 'reduce_on_plateau': True}
+[2026-03-25 14:38:11,798][root][INFO] - Using reduceonplateau scheduler with config {'scheduler': <torch.optim.lr_scheduler.ReduceLROnPlateau object at 0x7f6d731ac2e0>, 'interval': 'epoch', 'monitor': 'val_loss', 'frequency': 1, 'strict': True, 'name': 'reduceonplateau', 'reduce_on_plateau': True}
+
+  | Name       | Type                            | Params
+---------------------------------------------------------------
+0 | model      | SurvStreamGPTForCausalModelling | 94.0 M
+1 | surv_layer | ODESurvCompetingRiskLayer       | 26.9 K
+---------------------------------------------------------------
+94.0 M    Trainable params
+222       Non-trainable params
+94.0 M    Total params
+376.035   Total estimated model params size (MB)
+wandb: WARNING Serializing object of type str that is 142528 bytes
+Sanity Checking: |          | 0/? [00:00<?, ?it/s]Sanity Checking:   0%|          | 0/2 [00:00<?, ?it/s]Sanity Checking DataLoader 0:   0%|          | 0/2 [00:00<?, ?it/s]/Data0/swangek_data/conda_envs/survivehr/lib/python3.10/site-packages/pytorch_lightning/trainer/connectors/logger_connector/result.py:211: You called `self.log('val_loss_values', ...)` in your `validation_step` but the value needs to be floating point. Converting it to torch.float32.
+[2026-03-25 14:38:34,171][root][WARNING] - Only censored events in batch. Evaluating metrics will be unstable.
+[2026-03-25 14:38:37,770][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+[2026-03-25 14:38:37,771][root][WARNING] - lbls=[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]; target_ages=[0.4379908  0.10849285 0.32694086 0.4564384  0.72639245 0.4345204
+ 0.07543405 0.5950683  0.48657545 0.4445661  0.6962557  0.46538797
+ 0.09607283 0.42100462 0.08365313 0.52620983 0.1948859  0.53625554
+ 0.622283   0.425388   0.49479452 0.25406393 0.31853867 0.20894973
+ 0.40621027 0.59086734 0.582283   0.19305961 0.62009114 0.05223751
+ 0.44237423 0.3976256 ]
+[2026-03-25 14:38:37,790][root][WARNING] - Only censored events in batch. Evaluating metrics will be unstable.
+[2026-03-25 14:38:37,872][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+[2026-03-25 14:38:37,873][root][WARNING] - lbls=[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]; target_ages=[0.4379908  0.10849285 0.32694086 0.4564384  0.72639245 0.4345204
+ 0.07543405 0.5950683  0.48657545 0.4445661  0.6962557  0.46538797
+ 0.09607283 0.42100462 0.08365313 0.52620983 0.1948859  0.53625554
+ 0.622283   0.425388   0.49479452 0.25406393 0.31853867 0.20894973
+ 0.40621027 0.59086734 0.582283   0.19305961 0.62009114 0.05223751
+ 0.44237423 0.3976256 ]
+[2026-03-25 14:38:37,880][root][WARNING] - Only censored events in batch. Evaluating metrics will be unstable.
+[2026-03-25 14:38:37,969][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+[2026-03-25 14:38:37,970][root][WARNING] - lbls=[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]; target_ages=[0.4379908  0.10849285 0.32694086 0.4564384  0.72639245 0.4345204
+ 0.07543405 0.5950683  0.48657545 0.4445661  0.6962557  0.46538797
+ 0.09607283 0.42100462 0.08365313 0.52620983 0.1948859  0.53625554
+ 0.622283   0.425388   0.49479452 0.25406393 0.31853867 0.20894973
+ 0.40621027 0.59086734 0.582283   0.19305961 0.62009114 0.05223751
+ 0.44237423 0.3976256 ]
+[2026-03-25 14:38:42,365][root][WARNING] - Only censored events in batch. Evaluating metrics will be unstable.
+[2026-03-25 14:38:42,515][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+[2026-03-25 14:38:42,516][root][WARNING] - lbls=[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]; target_ages=[0.52237445 0.30082193 0.23872153 0.50557107 0.10374451 0.38082185
+ 0.7532422  0.6305024  0.50447464 0.33424664 0.47744307 0.3831965
+ 0.50191784 0.4021918  0.84073067 0.39269415 0.3271233  0.2947944
+ 0.61516    0.85643834 0.534612   0.44401804 0.4281279  0.38374424
+ 0.2173516  0.3959818  0.5716896  0.60894966 0.703379   0.63470334
+ 0.40785408 0.57333344]
+Sanity Checking DataLoader 0:  50%|█████     | 1/2 [00:14<00:14,  0.07it/s][2026-03-25 14:38:46,172][root][WARNING] - Only censored events in batch. Evaluating metrics will be unstable.
+[2026-03-25 14:38:46,380][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+[2026-03-25 14:38:46,381][root][WARNING] - lbls=[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]; target_ages=[0.324749   0.48803648 0.5669406  0.07835611 0.28913245 0.26721445
+ 0.03488604 0.1667579  0.5136073  0.8385388  0.2968038  0.2778082
+ 0.39397272 0.10136986 0.54502267 0.7196347  0.24219196 0.27287674
+ 0.662831   0.8553422  0.07689508 0.4427398  0.6915067  0.66246605
+ 0.86447495 0.27981725 0.46410975 0.54684955 0.46648407 0.0902284
+ 0.41041088 0.11963495]
+[2026-03-25 14:38:47,631][root][WARNING] - Only censored events in batch. Evaluating metrics will be unstable.
+[2026-03-25 14:38:47,721][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+[2026-03-25 14:38:47,722][root][WARNING] - lbls=[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]; target_ages=[0.0297718  0.40602747 0.40255737 0.19525115 0.47762552 0.5267582
+ 0.25570774 0.7631051  0.39999995 0.30812803 0.06812795 0.57570773
+ 0.30319628 0.37990856 0.6268492  0.35689512 0.3534244  0.4688584
+ 0.71981716 0.8257535  0.40675798 0.40292263 0.71397275 0.24109586
+ 0.20968024 0.02721469 0.47196355 0.324749   0.51890403 0.4564384
+ 0.22611873 0.3930594 ]
+Sanity Checking DataLoader 0: 100%|██████████| 2/2 [00:19<00:00,  0.10it/s][2026-03-25 14:38:53,548][root][WARNING] - Only censored events in batch. Evaluating metrics will be unstable.
+[2026-03-25 14:38:53,635][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+[2026-03-25 14:38:53,636][root][WARNING] - lbls=[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]; target_ages=[0.44054794 0.7139724  0.5139726  0.45479426 0.33022848 0.60383576
+ 0.8186302  0.57406396 0.08547942 0.42867565 0.6858447  0.5472145
+ 0.39853892 0.6754338  0.42757988 0.10264841 0.26611868 0.29954338
+ 0.70173484 0.639452   0.24913247 0.49716887 0.6999089  0.51269406
+ 0.76584464 0.17114162 0.459726   0.43178082 0.7565298  0.19050217
+ 0.74557084 0.58045673]
+/Data0/swangek_data/conda_envs/survivehr/lib/python3.10/site-packages/pytorch_lightning/trainer/connectors/logger_connector/result.py:429: It is recommended to use `self.log('Val:OutcomePerformanceMetricsctd', ..., sync_dist=True)` when logging on epoch level in distributed setting to accumulate the metric across devices.
+/Data0/swangek_data/conda_envs/survivehr/lib/python3.10/site-packages/pytorch_lightning/trainer/connectors/logger_connector/result.py:429: It is recommended to use `self.log('Val:OutcomePerformanceMetricsibs', ..., sync_dist=True)` when logging on epoch level in distributed setting to accumulate the metric across devices.
+/Data0/swangek_data/conda_envs/survivehr/lib/python3.10/site-packages/pytorch_lightning/trainer/connectors/logger_connector/result.py:429: It is recommended to use `self.log('Val:OutcomePerformanceMetricsinbll', ..., sync_dist=True)` when logging on epoch level in distributed setting to accumulate the metric across devices.
+/Data0/swangek_data/conda_envs/survivehr/lib/python3.10/site-packages/pytorch_lightning/trainer/connectors/logger_connector/result.py:429: It is recommended to use `self.log('Val:OutcomePerformanceMetrics_risk0_41codesctd', ..., sync_dist=True)` when logging on epoch level in distributed setting to accumulate the metric across devices.
+/Data0/swangek_data/conda_envs/survivehr/lib/python3.10/site-packages/pytorch_lightning/trainer/connectors/logger_connector/result.py:429: It is recommended to use `self.log('Val:OutcomePerformanceMetrics_risk0_41codesibs', ..., sync_dist=True)` when logging on epoch level in distributed setting to accumulate the metric across devices.
+/Data0/swangek_data/conda_envs/survivehr/lib/python3.10/site-packages/pytorch_lightning/trainer/connectors/logger_connector/result.py:429: It is recommended to use `self.log('Val:OutcomePerformanceMetrics_risk0_41codesinbll', ..., sync_dist=True)` when logging on epoch level in distributed setting to accumulate the metric across devices.
+/Data0/swangek_data/conda_envs/survivehr/lib/python3.10/site-packages/pytorch_lightning/trainer/connectors/logger_connector/result.py:429: It is recommended to use `self.log('Val:OutcomePerformanceMetrics_risk1_1codesctd', ..., sync_dist=True)` when logging on epoch level in distributed setting to accumulate the metric across devices.
+/Data0/swangek_data/conda_envs/survivehr/lib/python3.10/site-packages/pytorch_lightning/trainer/connectors/logger_connector/result.py:429: It is recommended to use `self.log('Val:OutcomePerformanceMetrics_risk1_1codesibs', ..., sync_dist=True)` when logging on epoch level in distributed setting to accumulate the metric across devices.
+/Data0/swangek_data/conda_envs/survivehr/lib/python3.10/site-packages/pytorch_lightning/trainer/connectors/logger_connector/result.py:429: It is recommended to use `self.log('Val:OutcomePerformanceMetrics_risk1_1codesinbll', ..., sync_dist=True)` when logging on epoch level in distributed setting to accumulate the metric across devices.
+                                                                           Training: |          | 0/? [00:00<?, ?it/s]Training:   0%|          | 0/1561 [00:00<?, ?it/s]Epoch 0:   0%|          | 0/1561 [00:00<?, ?it/s] /Data0/swangek_data/conda_envs/survivehr/lib/python3.10/site-packages/pytorch_lightning/trainer/connectors/logger_connector/result.py:211: You called `self.log('train_loss_values', ...)` in your `training_step` but the value needs to be floating point. Converting it to torch.float32.
+Epoch 0:   0%|          | 1/1561 [00:00<23:10,  1.12it/s]Epoch 0:   0%|          | 1/1561 [00:00<23:14,  1.12it/s, v_num=r9oc]Epoch 0:   0%|          | 2/1561 [00:46<10:04:15,  0.04it/s, v_num=r9oc]Epoch 0:   0%|          | 2/1561 [00:46<10:04:17,  0.04it/s, v_num=r9oc]Epoch 0:   0%|          | 3/1561 [00:46<6:45:46,  0.06it/s, v_num=r9oc] Epoch 0:   0%|          | 3/1561 [00:46<6:45:47,  0.06it/s, v_num=r9oc]Epoch 0:   0%|          | 4/1561 [00:47<5:09:18,  0.08it/s, v_num=r9oc]Epoch 0:   0%|          | 4/1561 [00:47<5:09:19,  0.08it/s, v_num=r9oc][2026-03-25 14:39:41,604][torch.nn.parallel.distributed][INFO] - Reducer buckets have been rebuilt in this iteration.
+[2026-03-25 14:39:41,604][torch.nn.parallel.distributed][INFO] - Reducer buckets have been rebuilt in this iteration.
+[2026-03-25 14:39:41,604][torch.nn.parallel.distributed][INFO] - Reducer buckets have been rebuilt in this iteration.
+[2026-03-25 14:39:41,604][torch.nn.parallel.distributed][INFO] - Reducer buckets have been rebuilt in this iteration.
+Epoch 0:   0%|          | 5/1561 [00:48<4:09:29,  0.10it/s, v_num=r9oc]Epoch 0:   0%|          | 5/1561 [00:48<4:09:30,  0.10it/s, v_num=r9oc]Epoch 0:   0%|          | 6/1561 [00:48<3:29:40,  0.12it/s, v_num=r9oc]Epoch 0:   0%|          | 6/1561 [00:48<3:29:42,  0.12it/s, v_num=r9oc]Epoch 0:   0%|          | 7/1561 [00:49<3:01:26,  0.14it/s, v_num=r9oc]Epoch 0:   0%|          | 7/1561 [00:49<3:01:26,  0.14it/s, v_num=r9oc]Epoch 0:   1%|          | 8/1561 [00:49<2:41:08,  0.16it/s, v_num=r9oc]Epoch 0:   1%|          | 8/1561 [00:49<2:41:08,  0.16it/s, v_num=r9oc]Epoch 0:   1%|          | 9/1561 [00:50<2:24:20,  0.18it/s, v_num=r9oc]Epoch 0:   1%|          | 9/1561 [00:50<2:24:20,  0.18it/s, v_num=r9oc]Epoch 0:   1%|          | 10/1561 [00:50<2:10:56,  0.20it/s, v_num=r9oc]Epoch 0:   1%|          | 10/1561 [00:50<2:10:56,  0.20it/s, v_num=r9oc]Epoch 0:   1%|          | 11/1561 [00:51<1:59:57,  0.22it/s, v_num=r9oc]Epoch 0:   1%|          | 11/1561 [00:51<1:59:57,  0.22it/s, v_num=r9oc]Epoch 0:   1%|          | 12/1561 [00:51<1:51:10,  0.23it/s, v_num=r9oc]Epoch 0:   1%|          | 12/1561 [00:51<1:51:10,  0.23it/s, v_num=r9oc]Epoch 0:   1%|          | 13/1561 [00:52<1:43:25,  0.25it/s, v_num=r9oc]Epoch 0:   1%|          | 13/1561 [00:52<1:43:26,  0.25it/s, v_num=r9oc]Epoch 0:   1%|          | 14/1561 [00:52<1:36:49,  0.27it/s, v_num=r9oc]Epoch 0:   1%|          | 14/1561 [00:52<1:36:49,  0.27it/s, v_num=r9oc]Epoch 0:   1%|          | 15/1561 [00:53<1:31:02,  0.28it/s, v_num=r9oc]Epoch 0:   1%|          | 15/1561 [00:53<1:31:02,  0.28it/s, v_num=r9oc]Epoch 0:   1%|          | 16/1561 [00:53<1:26:25,  0.30it/s, v_num=r9oc]Epoch 0:   1%|          | 16/1561 [00:53<1:26:26,  0.30it/s, v_num=r9oc]Epoch 0:   1%|          | 17/1561 [00:54<1:22:01,  0.31it/s, v_num=r9oc]Epoch 0:   1%|          | 17/1561 [00:54<1:22:01,  0.31it/s, v_num=r9oc]Epoch 0:   1%|          | 18/1561 [00:54<1:18:05,  0.33it/s, v_num=r9oc]Epoch 0:   1%|          | 18/1561 [00:54<1:18:06,  0.33it/s, v_num=r9oc]Epoch 0:   1%|          | 19/1561 [00:55<1:14:38,  0.34it/s, v_num=r9oc]Epoch 0:   1%|          | 19/1561 [00:55<1:14:39,  0.34it/s, v_num=r9oc]Epoch 0:   1%|▏         | 20/1561 [01:05<1:24:03,  0.31it/s, v_num=r9oc]Epoch 0:   1%|▏         | 20/1561 [01:05<1:24:03,  0.31it/s, v_num=r9oc]Epoch 0:   1%|▏         | 21/1561 [01:05<1:20:36,  0.32it/s, v_num=r9oc]Epoch 0:   1%|▏         | 21/1561 [01:05<1:20:36,  0.32it/s, v_num=r9oc]Epoch 0:   1%|▏         | 22/1561 [01:06<1:17:27,  0.33it/s, v_num=r9oc]Epoch 0:   1%|▏         | 22/1561 [01:06<1:17:27,  0.33it/s, v_num=r9oc]Epoch 0:   1%|▏         | 23/1561 [01:07<1:14:49,  0.34it/s, v_num=r9oc]Epoch 0:   1%|▏         | 23/1561 [01:07<1:14:49,  0.34it/s, v_num=r9oc]Epoch 0:   2%|▏         | 24/1561 [01:07<1:12:24,  0.35it/s, v_num=r9oc]Epoch 0:   2%|▏         | 24/1561 [01:07<1:12:24,  0.35it/s, v_num=r9oc]Epoch 0:   2%|▏         | 25/1561 [01:48<1:51:27,  0.23it/s, v_num=r9oc]Epoch 0:   2%|▏         | 25/1561 [01:48<1:51:27,  0.23it/s, v_num=r9oc]Epoch 0:   2%|▏         | 26/1561 [01:49<1:47:29,  0.24it/s, v_num=r9oc]Epoch 0:   2%|▏         | 26/1561 [01:49<1:47:29,  0.24it/s, v_num=r9oc]Epoch 0:   2%|▏         | 27/1561 [01:49<1:43:47,  0.25it/s, v_num=r9oc]Epoch 0:   2%|▏         | 27/1561 [01:49<1:43:47,  0.25it/s, v_num=r9oc]Epoch 0:   2%|▏         | 28/1561 [01:50<1:40:31,  0.25it/s, v_num=r9oc]Epoch 0:   2%|▏         | 28/1561 [01:50<1:40:31,  0.25it/s, v_num=r9oc]Epoch 0:   2%|▏         | 29/1561 [01:50<1:37:23,  0.26it/s, v_num=r9oc]Epoch 0:   2%|▏         | 29/1561 [01:50<1:37:23,  0.26it/s, v_num=r9oc]Epoch 0:   2%|▏         | 30/1561 [01:51<1:34:26,  0.27it/s, v_num=r9oc]Epoch 0:   2%|▏         | 30/1561 [01:51<1:34:26,  0.27it/s, v_num=r9oc]Epoch 0:   2%|▏         | 31/1561 [01:51<1:31:41,  0.28it/s, v_num=r9oc]Epoch 0:   2%|▏         | 31/1561 [01:51<1:31:41,  0.28it/s, v_num=r9oc]Epoch 0:   2%|▏         | 32/1561 [01:52<1:29:14,  0.29it/s, v_num=r9oc]Epoch 0:   2%|▏         | 32/1561 [01:52<1:29:14,  0.29it/s, v_num=r9oc]Epoch 0:   2%|▏         | 33/1561 [01:52<1:26:50,  0.29it/s, v_num=r9oc]Epoch 0:   2%|▏         | 33/1561 [01:52<1:26:50,  0.29it/s, v_num=r9oc]Epoch 0:   2%|▏         | 34/1561 [01:52<1:24:32,  0.30it/s, v_num=r9oc]Epoch 0:   2%|▏         | 34/1561 [01:52<1:24:32,  0.30it/s, v_num=r9oc]Epoch 0:   2%|▏         | 35/1561 [01:53<1:22:24,  0.31it/s, v_num=r9oc]Epoch 0:   2%|▏         | 35/1561 [01:53<1:22:24,  0.31it/s, v_num=r9oc]Epoch 0:   2%|▏         | 36/1561 [01:54<1:20:32,  0.32it/s, v_num=r9oc]Epoch 0:   2%|▏         | 36/1561 [01:54<1:20:32,  0.32it/s, v_num=r9oc]Epoch 0:   2%|▏         | 37/1561 [01:54<1:18:37,  0.32it/s, v_num=r9oc]Epoch 0:   2%|▏         | 37/1561 [01:54<1:18:37,  0.32it/s, v_num=r9oc]Epoch 0:   2%|▏         | 38/1561 [01:54<1:16:46,  0.33it/s, v_num=r9oc]Epoch 0:   2%|▏         | 38/1561 [01:54<1:16:46,  0.33it/s, v_num=r9oc]Epoch 0:   2%|▏         | 39/1561 [01:55<1:15:02,  0.34it/s, v_num=r9oc]Epoch 0:   2%|▏         | 39/1561 [01:55<1:15:02,  0.34it/s, v_num=r9oc]Epoch 0:   3%|▎         | 40/1561 [01:55<1:13:30,  0.34it/s, v_num=r9oc]Epoch 0:   3%|▎         | 40/1561 [01:55<1:13:30,  0.34it/s, v_num=r9oc]Epoch 0:   3%|▎         | 41/1561 [01:56<1:11:55,  0.35it/s, v_num=r9oc]Epoch 0:   3%|▎         | 41/1561 [01:56<1:11:55,  0.35it/s, v_num=r9oc]Epoch 0:   3%|▎         | 42/1561 [01:56<1:10:25,  0.36it/s, v_num=r9oc]Epoch 0:   3%|▎         | 42/1561 [01:56<1:10:25,  0.36it/s, v_num=r9oc]Epoch 0:   3%|▎         | 43/1561 [01:57<1:08:58,  0.37it/s, v_num=r9oc]Epoch 0:   3%|▎         | 43/1561 [01:57<1:08:58,  0.37it/s, v_num=r9oc]Epoch 0:   3%|▎         | 44/1561 [01:57<1:07:44,  0.37it/s, v_num=r9oc]Epoch 0:   3%|▎         | 44/1561 [01:57<1:07:44,  0.37it/s, v_num=r9oc]Epoch 0:   3%|▎         | 45/1561 [01:58<1:06:27,  0.38it/s, v_num=r9oc]Epoch 0:   3%|▎         | 45/1561 [01:58<1:06:27,  0.38it/s, v_num=r9oc]Epoch 0:   3%|▎         | 46/1561 [01:58<1:05:13,  0.39it/s, v_num=r9oc]Epoch 0:   3%|▎         | 46/1561 [01:58<1:05:13,  0.39it/s, v_num=r9oc]Epoch 0:   3%|▎         | 47/1561 [01:59<1:03:59,  0.39it/s, v_num=r9oc]Epoch 0:   3%|▎         | 47/1561 [01:59<1:04:00,  0.39it/s, v_num=r9oc]Epoch 0:   3%|▎         | 48/1561 [01:59<1:03:00,  0.40it/s, v_num=r9oc]Epoch 0:   3%|▎         | 48/1561 [01:59<1:03:00,  0.40it/s, v_num=r9oc]Epoch 0:   3%|▎         | 49/1561 [02:00<1:01:55,  0.41it/s, v_num=r9oc]Epoch 0:   3%|▎         | 49/1561 [02:00<1:01:55,  0.41it/s, v_num=r9oc]Epoch 0:   3%|▎         | 50/1561 [02:00<1:00:53,  0.41it/s, v_num=r9oc]Epoch 0:   3%|▎         | 50/1561 [02:00<1:00:53,  0.41it/s, v_num=r9oc]Epoch 0:   3%|▎         | 51/1561 [02:01<59:54,  0.42it/s, v_num=r9oc]  Epoch 0:   3%|▎         | 51/1561 [02:01<59:54,  0.42it/s, v_num=r9oc]Epoch 0:   3%|▎         | 52/1561 [02:02<59:06,  0.43it/s, v_num=r9oc]Epoch 0:   3%|▎         | 52/1561 [02:02<59:06,  0.43it/s, v_num=r9oc]Epoch 0:   3%|▎         | 53/1561 [02:02<58:12,  0.43it/s, v_num=r9oc]Epoch 0:   3%|▎         | 53/1561 [02:02<58:12,  0.43it/s, v_num=r9oc]Epoch 0:   3%|▎         | 54/1561 [02:03<57:21,  0.44it/s, v_num=r9oc]Epoch 0:   3%|▎         | 54/1561 [02:03<57:22,  0.44it/s, v_num=r9oc]Epoch 0:   4%|▎         | 55/1561 [02:03<56:32,  0.44it/s, v_num=r9oc]Epoch 0:   4%|▎         | 55/1561 [02:03<56:32,  0.44it/s, v_num=r9oc]Epoch 0:   4%|▎         | 56/1561 [02:04<55:52,  0.45it/s, v_num=r9oc]Epoch 0:   4%|▎         | 56/1561 [02:04<55:52,  0.45it/s, v_num=r9oc]Epoch 0:   4%|▎         | 57/1561 [02:05<55:05,  0.45it/s, v_num=r9oc]Epoch 0:   4%|▎         | 57/1561 [02:05<55:06,  0.45it/s, v_num=r9oc]Epoch 0:   4%|▎         | 58/1561 [02:05<54:17,  0.46it/s, v_num=r9oc]Epoch 0:   4%|▎         | 58/1561 [02:05<54:17,  0.46it/s, v_num=r9oc]Epoch 0:   4%|▍         | 59/1561 [02:06<53:33,  0.47it/s, v_num=r9oc]Epoch 0:   4%|▍         | 59/1561 [02:06<53:34,  0.47it/s, v_num=r9oc]Epoch 0:   4%|▍         | 60/1561 [02:07<52:57,  0.47it/s, v_num=r9oc]Epoch 0:   4%|▍         | 60/1561 [02:07<52:57,  0.47it/s, v_num=r9oc]Epoch 0:   4%|▍         | 61/1561 [02:07<52:16,  0.48it/s, v_num=r9oc]Epoch 0:   4%|▍         | 61/1561 [02:07<52:16,  0.48it/s, v_num=r9oc]Epoch 0:   4%|▍         | 62/1561 [02:08<51:42,  0.48it/s, v_num=r9oc]Epoch 0:   4%|▍         | 62/1561 [02:08<51:42,  0.48it/s, v_num=r9oc]Epoch 0:   4%|▍         | 63/1561 [02:08<51:07,  0.49it/s, v_num=r9oc]Epoch 0:   4%|▍         | 63/1561 [02:09<51:07,  0.49it/s, v_num=r9oc]Epoch 0:   4%|▍         | 64/1561 [02:10<50:41,  0.49it/s, v_num=r9oc]Epoch 0:   4%|▍         | 64/1561 [02:10<50:41,  0.49it/s, v_num=r9oc]Epoch 0:   4%|▍         | 65/1561 [02:10<50:06,  0.50it/s, v_num=r9oc]Epoch 0:   4%|▍         | 65/1561 [02:10<50:06,  0.50it/s, v_num=r9oc]Epoch 0:   4%|▍         | 66/1561 [02:11<49:39,  0.50it/s, v_num=r9oc]Epoch 0:   4%|▍         | 66/1561 [02:11<49:39,  0.50it/s, v_num=r9oc]Epoch 0:   4%|▍         | 67/1561 [02:12<49:16,  0.51it/s, v_num=r9oc]Epoch 0:   4%|▍         | 67/1561 [02:12<49:17,  0.51it/s, v_num=r9oc]Epoch 0:   4%|▍         | 68/1561 [02:13<49:01,  0.51it/s, v_num=r9oc]Epoch 0:   4%|▍         | 68/1561 [02:13<49:01,  0.51it/s, v_num=r9oc]Epoch 0:   4%|▍         | 69/1561 [02:14<48:34,  0.51it/s, v_num=r9oc]Epoch 0:   4%|▍         | 69/1561 [02:14<48:34,  0.51it/s, v_num=r9oc]Epoch 0:   4%|▍         | 70/1561 [02:15<48:08,  0.52it/s, v_num=r9oc]Epoch 0:   4%|▍         | 70/1561 [02:15<48:08,  0.52it/s, v_num=r9oc]Epoch 0:   5%|▍         | 71/1561 [02:16<47:46,  0.52it/s, v_num=r9oc]Epoch 0:   5%|▍         | 71/1561 [02:16<47:46,  0.52it/s, v_num=r9oc]Epoch 0:   5%|▍         | 72/1561 [02:59<1:01:44,  0.40it/s, v_num=r9oc]Epoch 0:   5%|▍         | 72/1561 [02:59<1:01:45,  0.40it/s, v_num=r9oc]Epoch 0:   5%|▍         | 73/1561 [03:00<1:01:09,  0.41it/s, v_num=r9oc]Epoch 0:   5%|▍         | 73/1561 [03:00<1:01:09,  0.41it/s, v_num=r9oc]Epoch 0:   5%|▍         | 74/1561 [03:00<1:00:33,  0.41it/s, v_num=r9oc]Epoch 0:   5%|▍         | 74/1561 [03:00<1:00:33,  0.41it/s, v_num=r9oc]Epoch 0:   5%|▍         | 75/1561 [03:01<59:59,  0.41it/s, v_num=r9oc]  Epoch 0:   5%|▍         | 75/1561 [03:01<59:59,  0.41it/s, v_num=r9oc]Epoch 0:   5%|▍         | 76/1561 [03:03<59:36,  0.42it/s, v_num=r9oc]Epoch 0:   5%|▍         | 76/1561 [03:03<59:36,  0.42it/s, v_num=r9oc]Epoch 0:   5%|▍         | 77/1561 [03:09<1:00:51,  0.41it/s, v_num=r9oc]Epoch 0:   5%|▍         | 77/1561 [03:09<1:00:51,  0.41it/s, v_num=r9oc]Epoch 0:   5%|▍         | 78/1561 [03:10<1:00:22,  0.41it/s, v_num=r9oc]Epoch 0:   5%|▍         | 78/1561 [03:10<1:00:22,  0.41it/s, v_num=r9oc]Epoch 0:   5%|▌         | 79/1561 [03:11<59:50,  0.41it/s, v_num=r9oc]  Epoch 0:   5%|▌         | 79/1561 [03:11<59:50,  0.41it/s, v_num=r9oc]Epoch 0:   5%|▌         | 80/1561 [03:43<1:08:55,  0.36it/s, v_num=r9oc]Epoch 0:   5%|▌         | 80/1561 [03:43<1:08:55,  0.36it/s, v_num=r9oc]Epoch 0:   5%|▌         | 81/1561 [03:43<1:08:11,  0.36it/s, v_num=r9oc]Epoch 0:   5%|▌         | 81/1561 [03:43<1:08:11,  0.36it/s, v_num=r9oc]Epoch 0:   5%|▌         | 82/1561 [03:44<1:07:26,  0.37it/s, v_num=r9oc]Epoch 0:   5%|▌         | 82/1561 [03:44<1:07:26,  0.37it/s, v_num=r9oc]Epoch 0:   5%|▌         | 83/1561 [03:44<1:06:44,  0.37it/s, v_num=r9oc]Epoch 0:   5%|▌         | 83/1561 [03:44<1:06:44,  0.37it/s, v_num=r9oc]Epoch 0:   5%|▌         | 84/1561 [03:47<1:06:36,  0.37it/s, v_num=r9oc]Epoch 0:   5%|▌         | 84/1561 [03:47<1:06:36,  0.37it/s, v_num=r9oc]Epoch 0:   5%|▌         | 85/1561 [03:47<1:05:56,  0.37it/s, v_num=r9oc]Epoch 0:   5%|▌         | 85/1561 [03:47<1:05:56,  0.37it/s, v_num=r9oc]Epoch 0:   6%|▌         | 86/1561 [03:48<1:05:15,  0.38it/s, v_num=r9oc]Epoch 0:   6%|▌         | 86/1561 [03:48<1:05:15,  0.38it/s, v_num=r9oc]Epoch 0:   6%|▌         | 87/1561 [03:48<1:04:36,  0.38it/s, v_num=r9oc]Epoch 0:   6%|▌         | 87/1561 [03:48<1:04:36,  0.38it/s, v_num=r9oc]Epoch 0:   6%|▌         | 88/1561 [03:49<1:04:03,  0.38it/s, v_num=r9oc]Epoch 0:   6%|▌         | 88/1561 [03:49<1:04:03,  0.38it/s, v_num=r9oc]Epoch 0:   6%|▌         | 89/1561 [03:50<1:03:28,  0.39it/s, v_num=r9oc]Epoch 0:   6%|▌         | 89/1561 [03:50<1:03:28,  0.39it/s, v_num=r9oc]Epoch 0:   6%|▌         | 90/1561 [04:39<1:16:09,  0.32it/s, v_num=r9oc]Epoch 0:   6%|▌         | 90/1561 [04:39<1:16:09,  0.32it/s, v_num=r9oc]Epoch 0:   6%|▌         | 91/1561 [04:39<1:15:22,  0.33it/s, v_num=r9oc]Epoch 0:   6%|▌         | 91/1561 [04:39<1:15:22,  0.33it/s, v_num=r9oc]Epoch 0:   6%|▌         | 92/1561 [04:40<1:14:37,  0.33it/s, v_num=r9oc]Epoch 0:   6%|▌         | 92/1561 [04:40<1:14:37,  0.33it/s, v_num=r9oc]Epoch 0:   6%|▌         | 93/1561 [04:40<1:13:52,  0.33it/s, v_num=r9oc]Epoch 0:   6%|▌         | 93/1561 [04:40<1:13:52,  0.33it/s, v_num=r9oc]Epoch 0:   6%|▌         | 94/1561 [04:41<1:13:08,  0.33it/s, v_num=r9oc]Epoch 0:   6%|▌         | 94/1561 [04:41<1:13:08,  0.33it/s, v_num=r9oc]Epoch 0:   6%|▌         | 95/1561 [04:41<1:12:24,  0.34it/s, v_num=r9oc]Epoch 0:   6%|▌         | 95/1561 [04:41<1:12:24,  0.34it/s, v_num=r9oc]Epoch 0:   6%|▌         | 96/1561 [04:42<1:11:44,  0.34it/s, v_num=r9oc]Epoch 0:   6%|▌         | 96/1561 [04:42<1:11:44,  0.34it/s, v_num=r9oc]Epoch 0:   6%|▌         | 97/1561 [04:42<1:11:03,  0.34it/s, v_num=r9oc]Epoch 0:   6%|▌         | 97/1561 [04:42<1:11:03,  0.34it/s, v_num=r9oc]Epoch 0:   6%|▋         | 98/1561 [04:42<1:10:23,  0.35it/s, v_num=r9oc]Epoch 0:   6%|▋         | 98/1561 [04:42<1:10:23,  0.35it/s, v_num=r9oc]Epoch 0:   6%|▋         | 99/1561 [04:43<1:09:44,  0.35it/s, v_num=r9oc]Epoch 0:   6%|▋         | 99/1561 [04:43<1:09:44,  0.35it/s, v_num=r9oc]Epoch 0:   6%|▋         | 100/1561 [04:43<1:09:09,  0.35it/s, v_num=r9oc]Epoch 0:   6%|▋         | 100/1561 [04:43<1:09:09,  0.35it/s, v_num=r9oc]Epoch 0:   6%|▋         | 101/1561 [04:44<1:08:31,  0.36it/s, v_num=r9oc]Epoch 0:   6%|▋         | 101/1561 [04:44<1:08:31,  0.36it/s, v_num=r9oc]Epoch 0:   7%|▋         | 102/1561 [04:44<1:07:54,  0.36it/s, v_num=r9oc]Epoch 0:   7%|▋         | 102/1561 [04:44<1:07:55,  0.36it/s, v_num=r9oc]Epoch 0:   7%|▋         | 103/1561 [04:45<1:07:19,  0.36it/s, v_num=r9oc]Epoch 0:   7%|▋         | 103/1561 [04:45<1:07:19,  0.36it/s, v_num=r9oc]Epoch 0:   7%|▋         | 104/1561 [04:46<1:06:47,  0.36it/s, v_num=r9oc]Epoch 0:   7%|▋         | 104/1561 [04:46<1:06:47,  0.36it/s, v_num=r9oc]Epoch 0:   7%|▋         | 105/1561 [04:46<1:06:12,  0.37it/s, v_num=r9oc]Epoch 0:   7%|▋         | 105/1561 [04:46<1:06:12,  0.37it/s, v_num=r9oc]Epoch 0:   7%|▋         | 106/1561 [04:46<1:05:38,  0.37it/s, v_num=r9oc]Epoch 0:   7%|▋         | 106/1561 [04:46<1:05:38,  0.37it/s, v_num=r9oc]Epoch 0:   7%|▋         | 107/1561 [04:47<1:05:05,  0.37it/s, v_num=r9oc]Epoch 0:   7%|▋         | 107/1561 [04:47<1:05:05,  0.37it/s, v_num=r9oc]Epoch 0:   7%|▋         | 108/1561 [05:00<1:07:22,  0.36it/s, v_num=r9oc]Epoch 0:   7%|▋         | 108/1561 [05:00<1:07:22,  0.36it/s, v_num=r9oc]Epoch 0:   7%|▋         | 109/1561 [05:00<1:06:48,  0.36it/s, v_num=r9oc]Epoch 0:   7%|▋         | 109/1561 [05:00<1:06:48,  0.36it/s, v_num=r9oc]Epoch 0:   7%|▋         | 110/1561 [05:01<1:06:15,  0.36it/s, v_num=r9oc]Epoch 0:   7%|▋         | 110/1561 [05:01<1:06:15,  0.36it/s, v_num=r9oc]Epoch 0:   7%|▋         | 111/1561 [05:01<1:05:42,  0.37it/s, v_num=r9oc]Epoch 0:   7%|▋         | 111/1561 [05:01<1:05:42,  0.37it/s, v_num=r9oc]Epoch 0:   7%|▋         | 112/1561 [05:02<1:05:13,  0.37it/s, v_num=r9oc]Epoch 0:   7%|▋         | 112/1561 [05:02<1:05:13,  0.37it/s, v_num=r9oc]Epoch 0:   7%|▋         | 113/1561 [05:03<1:04:43,  0.37it/s, v_num=r9oc]Epoch 0:   7%|▋         | 113/1561 [05:03<1:04:43,  0.37it/s, v_num=r9oc]Epoch 0:   7%|▋         | 114/1561 [05:03<1:04:13,  0.38it/s, v_num=r9oc]Epoch 0:   7%|▋         | 114/1561 [05:03<1:04:13,  0.38it/s, v_num=r9oc]Epoch 0:   7%|▋         | 115/1561 [05:04<1:03:47,  0.38it/s, v_num=r9oc]Epoch 0:   7%|▋         | 115/1561 [05:04<1:03:47,  0.38it/s, v_num=r9oc]Epoch 0:   7%|▋         | 116/1561 [05:05<1:03:20,  0.38it/s, v_num=r9oc]Epoch 0:   7%|▋         | 116/1561 [05:05<1:03:20,  0.38it/s, v_num=r9oc]Epoch 0:   7%|▋         | 117/1561 [05:05<1:02:51,  0.38it/s, v_num=r9oc]Epoch 0:   7%|▋         | 117/1561 [05:05<1:02:51,  0.38it/s, v_num=r9oc]Epoch 0:   8%|▊         | 118/1561 [05:06<1:02:23,  0.39it/s, v_num=r9oc]Epoch 0:   8%|▊         | 118/1561 [05:06<1:02:23,  0.39it/s, v_num=r9oc]Epoch 0:   8%|▊         | 119/1561 [05:06<1:01:57,  0.39it/s, v_num=r9oc]Epoch 0:   8%|▊         | 119/1561 [05:06<1:01:57,  0.39it/s, v_num=r9oc]Epoch 0:   8%|▊         | 120/1561 [05:07<1:01:36,  0.39it/s, v_num=r9oc]Epoch 0:   8%|▊         | 120/1561 [05:07<1:01:36,  0.39it/s, v_num=r9oc]Epoch 0:   8%|▊         | 121/1561 [05:08<1:01:09,  0.39it/s, v_num=r9oc]Epoch 0:   8%|▊         | 121/1561 [05:08<1:01:09,  0.39it/s, v_num=r9oc]Epoch 0:   8%|▊         | 122/1561 [05:09<1:00:46,  0.39it/s, v_num=r9oc]Epoch 0:   8%|▊         | 122/1561 [05:09<1:00:46,  0.39it/s, v_num=r9oc]Epoch 0:   8%|▊         | 123/1561 [05:09<1:00:21,  0.40it/s, v_num=r9oc]Epoch 0:   8%|▊         | 123/1561 [05:09<1:00:21,  0.40it/s, v_num=r9oc]Epoch 0:   8%|▊         | 124/1561 [05:10<1:00:00,  0.40it/s, v_num=r9oc]Epoch 0:   8%|▊         | 124/1561 [05:10<1:00:00,  0.40it/s, v_num=r9oc]Epoch 0:   8%|▊         | 125/1561 [05:11<59:34,  0.40it/s, v_num=r9oc]  Epoch 0:   8%|▊         | 125/1561 [05:11<59:35,  0.40it/s, v_num=r9oc]Epoch 0:   8%|▊         | 126/1561 [05:11<59:10,  0.40it/s, v_num=r9oc]Epoch 0:   8%|▊         | 126/1561 [05:11<59:10,  0.40it/s, v_num=r9oc]Epoch 0:   8%|▊         | 127/1561 [05:12<58:46,  0.41it/s, v_num=r9oc]Epoch 0:   8%|▊         | 127/1561 [05:12<58:46,  0.41it/s, v_num=r9oc]Epoch 0:   8%|▊         | 128/1561 [05:12<58:23,  0.41it/s, v_num=r9oc]Epoch 0:   8%|▊         | 128/1561 [05:12<58:23,  0.41it/s, v_num=r9oc]Epoch 0:   8%|▊         | 129/1561 [05:13<57:59,  0.41it/s, v_num=r9oc]Epoch 0:   8%|▊         | 129/1561 [05:13<57:59,  0.41it/s, v_num=r9oc]Epoch 0:   8%|▊         | 130/1561 [05:13<57:36,  0.41it/s, v_num=r9oc]Epoch 0:   8%|▊         | 130/1561 [05:13<57:36,  0.41it/s, v_num=r9oc]Epoch 0:   8%|▊         | 131/1561 [05:14<57:13,  0.42it/s, v_num=r9oc]Epoch 0:   8%|▊         | 131/1561 [05:14<57:13,  0.42it/s, v_num=r9oc]Epoch 0:   8%|▊         | 132/1561 [05:15<56:52,  0.42it/s, v_num=r9oc]Epoch 0:   8%|▊         | 132/1561 [05:15<56:52,  0.42it/s, v_num=r9oc]Epoch 0:   9%|▊         | 133/1561 [05:15<56:30,  0.42it/s, v_num=r9oc]Epoch 0:   9%|▊         | 133/1561 [05:15<56:30,  0.42it/s, v_num=r9oc]Epoch 0:   9%|▊         | 134/1561 [05:16<56:10,  0.42it/s, v_num=r9oc]Epoch 0:   9%|▊         | 134/1561 [05:16<56:10,  0.42it/s, v_num=r9oc]Epoch 0:   9%|▊         | 135/1561 [05:17<55:49,  0.43it/s, v_num=r9oc]Epoch 0:   9%|▊         | 135/1561 [05:17<55:49,  0.43it/s, v_num=r9oc]Epoch 0:   9%|▊         | 136/1561 [05:18<55:34,  0.43it/s, v_num=r9oc]Epoch 0:   9%|▊         | 136/1561 [05:18<55:34,  0.43it/s, v_num=r9oc]Epoch 0:   9%|▉         | 137/1561 [05:18<55:14,  0.43it/s, v_num=r9oc]Epoch 0:   9%|▉         | 137/1561 [05:18<55:14,  0.43it/s, v_num=r9oc]Epoch 0:   9%|▉         | 138/1561 [05:19<54:57,  0.43it/s, v_num=r9oc]Epoch 0:   9%|▉         | 138/1561 [05:19<54:57,  0.43it/s, v_num=r9oc]Epoch 0:   9%|▉         | 139/1561 [05:20<54:37,  0.43it/s, v_num=r9oc]Epoch 0:   9%|▉         | 139/1561 [05:20<54:37,  0.43it/s, v_num=r9oc]Epoch 0:   9%|▉         | 140/1561 [05:21<54:22,  0.44it/s, v_num=r9oc]Epoch 0:   9%|▉         | 140/1561 [05:21<54:22,  0.44it/s, v_num=r9oc]Epoch 0:   9%|▉         | 141/1561 [05:55<59:43,  0.40it/s, v_num=r9oc]Epoch 0:   9%|▉         | 141/1561 [05:55<59:44,  0.40it/s, v_num=r9oc]Epoch 0:   9%|▉         | 142/1561 [05:56<59:22,  0.40it/s, v_num=r9oc]Epoch 0:   9%|▉         | 142/1561 [05:56<59:22,  0.40it/s, v_num=r9oc]Epoch 0:   9%|▉         | 143/1561 [05:56<58:59,  0.40it/s, v_num=r9oc]Epoch 0:   9%|▉         | 143/1561 [05:56<58:59,  0.40it/s, v_num=r9oc]Epoch 0:   9%|▉         | 144/1561 [06:09<1:00:35,  0.39it/s, v_num=r9oc]Epoch 0:   9%|▉         | 144/1561 [06:09<1:00:35,  0.39it/s, v_num=r9oc]Epoch 0:   9%|▉         | 145/1561 [06:09<1:00:12,  0.39it/s, v_num=r9oc]Epoch 0:   9%|▉         | 145/1561 [06:09<1:00:12,  0.39it/s, v_num=r9oc]Epoch 0:   9%|▉         | 146/1561 [06:10<59:49,  0.39it/s, v_num=r9oc]  Epoch 0:   9%|▉         | 146/1561 [06:10<59:49,  0.39it/s, v_num=r9oc]Epoch 0:   9%|▉         | 147/1561 [06:10<59:26,  0.40it/s, v_num=r9oc]Epoch 0:   9%|▉         | 147/1561 [06:10<59:26,  0.40it/s, v_num=r9oc]Epoch 0:   9%|▉         | 148/1561 [06:11<59:07,  0.40it/s, v_num=r9oc]Epoch 0:   9%|▉         | 148/1561 [06:11<59:07,  0.40it/s, v_num=r9oc]Epoch 0:  10%|▉         | 149/1561 [06:12<58:45,  0.40it/s, v_num=r9oc]Epoch 0:  10%|▉         | 149/1561 [06:12<58:45,  0.40it/s, v_num=r9oc]Epoch 0:  10%|▉         | 150/1561 [06:12<58:23,  0.40it/s, v_num=r9oc]Epoch 0:  10%|▉         | 150/1561 [06:12<58:23,  0.40it/s, v_num=r9oc]Epoch 0:  10%|▉         | 151/1561 [06:12<58:01,  0.40it/s, v_num=r9oc]Epoch 0:  10%|▉         | 151/1561 [06:12<58:01,  0.40it/s, v_num=r9oc]Epoch 0:  10%|▉         | 152/1561 [06:13<57:42,  0.41it/s, v_num=r9oc]Epoch 0:  10%|▉         | 152/1561 [06:13<57:42,  0.41it/s, v_num=r9oc]Epoch 0:  10%|▉         | 153/1561 [06:14<57:22,  0.41it/s, v_num=r9oc]Epoch 0:  10%|▉         | 153/1561 [06:14<57:22,  0.41it/s, v_num=r9oc]Epoch 0:  10%|▉         | 154/1561 [06:14<57:01,  0.41it/s, v_num=r9oc]Epoch 0:  10%|▉         | 154/1561 [06:14<57:01,  0.41it/s, v_num=r9oc]Epoch 0:  10%|▉         | 155/1561 [06:14<56:41,  0.41it/s, v_num=r9oc]Epoch 0:  10%|▉         | 155/1561 [06:14<56:41,  0.41it/s, v_num=r9oc]Epoch 0:  10%|▉         | 156/1561 [06:15<56:23,  0.42it/s, v_num=r9oc]Epoch 0:  10%|▉         | 156/1561 [06:15<56:23,  0.42it/s, v_num=r9oc]Epoch 0:  10%|█         | 157/1561 [06:16<56:04,  0.42it/s, v_num=r9oc]Epoch 0:  10%|█         | 157/1561 [06:16<56:04,  0.42it/s, v_num=r9oc]Epoch 0:  10%|█         | 158/1561 [06:17<55:54,  0.42it/s, v_num=r9oc]Epoch 0:  10%|█         | 158/1561 [06:17<55:54,  0.42it/s, v_num=r9oc]Epoch 0:  10%|█         | 159/1561 [06:18<55:35,  0.42it/s, v_num=r9oc]Epoch 0:  10%|█         | 159/1561 [06:18<55:35,  0.42it/s, v_num=r9oc]Epoch 0:  10%|█         | 160/1561 [06:19<55:20,  0.42it/s, v_num=r9oc]Epoch 0:  10%|█         | 160/1561 [06:19<55:20,  0.42it/s, v_num=r9oc]Epoch 0:  10%|█         | 161/1561 [06:19<55:01,  0.42it/s, v_num=r9oc]Epoch 0:  10%|█         | 161/1561 [06:19<55:01,  0.42it/s, v_num=r9oc]Epoch 0:  10%|█         | 162/1561 [06:20<54:43,  0.43it/s, v_num=r9oc]Epoch 0:  10%|█         | 162/1561 [06:20<54:43,  0.43it/s, v_num=r9oc]Epoch 0:  10%|█         | 163/1561 [06:20<54:25,  0.43it/s, v_num=r9oc]Epoch 0:  10%|█         | 163/1561 [06:20<54:25,  0.43it/s, v_num=r9oc]Epoch 0:  11%|█         | 164/1561 [06:21<54:09,  0.43it/s, v_num=r9oc]Epoch 0:  11%|█         | 164/1561 [06:21<54:09,  0.43it/s, v_num=r9oc]Epoch 0:  11%|█         | 165/1561 [06:33<55:31,  0.42it/s, v_num=r9oc]Epoch 0:  11%|█         | 165/1561 [06:33<55:31,  0.42it/s, v_num=r9oc]Epoch 0:  11%|█         | 166/1561 [06:34<55:13,  0.42it/s, v_num=r9oc]Epoch 0:  11%|█         | 166/1561 [06:34<55:13,  0.42it/s, v_num=r9oc]Epoch 0:  11%|█         | 167/1561 [06:34<54:55,  0.42it/s, v_num=r9oc]Epoch 0:  11%|█         | 167/1561 [06:34<54:55,  0.42it/s, v_num=r9oc]Epoch 0:  11%|█         | 168/1561 [06:35<54:39,  0.42it/s, v_num=r9oc]Epoch 0:  11%|█         | 168/1561 [06:35<54:39,  0.42it/s, v_num=r9oc]Epoch 0:  11%|█         | 169/1561 [06:36<54:21,  0.43it/s, v_num=r9oc]Epoch 0:  11%|█         | 169/1561 [06:36<54:21,  0.43it/s, v_num=r9oc]Epoch 0:  11%|█         | 170/1561 [06:36<54:03,  0.43it/s, v_num=r9oc]Epoch 0:  11%|█         | 170/1561 [06:36<54:03,  0.43it/s, v_num=r9oc]Epoch 0:  11%|█         | 171/1561 [06:36<53:45,  0.43it/s, v_num=r9oc]Epoch 0:  11%|█         | 171/1561 [06:36<53:45,  0.43it/s, v_num=r9oc]Epoch 0:  11%|█         | 172/1561 [06:37<53:30,  0.43it/s, v_num=r9oc]Epoch 0:  11%|█         | 172/1561 [06:37<53:30,  0.43it/s, v_num=r9oc]Epoch 0:  11%|█         | 173/1561 [06:38<53:13,  0.43it/s, v_num=r9oc]Epoch 0:  11%|█         | 173/1561 [06:38<53:13,  0.43it/s, v_num=r9oc]Epoch 0:  11%|█         | 174/1561 [06:38<52:56,  0.44it/s, v_num=r9oc]Epoch 0:  11%|█         | 174/1561 [06:38<52:56,  0.44it/s, v_num=r9oc]Epoch 0:  11%|█         | 175/1561 [06:38<52:39,  0.44it/s, v_num=r9oc]Epoch 0:  11%|█         | 175/1561 [06:38<52:39,  0.44it/s, v_num=r9oc]Epoch 0:  11%|█▏        | 176/1561 [06:39<52:24,  0.44it/s, v_num=r9oc]Epoch 0:  11%|█▏        | 176/1561 [06:39<52:24,  0.44it/s, v_num=r9oc]Epoch 0:  11%|█▏        | 177/1561 [07:12<56:19,  0.41it/s, v_num=r9oc]Epoch 0:  11%|█▏        | 177/1561 [07:12<56:19,  0.41it/s, v_num=r9oc]Epoch 0:  11%|█▏        | 178/1561 [07:12<56:01,  0.41it/s, v_num=r9oc]Epoch 0:  11%|█▏        | 178/1561 [07:12<56:01,  0.41it/s, v_num=r9oc]Epoch 0:  11%|█▏        | 179/1561 [07:12<55:42,  0.41it/s, v_num=r9oc]Epoch 0:  11%|█▏        | 179/1561 [07:12<55:42,  0.41it/s, v_num=r9oc]Epoch 0:  12%|█▏        | 180/1561 [07:13<55:25,  0.42it/s, v_num=r9oc]Epoch 0:  12%|█▏        | 180/1561 [07:13<55:25,  0.42it/s, v_num=r9oc]Epoch 0:  12%|█▏        | 181/1561 [07:13<55:08,  0.42it/s, v_num=r9oc]Epoch 0:  12%|█▏        | 181/1561 [07:13<55:08,  0.42it/s, v_num=r9oc]Epoch 0:  12%|█▏        | 182/1561 [07:14<54:50,  0.42it/s, v_num=r9oc]Epoch 0:  12%|█▏        | 182/1561 [07:14<54:50,  0.42it/s, v_num=r9oc]Epoch 0:  12%|█▏        | 183/1561 [07:14<54:32,  0.42it/s, v_num=r9oc]Epoch 0:  12%|█▏        | 183/1561 [07:14<54:32,  0.42it/s, v_num=r9oc]Epoch 0:  12%|█▏        | 184/1561 [07:15<54:16,  0.42it/s, v_num=r9oc]Epoch 0:  12%|█▏        | 184/1561 [07:15<54:17,  0.42it/s, v_num=r9oc]Epoch 0:  12%|█▏        | 185/1561 [07:15<54:00,  0.42it/s, v_num=r9oc]Epoch 0:  12%|█▏        | 185/1561 [07:15<54:00,  0.42it/s, v_num=r9oc]Epoch 0:  12%|█▏        | 186/1561 [07:16<53:43,  0.43it/s, v_num=r9oc]Epoch 0:  12%|█▏        | 186/1561 [07:16<53:43,  0.43it/s, v_num=r9oc]Epoch 0:  12%|█▏        | 187/1561 [07:16<53:27,  0.43it/s, v_num=r9oc]Epoch 0:  12%|█▏        | 187/1561 [07:16<53:27,  0.43it/s, v_num=r9oc]Epoch 0:  12%|█▏        | 188/1561 [07:17<53:13,  0.43it/s, v_num=r9oc]Epoch 0:  12%|█▏        | 188/1561 [07:17<53:13,  0.43it/s, v_num=r9oc]Epoch 0:  12%|█▏        | 189/1561 [07:17<52:58,  0.43it/s, v_num=r9oc]Epoch 0:  12%|█▏        | 189/1561 [07:17<52:58,  0.43it/s, v_num=r9oc]Epoch 0:  12%|█▏        | 190/1561 [07:18<52:42,  0.43it/s, v_num=r9oc]Epoch 0:  12%|█▏        | 190/1561 [07:18<52:42,  0.43it/s, v_num=r9oc]Epoch 0:  12%|█▏        | 191/1561 [07:18<52:27,  0.44it/s, v_num=r9oc]Epoch 0:  12%|█▏        | 191/1561 [07:18<52:27,  0.44it/s, v_num=r9oc]Epoch 0:  12%|█▏        | 192/1561 [07:19<52:13,  0.44it/s, v_num=r9oc]Epoch 0:  12%|█▏        | 192/1561 [07:19<52:13,  0.44it/s, v_num=r9oc]Epoch 0:  12%|█▏        | 193/1561 [07:19<51:57,  0.44it/s, v_num=r9oc]Epoch 0:  12%|█▏        | 193/1561 [07:19<51:57,  0.44it/s, v_num=r9oc]Epoch 0:  12%|█▏        | 194/1561 [07:20<51:42,  0.44it/s, v_num=r9oc]Epoch 0:  12%|█▏        | 194/1561 [07:20<51:42,  0.44it/s, v_num=r9oc]Epoch 0:  12%|█▏        | 195/1561 [07:20<51:27,  0.44it/s, v_num=r9oc]Epoch 0:  12%|█▏        | 195/1561 [07:20<51:27,  0.44it/s, v_num=r9oc]Epoch 0:  13%|█▎        | 196/1561 [07:21<51:13,  0.44it/s, v_num=r9oc]Epoch 0:  13%|█▎        | 196/1561 [07:21<51:13,  0.44it/s, v_num=r9oc]Epoch 0:  13%|█▎        | 197/1561 [07:21<50:58,  0.45it/s, v_num=r9oc]Epoch 0:  13%|█▎        | 197/1561 [07:21<50:58,  0.45it/s, v_num=r9oc]Epoch 0:  13%|█▎        | 198/1561 [07:22<50:43,  0.45it/s, v_num=r9oc]Epoch 0:  13%|█▎        | 198/1561 [07:22<50:43,  0.45it/s, v_num=r9oc]Epoch 0:  13%|█▎        | 199/1561 [07:22<50:29,  0.45it/s, v_num=r9oc]Epoch 0:  13%|█▎        | 199/1561 [07:22<50:29,  0.45it/s, v_num=r9oc]Epoch 0:  13%|█▎        | 200/1561 [07:23<50:16,  0.45it/s, v_num=r9oc]Epoch 0:  13%|█▎        | 200/1561 [07:23<50:16,  0.45it/s, v_num=r9oc]Epoch 0:  13%|█▎        | 201/1561 [07:23<50:02,  0.45it/s, v_num=r9oc]Epoch 0:  13%|█▎        | 201/1561 [07:23<50:02,  0.45it/s, v_num=r9oc]Epoch 0:  13%|█▎        | 202/1561 [07:24<49:49,  0.45it/s, v_num=r9oc]Epoch 0:  13%|█▎        | 202/1561 [07:24<49:49,  0.45it/s, v_num=r9oc]Epoch 0:  13%|█▎        | 203/1561 [07:24<49:35,  0.46it/s, v_num=r9oc]Epoch 0:  13%|█▎        | 203/1561 [07:24<49:35,  0.46it/s, v_num=r9oc]Epoch 0:  13%|█▎        | 204/1561 [07:25<49:24,  0.46it/s, v_num=r9oc]Epoch 0:  13%|█▎        | 204/1561 [07:25<49:24,  0.46it/s, v_num=r9oc]Epoch 0:  13%|█▎        | 205/1561 [07:26<49:11,  0.46it/s, v_num=r9oc]Epoch 0:  13%|█▎        | 205/1561 [07:26<49:11,  0.46it/s, v_num=r9oc]Epoch 0:  13%|█▎        | 206/1561 [07:26<48:59,  0.46it/s, v_num=r9oc]Epoch 0:  13%|█▎        | 206/1561 [07:26<48:59,  0.46it/s, v_num=r9oc]Epoch 0:  13%|█▎        | 207/1561 [07:27<48:46,  0.46it/s, v_num=r9oc]Epoch 0:  13%|█▎        | 207/1561 [07:27<48:47,  0.46it/s, v_num=r9oc]Epoch 0:  13%|█▎        | 208/1561 [07:28<48:37,  0.46it/s, v_num=r9oc]Epoch 0:  13%|█▎        | 208/1561 [07:28<48:37,  0.46it/s, v_num=r9oc]Epoch 0:  13%|█▎        | 209/1561 [07:29<48:25,  0.47it/s, v_num=r9oc]Epoch 0:  13%|█▎        | 209/1561 [07:29<48:25,  0.47it/s, v_num=r9oc]Epoch 0:  13%|█▎        | 210/1561 [07:29<48:14,  0.47it/s, v_num=r9oc]Epoch 0:  13%|█▎        | 210/1561 [07:29<48:14,  0.47it/s, v_num=r9oc]Epoch 0:  14%|█▎        | 211/1561 [07:30<48:02,  0.47it/s, v_num=r9oc]Epoch 0:  14%|█▎        | 211/1561 [07:30<48:02,  0.47it/s, v_num=r9oc]Epoch 0:  14%|█▎        | 212/1561 [07:31<47:53,  0.47it/s, v_num=r9oc]Epoch 0:  14%|█▎        | 212/1561 [07:31<47:53,  0.47it/s, v_num=r9oc]Epoch 0:  14%|█▎        | 213/1561 [07:32<47:42,  0.47it/s, v_num=r9oc]Epoch 0:  14%|█▎        | 213/1561 [07:32<47:42,  0.47it/s, v_num=r9oc]Epoch 0:  14%|█▎        | 214/1561 [07:32<47:31,  0.47it/s, v_num=r9oc]Epoch 0:  14%|█▎        | 214/1561 [07:33<47:31,  0.47it/s, v_num=r9oc]Epoch 0:  14%|█▍        | 215/1561 [07:33<47:20,  0.47it/s, v_num=r9oc]Epoch 0:  14%|█▍        | 215/1561 [07:33<47:20,  0.47it/s, v_num=r9oc]Epoch 0:  14%|█▍        | 216/1561 [07:34<47:11,  0.48it/s, v_num=r9oc]Epoch 0:  14%|█▍        | 216/1561 [07:34<47:11,  0.48it/s, v_num=r9oc]Epoch 0:  14%|█▍        | 217/1561 [07:35<47:00,  0.48it/s, v_num=r9oc]Epoch 0:  14%|█▍        | 217/1561 [07:35<47:00,  0.48it/s, v_num=r9oc]Epoch 0:  14%|█▍        | 218/1561 [07:36<46:50,  0.48it/s, v_num=r9oc]Epoch 0:  14%|█▍        | 218/1561 [07:36<46:50,  0.48it/s, v_num=r9oc]Epoch 0:  14%|█▍        | 219/1561 [07:36<46:39,  0.48it/s, v_num=r9oc]Epoch 0:  14%|█▍        | 219/1561 [07:36<46:39,  0.48it/s, v_num=r9oc]Epoch 0:  14%|█▍        | 220/1561 [07:37<46:31,  0.48it/s, v_num=r9oc]Epoch 0:  14%|█▍        | 220/1561 [07:37<46:31,  0.48it/s, v_num=r9oc]Epoch 0:  14%|█▍        | 221/1561 [07:38<46:21,  0.48it/s, v_num=r9oc]Epoch 0:  14%|█▍        | 221/1561 [07:38<46:21,  0.48it/s, v_num=r9oc]Epoch 0:  14%|█▍        | 222/1561 [07:39<46:11,  0.48it/s, v_num=r9oc]Epoch 0:  14%|█▍        | 222/1561 [07:39<46:11,  0.48it/s, v_num=r9oc]Epoch 0:  14%|█▍        | 223/1561 [07:40<46:01,  0.48it/s, v_num=r9oc]Epoch 0:  14%|█▍        | 223/1561 [07:40<46:01,  0.48it/s, v_num=r9oc]Epoch 0:  14%|█▍        | 224/1561 [07:41<45:53,  0.49it/s, v_num=r9oc]Epoch 0:  14%|█▍        | 224/1561 [07:41<45:53,  0.49it/s, v_num=r9oc]Epoch 0:  14%|█▍        | 225/1561 [08:23<49:49,  0.45it/s, v_num=r9oc]Epoch 0:  14%|█▍        | 225/1561 [08:23<49:49,  0.45it/s, v_num=r9oc]Epoch 0:  14%|█▍        | 226/1561 [08:24<49:38,  0.45it/s, v_num=r9oc]Epoch 0:  14%|█▍        | 226/1561 [08:24<49:38,  0.45it/s, v_num=r9oc]Epoch 0:  15%|█▍        | 227/1561 [08:26<49:37,  0.45it/s, v_num=r9oc]Epoch 0:  15%|█▍        | 227/1561 [08:26<49:37,  0.45it/s, v_num=r9oc]Epoch 0:  15%|█▍        | 228/1561 [08:28<49:31,  0.45it/s, v_num=r9oc]Epoch 0:  15%|█▍        | 228/1561 [08:28<49:31,  0.45it/s, v_num=r9oc]Epoch 0:  15%|█▍        | 229/1561 [08:29<49:21,  0.45it/s, v_num=r9oc]Epoch 0:  15%|█▍        | 229/1561 [08:29<49:21,  0.45it/s, v_num=r9oc]Epoch 0:  15%|█▍        | 230/1561 [08:32<49:26,  0.45it/s, v_num=r9oc]Epoch 0:  15%|█▍        | 230/1561 [08:32<49:26,  0.45it/s, v_num=r9oc]Epoch 0:  15%|█▍        | 231/1561 [08:33<49:16,  0.45it/s, v_num=r9oc]Epoch 0:  15%|█▍        | 231/1561 [08:33<49:16,  0.45it/s, v_num=r9oc]Epoch 0:  15%|█▍        | 232/1561 [08:34<49:07,  0.45it/s, v_num=r9oc]Epoch 0:  15%|█▍        | 232/1561 [08:34<49:07,  0.45it/s, v_num=r9oc]Epoch 0:  15%|█▍        | 233/1561 [08:35<48:56,  0.45it/s, v_num=r9oc]Epoch 0:  15%|█▍        | 233/1561 [08:35<48:56,  0.45it/s, v_num=r9oc]Epoch 0:  15%|█▍        | 234/1561 [08:35<48:45,  0.45it/s, v_num=r9oc]Epoch 0:  15%|█▍        | 234/1561 [08:35<48:45,  0.45it/s, v_num=r9oc]Epoch 0:  15%|█▌        | 235/1561 [08:36<48:33,  0.46it/s, v_num=r9oc]Epoch 0:  15%|█▌        | 235/1561 [08:36<48:33,  0.46it/s, v_num=r9oc]Epoch 0:  15%|█▌        | 236/1561 [08:37<48:24,  0.46it/s, v_num=r9oc]Epoch 0:  15%|█▌        | 236/1561 [08:37<48:24,  0.46it/s, v_num=r9oc]Epoch 0:  15%|█▌        | 237/1561 [08:37<48:13,  0.46it/s, v_num=r9oc]Epoch 0:  15%|█▌        | 237/1561 [08:37<48:13,  0.46it/s, v_num=r9oc]Epoch 0:  15%|█▌        | 238/1561 [08:38<48:02,  0.46it/s, v_num=r9oc]Epoch 0:  15%|█▌        | 238/1561 [08:38<48:02,  0.46it/s, v_num=r9oc]Epoch 0:  15%|█▌        | 239/1561 [08:39<47:52,  0.46it/s, v_num=r9oc]Epoch 0:  15%|█▌        | 239/1561 [08:39<47:52,  0.46it/s, v_num=r9oc]Epoch 0:  15%|█▌        | 240/1561 [09:18<51:15,  0.43it/s, v_num=r9oc]Epoch 0:  15%|█▌        | 240/1561 [09:18<51:15,  0.43it/s, v_num=r9oc]Epoch 0:  15%|█▌        | 241/1561 [09:19<51:03,  0.43it/s, v_num=r9oc]Epoch 0:  15%|█▌        | 241/1561 [09:19<51:03,  0.43it/s, v_num=r9oc]Epoch 0:  16%|█▌        | 242/1561 [09:19<50:50,  0.43it/s, v_num=r9oc]Epoch 0:  16%|█▌        | 242/1561 [09:19<50:50,  0.43it/s, v_num=r9oc]Epoch 0:  16%|█▌        | 243/1561 [09:20<50:37,  0.43it/s, v_num=r9oc]Epoch 0:  16%|█▌        | 243/1561 [09:20<50:37,  0.43it/s, v_num=r9oc]Epoch 0:  16%|█▌        | 244/1561 [09:20<50:27,  0.44it/s, v_num=r9oc]Epoch 0:  16%|█▌        | 244/1561 [09:20<50:27,  0.44it/s, v_num=r9oc]Epoch 0:  16%|█▌        | 245/1561 [09:40<51:57,  0.42it/s, v_num=r9oc]Epoch 0:  16%|█▌        | 245/1561 [09:40<51:57,  0.42it/s, v_num=r9oc]Epoch 0:  16%|█▌        | 246/1561 [09:40<51:44,  0.42it/s, v_num=r9oc]Epoch 0:  16%|█▌        | 246/1561 [09:40<51:44,  0.42it/s, v_num=r9oc]Epoch 0:  16%|█▌        | 247/1561 [09:41<51:31,  0.43it/s, v_num=r9oc]Epoch 0:  16%|█▌        | 247/1561 [09:41<51:31,  0.43it/s, v_num=r9oc]Epoch 0:  16%|█▌        | 248/1561 [09:41<51:19,  0.43it/s, v_num=r9oc]Epoch 0:  16%|█▌        | 248/1561 [09:41<51:19,  0.43it/s, v_num=r9oc]Epoch 0:  16%|█▌        | 249/1561 [09:42<51:07,  0.43it/s, v_num=r9oc]Epoch 0:  16%|█▌        | 249/1561 [09:42<51:07,  0.43it/s, v_num=r9oc]Epoch 0:  16%|█▌        | 250/1561 [09:42<50:55,  0.43it/s, v_num=r9oc]Epoch 0:  16%|█▌        | 250/1561 [09:42<50:55,  0.43it/s, v_num=r9oc]Epoch 0:  16%|█▌        | 251/1561 [09:43<50:43,  0.43it/s, v_num=r9oc]Epoch 0:  16%|█▌        | 251/1561 [09:43<50:43,  0.43it/s, v_num=r9oc]Epoch 0:  16%|█▌        | 252/1561 [09:43<50:32,  0.43it/s, v_num=r9oc]Epoch 0:  16%|█▌        | 252/1561 [09:43<50:32,  0.43it/s, v_num=r9oc]Epoch 0:  16%|█▌        | 253/1561 [09:44<50:20,  0.43it/s, v_num=r9oc]Epoch 0:  16%|█▌        | 253/1561 [09:44<50:20,  0.43it/s, v_num=r9oc]Epoch 0:  16%|█▋        | 254/1561 [09:44<50:07,  0.43it/s, v_num=r9oc]Epoch 0:  16%|█▋        | 254/1561 [09:44<50:07,  0.43it/s, v_num=r9oc]Epoch 0:  16%|█▋        | 255/1561 [09:44<49:55,  0.44it/s, v_num=r9oc]Epoch 0:  16%|█▋        | 255/1561 [09:44<49:55,  0.44it/s, v_num=r9oc]Epoch 0:  16%|█▋        | 256/1561 [09:45<49:45,  0.44it/s, v_num=r9oc]Epoch 0:  16%|█▋        | 256/1561 [09:45<49:45,  0.44it/s, v_num=r9oc]Epoch 0:  16%|█▋        | 257/1561 [10:06<51:16,  0.42it/s, v_num=r9oc]Epoch 0:  16%|█▋        | 257/1561 [10:06<51:16,  0.42it/s, v_num=r9oc]Epoch 0:  17%|█▋        | 258/1561 [10:06<51:04,  0.43it/s, v_num=r9oc]Epoch 0:  17%|█▋        | 258/1561 [10:06<51:04,  0.43it/s, v_num=r9oc]Epoch 0:  17%|█▋        | 259/1561 [10:07<50:51,  0.43it/s, v_num=r9oc]Epoch 0:  17%|█▋        | 259/1561 [10:07<50:51,  0.43it/s, v_num=r9oc]Epoch 0:  17%|█▋        | 260/1561 [10:07<50:40,  0.43it/s, v_num=r9oc]Epoch 0:  17%|█▋        | 260/1561 [10:07<50:40,  0.43it/s, v_num=r9oc]Epoch 0:  17%|█▋        | 261/1561 [10:07<50:28,  0.43it/s, v_num=r9oc]Epoch 0:  17%|█▋        | 261/1561 [10:07<50:28,  0.43it/s, v_num=r9oc]Epoch 0:  17%|█▋        | 262/1561 [10:08<50:16,  0.43it/s, v_num=r9oc]Epoch 0:  17%|█▋        | 262/1561 [10:08<50:16,  0.43it/s, v_num=r9oc]Epoch 0:  17%|█▋        | 263/1561 [10:08<50:04,  0.43it/s, v_num=r9oc]Epoch 0:  17%|█▋        | 263/1561 [10:08<50:04,  0.43it/s, v_num=r9oc]Epoch 0:  17%|█▋        | 264/1561 [10:09<49:53,  0.43it/s, v_num=r9oc]Epoch 0:  17%|█▋        | 264/1561 [10:09<49:53,  0.43it/s, v_num=r9oc]Epoch 0:  17%|█▋        | 265/1561 [10:09<49:41,  0.43it/s, v_num=r9oc]Epoch 0:  17%|█▋        | 265/1561 [10:09<49:41,  0.43it/s, v_num=r9oc]Epoch 0:  17%|█▋        | 266/1561 [10:10<49:30,  0.44it/s, v_num=r9oc]Epoch 0:  17%|█▋        | 266/1561 [10:10<49:30,  0.44it/s, v_num=r9oc]Epoch 0:  17%|█▋        | 267/1561 [10:10<49:18,  0.44it/s, v_num=r9oc]Epoch 0:  17%|█▋        | 267/1561 [10:10<49:18,  0.44it/s, v_num=r9oc]Epoch 0:  17%|█▋        | 268/1561 [10:11<49:08,  0.44it/s, v_num=r9oc]Epoch 0:  17%|█▋        | 268/1561 [10:11<49:08,  0.44it/s, v_num=r9oc]Epoch 0:  17%|█▋        | 269/1561 [10:11<48:56,  0.44it/s, v_num=r9oc]Epoch 0:  17%|█▋        | 269/1561 [10:11<48:56,  0.44it/s, v_num=r9oc]Epoch 0:  17%|█▋        | 270/1561 [10:11<48:45,  0.44it/s, v_num=r9oc]Epoch 0:  17%|█▋        | 270/1561 [10:11<48:45,  0.44it/s, v_num=r9oc]Epoch 0:  17%|█▋        | 271/1561 [10:12<48:34,  0.44it/s, v_num=r9oc]Epoch 0:  17%|█▋        | 271/1561 [10:12<48:34,  0.44it/s, v_num=r9oc]Epoch 0:  17%|█▋        | 272/1561 [10:12<48:24,  0.44it/s, v_num=r9oc]Epoch 0:  17%|█▋        | 272/1561 [10:12<48:24,  0.44it/s, v_num=r9oc]Epoch 0:  17%|█▋        | 273/1561 [10:13<48:13,  0.45it/s, v_num=r9oc]Epoch 0:  17%|█▋        | 273/1561 [10:13<48:13,  0.45it/s, v_num=r9oc]Epoch 0:  18%|█▊        | 274/1561 [10:13<48:02,  0.45it/s, v_num=r9oc]Epoch 0:  18%|█▊        | 274/1561 [10:13<48:02,  0.45it/s, v_num=r9oc]Epoch 0:  18%|█▊        | 275/1561 [10:14<47:52,  0.45it/s, v_num=r9oc]Epoch 0:  18%|█▊        | 275/1561 [10:14<47:52,  0.45it/s, v_num=r9oc]Epoch 0:  18%|█▊        | 276/1561 [10:14<47:42,  0.45it/s, v_num=r9oc]Epoch 0:  18%|█▊        | 276/1561 [10:14<47:42,  0.45it/s, v_num=r9oc]Epoch 0:  18%|█▊        | 277/1561 [10:15<47:32,  0.45it/s, v_num=r9oc]Epoch 0:  18%|█▊        | 277/1561 [10:15<47:32,  0.45it/s, v_num=r9oc]Epoch 0:  18%|█▊        | 278/1561 [10:15<47:22,  0.45it/s, v_num=r9oc]Epoch 0:  18%|█▊        | 278/1561 [10:15<47:22,  0.45it/s, v_num=r9oc]Epoch 0:  18%|█▊        | 279/1561 [10:16<47:12,  0.45it/s, v_num=r9oc]Epoch 0:  18%|█▊        | 279/1561 [10:16<47:12,  0.45it/s, v_num=r9oc]Epoch 0:  18%|█▊        | 280/1561 [10:17<47:03,  0.45it/s, v_num=r9oc]Epoch 0:  18%|█▊        | 280/1561 [10:17<47:03,  0.45it/s, v_num=r9oc]Epoch 0:  18%|█▊        | 281/1561 [10:17<46:53,  0.45it/s, v_num=r9oc]Epoch 0:  18%|█▊        | 281/1561 [10:17<46:53,  0.45it/s, v_num=r9oc]Epoch 0:  18%|█▊        | 282/1561 [10:18<46:43,  0.46it/s, v_num=r9oc]Epoch 0:  18%|█▊        | 282/1561 [10:18<46:43,  0.46it/s, v_num=r9oc]Epoch 0:  18%|█▊        | 283/1561 [10:18<46:33,  0.46it/s, v_num=r9oc]Epoch 0:  18%|█▊        | 283/1561 [10:18<46:33,  0.46it/s, v_num=r9oc]Epoch 0:  18%|█▊        | 284/1561 [10:19<46:24,  0.46it/s, v_num=r9oc]Epoch 0:  18%|█▊        | 284/1561 [10:19<46:24,  0.46it/s, v_num=r9oc]Epoch 0:  18%|█▊        | 285/1561 [10:19<46:15,  0.46it/s, v_num=r9oc]Epoch 0:  18%|█▊        | 285/1561 [10:19<46:15,  0.46it/s, v_num=r9oc]Epoch 0:  18%|█▊        | 286/1561 [10:20<46:05,  0.46it/s, v_num=r9oc]Epoch 0:  18%|█▊        | 286/1561 [10:20<46:05,  0.46it/s, v_num=r9oc]Epoch 0:  18%|█▊        | 287/1561 [10:20<45:56,  0.46it/s, v_num=r9oc]Epoch 0:  18%|█▊        | 287/1561 [10:20<45:56,  0.46it/s, v_num=r9oc]Epoch 0:  18%|█▊        | 288/1561 [10:21<45:47,  0.46it/s, v_num=r9oc]Epoch 0:  18%|█▊        | 288/1561 [10:21<45:47,  0.46it/s, v_num=r9oc]Epoch 0:  19%|█▊        | 289/1561 [10:22<45:39,  0.46it/s, v_num=r9oc]Epoch 0:  19%|█▊        | 289/1561 [10:22<45:39,  0.46it/s, v_num=r9oc]Epoch 0:  19%|█▊        | 290/1561 [10:22<45:29,  0.47it/s, v_num=r9oc]Epoch 0:  19%|█▊        | 290/1561 [10:22<45:29,  0.47it/s, v_num=r9oc]Epoch 0:  19%|█▊        | 291/1561 [10:23<45:21,  0.47it/s, v_num=r9oc]Epoch 0:  19%|█▊        | 291/1561 [10:23<45:21,  0.47it/s, v_num=r9oc]Epoch 0:  19%|█▊        | 292/1561 [10:24<45:14,  0.47it/s, v_num=r9oc]Epoch 0:  19%|█▊        | 292/1561 [10:24<45:14,  0.47it/s, v_num=r9oc]Epoch 0:  19%|█▉        | 293/1561 [10:25<45:07,  0.47it/s, v_num=r9oc]Epoch 0:  19%|█▉        | 293/1561 [10:25<45:07,  0.47it/s, v_num=r9oc]Epoch 0:  19%|█▉        | 294/1561 [10:26<44:59,  0.47it/s, v_num=r9oc]Epoch 0:  19%|█▉        | 294/1561 [10:26<44:59,  0.47it/s, v_num=r9oc]Epoch 0:  19%|█▉        | 295/1561 [11:00<47:16,  0.45it/s, v_num=r9oc]Epoch 0:  19%|█▉        | 295/1561 [11:00<47:16,  0.45it/s, v_num=r9oc]Epoch 0:  19%|█▉        | 296/1561 [11:01<47:08,  0.45it/s, v_num=r9oc]Epoch 0:  19%|█▉        | 296/1561 [11:01<47:08,  0.45it/s, v_num=r9oc]Epoch 0:  19%|█▉        | 297/1561 [11:02<46:59,  0.45it/s, v_num=r9oc]Epoch 0:  19%|█▉        | 297/1561 [11:02<46:59,  0.45it/s, v_num=r9oc]Epoch 0:  19%|█▉        | 298/1561 [11:02<46:49,  0.45it/s, v_num=r9oc]Epoch 0:  19%|█▉        | 298/1561 [11:02<46:49,  0.45it/s, v_num=r9oc]Epoch 0:  19%|█▉        | 299/1561 [11:03<46:40,  0.45it/s, v_num=r9oc]Epoch 0:  19%|█▉        | 299/1561 [11:03<46:40,  0.45it/s, v_num=r9oc]Epoch 0:  19%|█▉        | 300/1561 [11:04<46:32,  0.45it/s, v_num=r9oc]Epoch 0:  19%|█▉        | 300/1561 [11:04<46:32,  0.45it/s, v_num=r9oc]Epoch 0:  19%|█▉        | 301/1561 [11:05<46:24,  0.45it/s, v_num=r9oc]Epoch 0:  19%|█▉        | 301/1561 [11:05<46:24,  0.45it/s, v_num=r9oc]Epoch 0:  19%|█▉        | 302/1561 [11:05<46:16,  0.45it/s, v_num=r9oc]Epoch 0:  19%|█▉        | 302/1561 [11:05<46:16,  0.45it/s, v_num=r9oc]Epoch 0:  19%|█▉        | 303/1561 [11:06<46:07,  0.45it/s, v_num=r9oc]Epoch 0:  19%|█▉        | 303/1561 [11:06<46:07,  0.45it/s, v_num=r9oc]Epoch 0:  19%|█▉        | 304/1561 [11:07<45:59,  0.46it/s, v_num=r9oc]Epoch 0:  19%|█▉        | 304/1561 [11:07<45:59,  0.46it/s, v_num=r9oc]Epoch 0:  20%|█▉        | 305/1561 [11:07<45:50,  0.46it/s, v_num=r9oc]Epoch 0:  20%|█▉        | 305/1561 [11:07<45:50,  0.46it/s, v_num=r9oc]Epoch 0:  20%|█▉        | 306/1561 [11:08<45:42,  0.46it/s, v_num=r9oc]Epoch 0:  20%|█▉        | 306/1561 [11:08<45:42,  0.46it/s, v_num=r9oc]Epoch 0:  20%|█▉        | 307/1561 [11:09<45:33,  0.46it/s, v_num=r9oc]Epoch 0:  20%|█▉        | 307/1561 [11:09<45:33,  0.46it/s, v_num=r9oc]Epoch 0:  20%|█▉        | 308/1561 [11:10<45:26,  0.46it/s, v_num=r9oc]Epoch 0:  20%|█▉        | 308/1561 [11:10<45:26,  0.46it/s, v_num=r9oc]Epoch 0:  20%|█▉        | 309/1561 [11:10<45:18,  0.46it/s, v_num=r9oc]Epoch 0:  20%|█▉        | 309/1561 [11:10<45:18,  0.46it/s, v_num=r9oc]Epoch 0:  20%|█▉        | 310/1561 [11:11<45:09,  0.46it/s, v_num=r9oc]Epoch 0:  20%|█▉        | 310/1561 [11:11<45:09,  0.46it/s, v_num=r9oc]Epoch 0:  20%|█▉        | 311/1561 [11:11<45:00,  0.46it/s, v_num=r9oc]Epoch 0:  20%|█▉        | 311/1561 [11:11<45:00,  0.46it/s, v_num=r9oc]Epoch 0:  20%|█▉        | 312/1561 [11:12<44:53,  0.46it/s, v_num=r9oc]Epoch 0:  20%|█▉        | 312/1561 [11:12<44:53,  0.46it/s, v_num=r9oc]Epoch 0:  20%|██        | 313/1561 [11:13<44:45,  0.46it/s, v_num=r9oc]Epoch 0:  20%|██        | 313/1561 [11:13<44:45,  0.46it/s, v_num=r9oc]Epoch 0:  20%|██        | 314/1561 [11:14<44:37,  0.47it/s, v_num=r9oc]Epoch 0:  20%|██        | 314/1561 [11:14<44:37,  0.47it/s, v_num=r9oc]Epoch 0:  20%|██        | 315/1561 [11:14<44:29,  0.47it/s, v_num=r9oc]Epoch 0:  20%|██        | 315/1561 [11:15<44:30,  0.47it/s, v_num=r9oc]Epoch 0:  20%|██        | 316/1561 [11:16<44:24,  0.47it/s, v_num=r9oc]Epoch 0:  20%|██        | 316/1561 [11:16<44:24,  0.47it/s, v_num=r9oc]Epoch 0:  20%|██        | 317/1561 [11:16<44:16,  0.47it/s, v_num=r9oc]Epoch 0:  20%|██        | 317/1561 [11:16<44:16,  0.47it/s, v_num=r9oc]Epoch 0:  20%|██        | 318/1561 [11:52<46:26,  0.45it/s, v_num=r9oc]Epoch 0:  20%|██        | 318/1561 [11:52<46:26,  0.45it/s, v_num=r9oc]Epoch 0:  20%|██        | 319/1561 [11:53<46:18,  0.45it/s, v_num=r9oc]Epoch 0:  20%|██        | 319/1561 [11:53<46:18,  0.45it/s, v_num=r9oc]Epoch 0:  20%|██        | 320/1561 [11:54<46:09,  0.45it/s, v_num=r9oc]Epoch 0:  20%|██        | 320/1561 [11:54<46:09,  0.45it/s, v_num=r9oc]Epoch 0:  21%|██        | 321/1561 [11:54<46:00,  0.45it/s, v_num=r9oc]Epoch 0:  21%|██        | 321/1561 [11:54<46:00,  0.45it/s, v_num=r9oc]Epoch 0:  21%|██        | 322/1561 [11:55<45:51,  0.45it/s, v_num=r9oc]Epoch 0:  21%|██        | 322/1561 [11:55<45:51,  0.45it/s, v_num=r9oc]Epoch 0:  21%|██        | 323/1561 [11:55<45:42,  0.45it/s, v_num=r9oc]Epoch 0:  21%|██        | 323/1561 [11:55<45:42,  0.45it/s, v_num=r9oc]Epoch 0:  21%|██        | 324/1561 [11:56<45:34,  0.45it/s, v_num=r9oc]Epoch 0:  21%|██        | 324/1561 [11:56<45:34,  0.45it/s, v_num=r9oc]Epoch 0:  21%|██        | 325/1561 [11:56<45:25,  0.45it/s, v_num=r9oc]Epoch 0:  21%|██        | 325/1561 [11:56<45:25,  0.45it/s, v_num=r9oc]Epoch 0:  21%|██        | 326/1561 [11:57<45:17,  0.45it/s, v_num=r9oc]Epoch 0:  21%|██        | 326/1561 [11:57<45:17,  0.45it/s, v_num=r9oc]Epoch 0:  21%|██        | 327/1561 [11:57<45:08,  0.46it/s, v_num=r9oc]Epoch 0:  21%|██        | 327/1561 [11:57<45:08,  0.46it/s, v_num=r9oc]Epoch 0:  21%|██        | 328/1561 [11:58<45:00,  0.46it/s, v_num=r9oc]Epoch 0:  21%|██        | 328/1561 [11:58<45:00,  0.46it/s, v_num=r9oc]Epoch 0:  21%|██        | 329/1561 [11:59<44:52,  0.46it/s, v_num=r9oc]Epoch 0:  21%|██        | 329/1561 [11:59<44:52,  0.46it/s, v_num=r9oc]Epoch 0:  21%|██        | 330/1561 [12:23<46:12,  0.44it/s, v_num=r9oc]Epoch 0:  21%|██        | 330/1561 [12:23<46:12,  0.44it/s, v_num=r9oc]Epoch 0:  21%|██        | 331/1561 [12:23<46:03,  0.45it/s, v_num=r9oc]Epoch 0:  21%|██        | 331/1561 [12:23<46:03,  0.45it/s, v_num=r9oc]Epoch 0:  21%|██▏       | 332/1561 [12:24<45:54,  0.45it/s, v_num=r9oc]Epoch 0:  21%|██▏       | 332/1561 [12:24<45:54,  0.45it/s, v_num=r9oc]Epoch 0:  21%|██▏       | 333/1561 [12:24<45:45,  0.45it/s, v_num=r9oc]Epoch 0:  21%|██▏       | 333/1561 [12:24<45:45,  0.45it/s, v_num=r9oc]Epoch 0:  21%|██▏       | 334/1561 [12:24<45:36,  0.45it/s, v_num=r9oc]Epoch 0:  21%|██▏       | 334/1561 [12:24<45:36,  0.45it/s, v_num=r9oc]Epoch 0:  21%|██▏       | 335/1561 [12:25<45:27,  0.45it/s, v_num=r9oc]Epoch 0:  21%|██▏       | 335/1561 [12:25<45:27,  0.45it/s, v_num=r9oc]Epoch 0:  22%|██▏       | 336/1561 [12:25<45:19,  0.45it/s, v_num=r9oc]Epoch 0:  22%|██▏       | 336/1561 [12:25<45:19,  0.45it/s, v_num=r9oc]Epoch 0:  22%|██▏       | 337/1561 [12:26<45:10,  0.45it/s, v_num=r9oc]Epoch 0:  22%|██▏       | 337/1561 [12:26<45:10,  0.45it/s, v_num=r9oc]Epoch 0:  22%|██▏       | 338/1561 [12:26<45:01,  0.45it/s, v_num=r9oc]Epoch 0:  22%|██▏       | 338/1561 [12:26<45:01,  0.45it/s, v_num=r9oc]Epoch 0:  22%|██▏       | 339/1561 [12:27<44:52,  0.45it/s, v_num=r9oc]Epoch 0:  22%|██▏       | 339/1561 [12:27<44:52,  0.45it/s, v_num=r9oc]Epoch 0:  22%|██▏       | 340/1561 [12:27<44:45,  0.45it/s, v_num=r9oc]Epoch 0:  22%|██▏       | 340/1561 [12:27<44:45,  0.45it/s, v_num=r9oc]Epoch 0:  22%|██▏       | 341/1561 [12:28<44:36,  0.46it/s, v_num=r9oc]Epoch 0:  22%|██▏       | 341/1561 [12:28<44:36,  0.46it/s, v_num=r9oc]Epoch 0:  22%|██▏       | 342/1561 [12:28<44:28,  0.46it/s, v_num=r9oc]Epoch 0:  22%|██▏       | 342/1561 [12:28<44:28,  0.46it/s, v_num=r9oc]Epoch 0:  22%|██▏       | 343/1561 [12:29<44:19,  0.46it/s, v_num=r9oc]Epoch 0:  22%|██▏       | 343/1561 [12:29<44:19,  0.46it/s, v_num=r9oc]Epoch 0:  22%|██▏       | 344/1561 [12:29<44:12,  0.46it/s, v_num=r9oc]Epoch 0:  22%|██▏       | 344/1561 [12:29<44:12,  0.46it/s, v_num=r9oc]Epoch 0:  22%|██▏       | 345/1561 [12:30<44:03,  0.46it/s, v_num=r9oc]Epoch 0:  22%|██▏       | 345/1561 [12:30<44:03,  0.46it/s, v_num=r9oc]Epoch 0:  22%|██▏       | 346/1561 [12:30<43:55,  0.46it/s, v_num=r9oc]Epoch 0:  22%|██▏       | 346/1561 [12:30<43:55,  0.46it/s, v_num=r9oc]Epoch 0:  22%|██▏       | 347/1561 [12:30<43:47,  0.46it/s, v_num=r9oc]Epoch 0:  22%|██▏       | 347/1561 [12:30<43:47,  0.46it/s, v_num=r9oc]Epoch 0:  22%|██▏       | 348/1561 [12:32<43:43,  0.46it/s, v_num=r9oc]Epoch 0:  22%|██▏       | 348/1561 [12:32<43:43,  0.46it/s, v_num=r9oc]Epoch 0:  22%|██▏       | 349/1561 [12:33<43:35,  0.46it/s, v_num=r9oc]Epoch 0:  22%|██▏       | 349/1561 [12:33<43:35,  0.46it/s, v_num=r9oc]Epoch 0:  22%|██▏       | 350/1561 [12:33<43:27,  0.46it/s, v_num=r9oc]Epoch 0:  22%|██▏       | 350/1561 [12:33<43:27,  0.46it/s, v_num=r9oc]Epoch 0:  22%|██▏       | 351/1561 [12:33<43:19,  0.47it/s, v_num=r9oc]Epoch 0:  22%|██▏       | 351/1561 [12:33<43:19,  0.47it/s, v_num=r9oc]Epoch 0:  23%|██▎       | 352/1561 [12:34<43:12,  0.47it/s, v_num=r9oc]Epoch 0:  23%|██▎       | 352/1561 [12:34<43:12,  0.47it/s, v_num=r9oc]Epoch 0:  23%|██▎       | 353/1561 [12:35<43:04,  0.47it/s, v_num=r9oc]Epoch 0:  23%|██▎       | 353/1561 [12:35<43:04,  0.47it/s, v_num=r9oc]Epoch 0:  23%|██▎       | 354/1561 [12:35<42:56,  0.47it/s, v_num=r9oc]Epoch 0:  23%|██▎       | 354/1561 [12:35<42:56,  0.47it/s, v_num=r9oc]Epoch 0:  23%|██▎       | 355/1561 [12:36<42:48,  0.47it/s, v_num=r9oc]Epoch 0:  23%|██▎       | 355/1561 [12:36<42:48,  0.47it/s, v_num=r9oc]Epoch 0:  23%|██▎       | 356/1561 [12:36<42:41,  0.47it/s, v_num=r9oc]Epoch 0:  23%|██▎       | 356/1561 [12:36<42:41,  0.47it/s, v_num=r9oc]Epoch 0:  23%|██▎       | 357/1561 [12:37<42:33,  0.47it/s, v_num=r9oc]Epoch 0:  23%|██▎       | 357/1561 [12:37<42:33,  0.47it/s, v_num=r9oc]Epoch 0:  23%|██▎       | 358/1561 [12:37<42:25,  0.47it/s, v_num=r9oc]Epoch 0:  23%|██▎       | 358/1561 [12:37<42:25,  0.47it/s, v_num=r9oc]Epoch 0:  23%|██▎       | 359/1561 [12:38<42:18,  0.47it/s, v_num=r9oc]Epoch 0:  23%|██▎       | 359/1561 [12:38<42:18,  0.47it/s, v_num=r9oc]Epoch 0:  23%|██▎       | 360/1561 [12:38<42:11,  0.47it/s, v_num=r9oc]

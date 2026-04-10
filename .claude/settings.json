@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(/Data0/swangek_data/conda_envs/survivehr/bin/python -c \"import torch; print\\(f''torch {torch.__version__}, CUDA: {torch.cuda.is_available\\(\\)}''\\)\")"
+    ]
+  }
+}
