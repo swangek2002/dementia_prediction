@@ -1,0 +1,1427 @@
+
+hes_fusion_plan_v5_all_patients.md
+Please execute the 'HES Full Fusion (v5)' plan provided in the markdown file. However, before you write any code, I need you to implement two CRITICAL HOTFIXES to the plan to prevent silent failures. Read these carefully and integrate them into your scripts:"
+
+HOTFIX 1: Hard Override for Dementia Outcomes (Prevent Label Loss)
+
+The Problem: The _reduce_on_outcome function relies on a specific list of 31 DEMENTIA_READ_CODES defined in our YAML config. If the OMOP mapping translates a dementia ICD-10 code (F00-F03, G30) into a Read v2 code that is NOT in those 31 codes, the framework will ignore it, and the patient will be labeled k=0.
+
+Your Action: In build_omop_mapping.py or build_hes_events.py, you must implement a hardcoded dictionary specifically for dementia outcome codes. Any ICD-10 code starting with F00, F01, F02, F03, or G30 MUST be mapped to one of the canonical 31 Read v2 dementia codes we are using (pick the one with the highest frequency in diagnosis_table, e.g., Eu00., Eu01., Eu02z, F110.). Do not rely on OMOP for these specific outcome labels.
+
+HOTFIX 2: Date Format Alignment (Prevent Sorting Corruption)
+
+The Problem: The original SQLite diagnosis_table expects DATE strings in a specific format (usually YYYY-MM-DD). The HES raw files (hesin.csv) often use British formats (e.g., DD/MM/YYYY).
+
+Your Action: In build_hes_events.py, before creating the hes_events_for_db.pickle, you MUST explicitly parse the HES admission dates and reformat them to strictly match the string format used in the existing SQLite database. (Check a sample row from diagnosis_table to confirm the exact format, e.g., using datetime.strptime() or pandas formatting).
+
+Please confirm you understand these two hotfixes, and then proceed with Steps 1 through 8 of the v5 plan.
+看一下你能不能按照要求帮我实现这个修改并重新开始finetune，如果可以的话，请直接开始进行修改
+Read hes_fusion_plan_v5_all_patients.md
+Bash List SurvivEHR working directory
+IN
+ls /Data0/swangek_data/991/CPRD/examples/modelling/SurvivEHR/ 2>&1 | head -50
+
+OUT
+"$LOG_DIR"
+"$LOG_FILE"
+auto_continue.log
+auto_continue.sh
+build_dementia_cr_dataset.py
+build_dementia_cr_hes_aug.py
+build_dementia_cr_idx60_dataset.py
+build_dementia_cr_idx68_cv.py
+build_dementia_cr_idx70_dataset.py
+build_dementia_cr_idx72_cv.py
+build_dementia_cr_idx74_dataset.py
+build_dementia_cr_idx75_dataset.py
+build_dementia_finetune_dataset.py
+callbacks
+confs
+debug_train_log.txt
+generate_5fold_splits.py
+generate_cv5_configs_idx72.py
+generate_cv5_configs.py
+helpers.py
+hes_dementia_lookup.py
+notebooks
+optimizers_fine_tuning.py
+optimizers_utils.py
+outputs
+__pycache__
+run_experiment.py
+setup_causal_experiment.py
+setup_fewshot_experiment.py
+setup_finetune_experiment.py
+test_log_option_a2.txt
+test_log_option_a.txt
+test_log_option_b_single.txt
+test_log.txt
+train_log_bs10.txt
+train_log_bs16_ep10_15.txt
+train_log_bs16.txt
+train_log_continued.txt
+train_log.txt
+verify_hes_aug_dataset.py
+[rerun: b1]
+Bash List CPRD directory
+IN
+ls /Data0/swangek_data/991/CPRD/ 2>&1 | head -50
+
+OUT
+ablation_nosaw_log.txt
+ablation_sft_log.txt
+analyze_core_dementia.py
+analyze_dementia_age.py
+build_dementia_cr_log.txt
+build_dementia_dataset_log.txt
+competing_risk_instructions_for_agent.md
+containers
+data
+dementia_eval_results.json
+eval_combined_1gpu_log.txt
+eval_cr_log.txt
+eval_dementia_pretrain.py
+eval_idx60_log.txt
+eval_nosaw_log.txt
+examples
+figs
+finetune_cr_combined_L3_log.txt
+finetune_cr_combined_log.txt
+finetune_cr_eventweight_log.txt
+finetune_cr_hes_aug_25ep_log.txt
+finetune_cr_hes_aug_log.txt
+finetune_cr_idx60_log.txt
+finetune_cr_idx68_cv5_log.txt
+finetune_cr_idx70_log.txt
+finetune_cr_idx74_log.txt
+finetune_cr_idx75_log.txt
+finetune_cr_log.txt
+finetune_dementia_log.txt
+finetune_review_for_agent.md
+hes_augmentation_plan_v3.md
+hes_fusion_plan_v5_all_patients.md
+hes_only_gp_events_check.py
+__init__.py
+LICENSE
+output
+__pycache__
+README.md
+requirements.lock
+requirements.txt
+run_ablation_nosaw.sh
+run_ablation_sft.sh
+run_build_dataset.sh
+run_eval_and_expB.sh
+run_eval_dementia_cr.sh
+run_eval_nosaw.sh
+run_expC_lambda3.sh
+run_finetune_combined.sh
+run_finetune_dementia_cr.sh
+run_finetune_dementia.sh
+[rerun: b2]
+Bash Check data dir and configs
+IN
+ls /Data0/swangek_data/991/CPRD/data/ 2>&1 | head -30 ; echo "---" ; ls /Data0/swangek_data/991/CPRD/examples/modelling/SurvivEHR/confs/ 2>&1 | grep -i "hes\|dementia"
+
+OUT
+death_cause.csv
+death.csv
+example_exercise_database.db
+FoundationalModel
+gp_clinical.csv
+gp_registrations.csv
+gp_scripts.csv
+hesin.csv
+hesin_diag.csv
+hesin_oper.csv
+omop_condition_occurrence.csv
+omop_drug_exposure.csv
+omop_measurement.csv
+omop_observation_period.csv
+omop_person.csv
+omop_procedure_occurrence.csv
+ready_for_code_diagnosis.csv
+ready_for_code_measurements.csv
+ready_for_code_static.csv
+wsl2_test_database.db
+---
+config_FineTune_Dementia_CR_Combined_eval.yaml
+config_FineTune_Dementia_CR_Combined.yaml
+config_FineTune_Dementia_CR_eval.yaml
+config_FineTune_Dementia_CR_EventWeight.yaml
+config_FineTune_Dementia_CR_hes_aug_eval.yaml
+config_FineTune_Dementia_CR_hes_aug.yaml
+config_FineTune_Dementia_CR_idx60_eval.yaml
+config_FineTune_Dementia_CR_idx60.yaml
+config_FineTune_Dementia_CR_idx68_cv_fold0_eval.yaml
+config_FineTune_Dementia_CR_idx68_cv_fold0.yaml
+config_FineTune_Dementia_CR_idx68_cv_fold1_eval.yaml
+config_FineTune_Dementia_CR_idx68_cv_fold1.yaml
+config_FineTune_Dementia_CR_idx68_cv_fold2_eval.yaml
+config_FineTune_Dementia_CR_idx68_cv_fold2.yaml
+config_FineTune_Dementia_CR_idx68_cv_fold3_eval.yaml
+config_FineTune_Dementia_CR_idx68_cv_fold3.yaml
+config_FineTune_Dementia_CR_idx68_cv_fold4_eval.yaml
+config_FineTune_Dementia_CR_idx68_cv_fold4.yaml
+config_FineTune_Dementia_CR_idx70_eval.yaml
+config_FineTune_Dementia_CR_idx70.yaml
+config_FineTune_Dementia_CR_idx74_eval.yaml
+config_FineTune_Dementia_CR_idx74.yaml
+config_FineTune_Dementia_CR_idx75_eval.yaml
+config_FineTune_Dementia_CR_idx75.yaml
+config_FineTune_Dementia_CR_noSAW_eval.yaml
+config_FineTune_Dementia_CR_noSAW.yaml
+config_FineTune_Dementia_CR_SFT.yaml
+config_FineTune_Dementia_CR.yaml
+config_FineTune_Dementia.yaml
+[rerun: b3]
+Good, I understand the hotfixes. Let me confirm before coding:
+
+HOTFIX 1 (Dementia Override): Hardcode ICD-10 F00/F01/F02/F03/G30* → Read v2 dementia code picked from the 31 canonical codes by highest frequency in diagnosis_table. Overrides any OMOP mapping for these codes.
+
+HOTFIX 2 (Date Format): Inspect actual DATE format in diagnosis_table, parse HES epistart/admission dates from DD/MM/YYYY, format exactly to match before insertion.
+
+Let me now explore the existing similar scripts and DB schema to understand the conventions.
+
+Read build_dementia_cr_hes_aug.py
+Bash Inspect diagnosis_table schema and dementia code freqs
+IN
+cd /Data0/swangek_data/991/CPRD && /Data0/swangek_data/conda_envs/survivehr/bin/python -c "
+import sqlite3
+c = sqlite3.connect('data/example_exercise_database.db')
+cur = c.cursor()
+cur.execute('SELECT sql FROM sqlite_master WHERE name=\"diagnosis_table\"')
+print(cur.fetchone())
+cur.execute('SELECT * FROM diagnosis_table LIMIT 3')
+for row in cur.fetchall(): print(row)
+print('--- dementia code counts ---')
+codes = ['F110.','Eu00.','Eu01.','Eu02z','Eu002','E00..','Eu023','Eu00z','Eu025','Eu01z','E001.','F1100','Eu001','E004.','Eu000','Eu02.','Eu013','E000.','Eu01y','E001z','F1101','Eu020','E004z','E0021','Eu02y','Eu012','Eu011','E00z.','E0040','E003.','E0020']
+for code in codes:
+    cur.execute('SELECT COUNT(*) FROM diagnosis_table WHERE EVENT=?',(code,))
+    print(code, cur.fetchone()[0])
+c.close()
+"
+
+OUT
+Command running in background with ID: b1tv3hks8. Output is being written to: /tmp/claude-422975/-Data0-swangek-data-991/4fdbd1cf-d136-4ecb-94f4-7fa6ba883921/tasks/b1tv3hks8.output
+[rerun: b4]
+Bash Inspect HES CSV headers
+IN
+head -3 /Data0/swangek_data/991/CPRD/data/hesin.csv ; echo "---" ; head -3 /Data0/swangek_data/991/CPRD/data/hesin_diag.csv
+
+OUT
+dnx_hesin_id,eid,ins_index,epiorder,spell_index,spell_seq,spelbgin,spelend,speldur,pctcode,gpprpct,category,elecdate,dsource,elecdur,admidate,admimeth_uni,admimeth,admisorc_uni,admisorc,firstreg,classpat_uni,classpat,intmanag_uni,source,intmanag,mainspef_uni,mainspef,tretspef_uni,tretspef,operstat,disdate,dismeth_uni,dismeth,disdest_uni,epistart,disdest,carersi,epiend,epidur,bedyear,epistat,epitype
+2631857-17,2631857,17,1,14,0,2,Y,1,5HQ,5HQ,,,HES,,2009-04-23,2001,21,1000,19,,1000,1,800,6,8,1310,300,1490,300,8,2009-04-24,1000,1,1000,2009-04-23,19,2,2009-04-24,1,1,3,1
+5495266-105,5495266,105,1,96,0,2,Y,0,5NR,5NR,,2013-06-18,HES,,2013-06-18,1003,13,1000,19,,2000,2,200,18,2,1130,303,1220,303,1,2013-06-18,1000,1,1000,2013-06-18,19,2,2013-06-18,0,0,3,1
+---
+dnx_hesin_diag_id,dnx_hesin_id,eid,ins_index,arr_index,level,diag_icd9,diag_icd9_nb,diag_icd10,diag_icd10_nb
+2295354-0-0,2295354-0,2295354,0,0,1,,,D140,
+2053408-9-2,2053408-9,2053408,9,2,2,,,Z800,
+[rerun: b5]
+Bash
+IN
+
+OUT
+<tool_use_error>Unknown rerun alias 'b1tv3hks8'. Valid aliases this session: b1, b2, b3, b4, b5. Provide {command: "..."} instead.</tool_use_error>
+Bash Read background task output
+IN
+cat /tmp/claude-422975/-Data0-swangek-data-991/4fdbd1cf-d136-4ecb-94f4-7fa6ba883921/tasks/b1tv3hks8.output
+
+OUT
+[rerun: b6]
+Bash Wait and read task output
+IN
+sleep 5 && cat /tmp/claude-422975/-Data0-swangek-data-991/4fdbd1cf-d136-4ecb-94f4-7fa6ba883921/tasks/b1tv3hks8.output 2>&1 | tail -60
+
+OUT
+[rerun: b7]
+Bash Read background task output
+IN
+cat /tmp/claude-422975/-Data0-swangek-data-991/4fdbd1cf-d136-4ecb-94f4-7fa6ba883921/tasks/b1tv3hks8.output 2>&1 | tail -60
+
+OUT
+[rerun: b8]
+Read b1tv3hks8.output
+Bash Inspect schema and dementia frequencies
+IN
+/Data0/swangek_data/conda_envs/survivehr/bin/python << 'PYEOF'
+import sqlite3
+c = sqlite3.connect('/Data0/swangek_data/991/CPRD/data/example_exercise_database.db')
+cur = c.cursor()
+cur.execute('SELECT sql FROM sqlite_master WHERE name="diagnosis_table"')
+print('SCHEMA:', cur.fetchone())
+cur.execute('SELECT * FROM diagnosis_table LIMIT 3')
+print('SAMPLES:')
+for row in cur.fetchall(): print(' ', row)
+print('--- dementia code counts ---')
+codes = ["F110.","Eu00.","Eu01.","Eu02z","Eu002","E00..","Eu023","Eu00z","Eu025","Eu01z","E001.","F1100","Eu001","E004.","Eu000","Eu02.","Eu013","E000.","Eu01y","E001z","F1101","Eu020","E004z","E0021","Eu02y","Eu012","Eu011","E00z.","E0040","E003.","E0020"]
+freq = {}
+for code in codes:
+    cur.execute('SELECT COUNT(*) FROM diagnosis_table WHERE EVENT=?',(code,))
+    freq[code] = cur.fetchone()[0]
+for k,v in sorted(freq.items(), key=lambda x:-x[1]):
+    print(f' {k}: {v}')
+c.close()
+PYEOF
+
+OUT
+Command running in background with ID: bdc3e8gah. Output is being written to: /tmp/claude-422975/-Data0-swangek-data-991/4fdbd1cf-d136-4ecb-94f4-7fa6ba883921/tasks/bdc3e8gah.output
+[rerun: b9]
+Bash Wait and read output
+IN
+sleep 8 && wc -l /tmp/claude-422975/-Data0-swangek-data-991/4fdbd1cf-d136-4ecb-94f4-7fa6ba883921/tasks/bdc3e8gah.output && echo "---" && /Data0/swangek_data/conda_envs/survivehr/bin/python -c "f=open('/tmp/claude-422975/-Data0-swangek-data-991/4fdbd1cf-d136-4ecb-94f4-7fa6ba883921/tasks/bdc3e8gah.output');print(f.read())"
+
+OUT
+0 /tmp/claude-422975/-Data0-swangek-data-991/4fdbd1cf-d136-4ecb-94f4-7fa6ba883921/tasks/bdc3e8gah.output
+---
+[rerun: b10]
+Bash Wait and check output again
+IN
+sleep 20 && wc -l /tmp/claude-422975/-Data0-swangek-data-991/4fdbd1cf-d136-4ecb-94f4-7fa6ba883921/tasks/bdc3e8gah.output && /Data0/swangek_data/conda_envs/survivehr/bin/python -c "print(open('/tmp/claude-422975/-Data0-swangek-data-991/4fdbd1cf-d136-4ecb-94f4-7fa6ba883921/tasks/bdc3e8gah.output').read())"
+
+OUT
+0 /tmp/claude-422975/-Data0-swangek-data-991/4fdbd1cf-d136-4ecb-94f4-7fa6ba883921/tasks/bdc3e8gah.output
+[rerun: b11]
+Bash Inspect diagnosis_table
+IN
+/Data0/swangek_data/conda_envs/survivehr/bin/python -c "
+import sqlite3
+c = sqlite3.connect('/Data0/swangek_data/991/CPRD/data/example_exercise_database.db')
+cur = c.cursor()
+cur.execute('SELECT sql FROM sqlite_master WHERE name=\"diagnosis_table\"')
+print('SCHEMA:', cur.fetchone())
+cur.execute('SELECT * FROM diagnosis_table LIMIT 3')
+print('SAMPLES:')
+for row in cur.fetchall(): print(' ', row)
+c.close()
+" 2>&1
+
+OUT
+SCHEMA: ('CREATE TABLE diagnosis_table (\n        PRACTICE_ID integer,\n        PATIENT_ID integer,\n        EVENT text,\n        DATE text\n    )',)
+SAMPLES:
+  (11013, 1824771, 'XE2JU', '2001-07-11')
+  (1011, 5575658, 'XaF6J', '2005-02-08')
+  (11013004, 4518897, '42N..', '2015-05-12')
+[rerun: b12]
+Bash Check dementia code frequencies
+IN
+/Data0/swangek_data/conda_envs/survivehr/bin/python -c "
+import sqlite3
+c = sqlite3.connect('/Data0/swangek_data/991/CPRD/data/example_exercise_database.db')
+cur = c.cursor()
+codes = ['F110.','Eu00.','Eu01.','Eu02z','Eu002','E00..','Eu023','Eu00z','Eu025','Eu01z','E001.','F1100','Eu001','E004.','Eu000','Eu02.','Eu013','E000.','Eu01y','E001z','F1101','Eu020','E004z','E0021','Eu02y','Eu012','Eu011','E00z.','E0040','E003.','E0020']
+freq = {}
+for code in codes:
+    cur.execute('SELECT COUNT(*) FROM diagnosis_table WHERE EVENT=?',(code,))
+    freq[code] = cur.fetchone()[0]
+for k,v in sorted(freq.items(), key=lambda x:-x[1]):
+    print(f' {k}: {v}')
+c.close()
+" 2>&1
+
+OUT
+Command running in background with ID: b38wl5w6j. Output is being written to: /tmp/claude-422975/-Data0-swangek-data-991/4fdbd1cf-d136-4ecb-94f4-7fa6ba883921/tasks/b38wl5w6j.output
+[rerun: b13]
+Bash Quick freq check 4 codes
+IN
+/Data0/swangek_data/conda_envs/survivehr/bin/python -c "
+import sqlite3
+c = sqlite3.connect('/Data0/swangek_data/991/CPRD/data/example_exercise_database.db')
+cur = c.cursor()
+codes = ['F110.','Eu00.','Eu01.','Eu02z']
+for code in codes:
+    cur.execute('SELECT COUNT(*) FROM diagnosis_table WHERE EVENT=?',(code,))
+    print(code, cur.fetchone()[0])
+c.close()
+" 2>&1
+
+OUT
+F110. 699
+Eu00. 296
+Eu01. 104
+Eu02z 92
+[rerun: b14]
+Update Todos
+
+Confirm hotfixes and inspect schema
+
+Write build_omop_mapping.py
+
+Write build_hes_events.py with HOTFIX 1 + 2
+
+Write prepare_hes_fusion_db.py
+
+Write build_dementia_cr_hes_fusion.py
+
+Write verify_hes_fusion_dataset.py
+
+Write configs and pipeline shell script
+
+Launch pipeline
+DB confirmed: DATE format is YYYY-MM-DD text. Top dementia code: F110. (699), then Eu00. (296), Eu01. (104), Eu02z (92). HES file actually already shows YYYY-MM-DD but I'll still parse explicitly per HOTFIX 2.
+
+Bash Inspect OMOP CSV header
+IN
+head -2 /Data0/swangek_data/991/CPRD/data/omop_condition_occurrence.csv ; echo "---"; ls /Data0/swangek_data/991/CPRD/examples/modelling/SurvivEHR/confs/config_FineTune_Dementia_CR_hes_aug.yaml /Data0/swangek_data/991/CPRD/examples/modelling/SurvivEHR/confs/config_FineTune_Dementia_CR_hes_aug_eval.yaml
+
+OUT
+eid,condition_occurrence_id,condition_concept_id,condition_start_date,condition_start_datetime,condition_end_date,condition_end_datetime,condition_type_concept_id,stop_reason,provider_id,visit_occurrence_id,visit_detail_id,condition_source_value,condition_source_concept_id,condition_status_source_value,condition_status_concept_id
+2206994,343597513865,4193634,01/05/2009,,,,32862,,,25769818707,,1980-0.0-100349-1,36299175,,0
+---
+/Data0/swangek_data/991/CPRD/examples/modelling/SurvivEHR/confs/config_FineTune_Dementia_CR_hes_aug_eval.yaml
+/Data0/swangek_data/991/CPRD/examples/modelling/SurvivEHR/confs/config_FineTune_Dementia_CR_hes_aug.yaml
+[rerun: b15]
+Read hes_dementia_lookup.py
+Bash Sample OMOP source values
+IN
+/Data0/swangek_data/conda_envs/survivehr/bin/python -c "
+import pandas as pd
+df = pd.read_csv('/Data0/swangek_data/991/CPRD/data/omop_condition_occurrence.csv', usecols=['condition_concept_id','condition_source_value','condition_source_concept_id'], nrows=20000)
+print('Sample source values:')
+print(df['condition_source_value'].dropna().sample(20).tolist())
+print('Are values numeric mostly?')
+print(df['condition_source_value'].head(40).tolist())
+" 2>&1 | head -50
+
+OUT
+Sample source values:
+['686A.', '4239.', 'H33..', 'B957', '44P1.', '246A.', '2469.', 'XE0qv', 'M5499', 'I251', '2000-0.0-100349-1', '4717-0.0-100349-1', '1954.', '2469.', 'XaBkl', 'I214', '663f.', '1970-0.0-100349-0', '2178-0.0-100508-1', 'I10']
+Are values numeric mostly?
+['1980-0.0-100349-1', 'T909', 'AB233', '4570-2.0-100478-2', 'N359', 'X78SS', 'C10E.', '2469.', '246A.', 'XaJzR', '1747-0.0-100434-4', 'XaIeL', '246A.', 'XE0qj', '246A.', '2469.', 'XaEYo', '2178-0.0-100508-1', 'H269', '2020-0.0-100349-1', 'X407a', '1920-0.0-100349-1', 'I258', 'G319', '5372.', '2030-1.0-100349-1', 'M290.', '2469.', 'R0042', '2469.', '1A13.', '5401', 'XE0Xr', '2010-0.0-100349-1', 'I849', '24E6.', '2178-2.0-100508-2', '685B.', '2I14.', '246A.']
+[rerun: b16]
+Now I have all the context. Let me start writing the scripts.
+
+Write build_omop_mapping.py
+142 lines
+Write build_hes_events.py
+235 lines
+Write prepare_hes_fusion_db.py
+99 lines
+Now let me look at the existing config and build script to mirror exact options.
+
+Read config_FineTune_Dementia_CR_hes_aug.yaml
+Update Todos
+
+Confirm hotfixes and inspect schema
+
+Write build_omop_mapping.py
+
+Write build_hes_events.py with HOTFIX 1 + 2
+
+Write prepare_hes_fusion_db.py
+
+Write build_dementia_cr_hes_fusion.py
+
+Write verify_hes_fusion_dataset.py
+
+Write configs and pipeline shell script
+
+Launch pipeline
+Read config_FineTune_Dementia_CR_hes_aug_eval.yaml
+Write build_dementia_cr_hes_fusion.py
+100 lines
+Read verify_hes_aug_dataset.py
+Write verify_hes_fusion_dataset.py
+113 lines
+Now configs. Let me copy the hes_aug ones with the right paths/IDs:
+
+Write config_FineTune_Dementia_CR_hes_fusion.yaml
+135 lines
+Write config_FineTune_Dementia_CR_hes_fusion_eval.yaml
+135 lines
+Write run_hes_fusion_pipeline.sh
+53 lines
+Bash Make pipeline executable
+IN
+chmod +x /Data0/swangek_data/991/CPRD/run_hes_fusion_pipeline.sh && ls -la /Data0/swangek_data/991/CPRD/run_hes_fusion_pipeline.sh
+
+OUT
+-rwxr-xr-x. 1 swangek res 2356 Apr 11 00:20 /Data0/swangek_data/991/CPRD/run_hes_fusion_pipeline.sh
+[rerun: b17]
+Before launching, let me sanity-check that hesin_diag has dotless ICD-10 (otherwise OMOP lookup fails):
+
+Bash Check ICD-10 format and level distribution
+IN
+/Data0/swangek_data/conda_envs/survivehr/bin/python -c "
+import pandas as pd
+df = pd.read_csv('/Data0/swangek_data/991/CPRD/data/hesin_diag.csv', usecols=['diag_icd10','level'], nrows=200000)
+df = df.dropna(subset=['diag_icd10'])
+print('sample:', df['diag_icd10'].sample(20).tolist())
+print('contains dot:', df['diag_icd10'].str.contains(r'\.').sum(), '/', len(df))
+print('level dist:')
+print(df['level'].value_counts())
+" 2>&1
+
+OUT
+sample: ['C186', 'M112', 'D839', 'T814', 'I48', 'C787', 'H400', 'C900', 'I10', 'W004', 'S4200', 'I209', 'J841', 'R69', 'I633', 'I10', 'Z121', 'N185', 'K219', 'G560']
+contains dot: 0 / 199228
+level dist:
+level
+2    146986
+1     47733
+3      4509
+Name: count, dtype: int64
+[rerun: b18]
+Update Todos
+
+Confirm hotfixes and inspect schema
+
+Write build_omop_mapping.py
+
+Write build_hes_events.py with HOTFIX 1 + 2
+
+Write prepare_hes_fusion_db.py
+
+Write build_dementia_cr_hes_fusion.py
+
+Write verify_hes_fusion_dataset.py
+
+Write configs and pipeline shell script
+
+Launch pipeline in tmux
+All scripts are written. Confirmed:
+
+hesin_diag.csv ICD-10 codes are dotless (e.g., I10, F03, G560) — matches OMOP source format and the HOTFIX 1 prefix matcher.
+DB DATE format is YYYY-MM-DD text — HOTFIX 2 reformats to this exact format.
+Launching the pipeline in tmux now (this matches what the plan specifies and the user explicitly asked to restart finetune):
+
+Bash Launch pipeline in tmux
+IN
+tmux kill-session -t hes_fusion 2>/dev/null || true ; tmux new-session -d -s hes_fusion "bash /Data0/swangek_data/991/CPRD/run_hes_fusion_pipeline.sh" && tmux ls && echo "---" && sleep 3 && tail -n 30 /Data0/swangek_data/991/CPRD/finetune_cr_hes_fusion_log.txt 2>&1
+
+OUT
+hes_fusion: 1 windows (created Sat Apr 11 00:21:03 2026) [80x24]
+---
+============================================================
+  HES Full Fusion Fine-Tuning
+  idx72, no SAW, OMOP mapping, all dementia patients
+  Start: Sat Apr 11 00:21:03 EDT 2026
+============================================================
+===== Step 1: Build OMOP mapping =====
+[rerun: b19]
+Update Todos
+
+Confirm hotfixes and inspect schema
+
+Write build_omop_mapping.py
+
+Write build_hes_events.py with HOTFIX 1 + 2
+
+Write prepare_hes_fusion_db.py
+
+Write build_dementia_cr_hes_fusion.py
+
+Write verify_hes_fusion_dataset.py
+
+Write configs and pipeline shell script
+
+Launch pipeline in tmux
+Pipeline launched in tmux session hes_fusion. Summary of what was done:
+
+Hotfix confirmation
+
+HOTFIX 1 (dementia override) — implemented in build_hes_events.py:38-67 as DEMENTIA_ICD10_OVERRIDE_PREFIXES. Any ICD-10 starting with F00/F01/F02/F03/G30 is mapped before consulting OMOP, to a high-frequency canonical Read v2 code from the 31-code set (F00→Eu00., F01→Eu01., F02→F110., F03→Eu02z, G30→Eu00.). An assertion verifies every target is in the canonical set.
+HOTFIX 2 (date format) — implemented in build_hes_events.py:73-96 as parse_hes_date(). Verified diagnosis_table.DATE format empirically (YYYY-MM-DD text). HES dates are parsed with explicit strptime against multiple candidate formats (%Y-%m-%d, %d/%m/%Y, %d-%m-%Y, %Y/%m/%d) then strictly re-emitted as %Y-%m-%d. Unparseable rows are dropped (and counted) instead of silently corrupting sort order.
+Files created
+
+build_omop_mapping.py — streams OMOP CSV, builds {ICD-10 → Read v2} using disambiguation rule and frequency-based 1-to-N resolution
+build_hes_events.py — applies HOTFIX 1 + 2, emits insertable tuples
+prepare_hes_fusion_db.py — copies DB, batch-inserts, verifies counts and split coverage (never touches the original)
+build_dementia_cr_hes_fusion.py — points FoundationalDataModule at the FUSED DB, reuses original splits and pretrain meta_information
+verify_hes_fusion_dataset.py — k=1/k=2/k=0 per split, sequence lengths, ICD-10 leakage canary
+confs/config_FineTune_Dementia_CR_hes_fusion.yaml and _eval.yaml — point at fused DB, original meta_information, no SAW, 15 epochs
+run_hes_fusion_pipeline.sh — full 7-step pipeline
+Monitor
+
+
+tmux attach -t hes_fusion
+tail -f /Data0/swangek_data/991/CPRD/finetune_cr_hes_fusion_log.txt
+<task-notification>
+<task-id>b1tv3hks8</task-id>
+<tool-use-id>toolu_017Z9hCYaTzLVVqdvmMtX15i</tool-use-id>
+<output-file>/tmp/claude-422975/-Data0-swangek-data-991/4fdbd1cf-d136-4ecb-94f4-7fa6ba883921/tasks/b1tv3hks8.output</output-file>
+<status>completed</status>
+<summary>Background command "Inspect diagnosis_table schema and dementia code freqs" completed (exit code 0)</summary>
+</task-notification>
+Pipeline is running in tmux session hes_fusion. Monitor with tail -f /Data0/swangek_data/991/CPRD/finetune_cr_hes_fusion_log.txt.
+
+<task-notification>
+<task-id>bdc3e8gah</task-id>
+<tool-use-id>toolu_01A4pyashZ4n7qVsGiPyBEMQ</tool-use-id>
+<output-file>/tmp/claude-422975/-Data0-swangek-data-991/4fdbd1cf-d136-4ecb-94f4-7fa6ba883921/tasks/bdc3e8gah.output</output-file>
+<status>completed</status>
+<summary>Background command "Inspect schema and dementia frequencies" completed (exit code 0)</summary>
+</task-notification>
+Acknowledged. The pipeline is running in tmux session hes_fusion.
+
+<task-notification>
+<task-id>b38wl5w6j</task-id>
+<tool-use-id>toolu_01WnRxLRrmiT5a4nPqQXZpd4</tool-use-id>
+<output-file>/tmp/claude-422975/-Data0-swangek-data-991/4fdbd1cf-d136-4ecb-94f4-7fa6ba883921/tasks/b38wl5w6j.output</output-file>
+<status>completed</status>
+<summary>Background command "Check dementia code frequencies" completed (exit code 0)</summary>
+</task-notification>
+Acknowledged. Pipeline running in tmux hes_fusion. Monitor via tail -f /Data0/swangek_data/991/CPRD/finetune_cr_hes_fusion_log.txt.
+
+为啥记录里显示一个finetune的epoch都没做啊
+Bash Check log tail
+IN
+wc -l /Data0/swangek_data/991/CPRD/finetune_cr_hes_fusion_log.txt && echo "---TAIL---" && tail -80 /Data0/swangek_data/991/CPRD/finetune_cr_hes_fusion_log.txt
+
+OUT
+4006 /Data0/swangek_data/991/CPRD/finetune_cr_hes_fusion_log.txt
+---TAIL---
+    adapter_dim: 8
+  backbone:
+    linear_probe_epochs: 0
+    unfreeze_top_k: null
+  head:
+    surv_weight: 1
+    value_weight: 0
+    learning_rate: 0.0005
+  sample_weighting:
+    mode: null
+    event_lambda: 1.0
+    alpha: 2.0
+    tau: 0.33
+    w_t_max: 3.0
+    w_total_max: 20.0
+optim:
+  num_epochs: 15
+  learning_rate: 5.0e-05
+  scheduler_warmup: false
+  scheduler: reduceonplateau
+  scheduler_periods: 10000
+  learning_rate_decay: 0.8
+  val_check_interval: 1.0
+  early_stop: true
+  early_stop_patience: 10
+  log_every_n_steps: 20
+  limit_val_batches: 1.0
+  limit_test_batches: null
+  accumulate_grad_batches: 4
+transformer:
+  block_type: Neo
+  block_size: 512
+  n_layer: 6
+  n_head: 6
+  n_embd: 384
+  layer_norm_bias: false
+  attention_type: global
+  bias: true
+  dropout: 0.1
+  attention_dropout: 0.1
+  resid_dropout: 0.1
+  private_heads: 0
+head:
+  SurvLayer: cr
+  surv_weight: 1
+  tokens_for_univariate_regression: <9247 token IDs omitted>
+  value_weight: 0.1
+
+[2026-04-11 01:42:33,538][root][INFO] - ====================================================================================================
+[2026-04-11 01:42:33,538][root][INFO] - # Fine-tune learning experiment with a new competing-risk head
+[2026-04-11 01:42:33,538][root][INFO] - ====================================================================================================
+[2026-04-11 01:42:33,538][root][INFO] - Creating new fine-tuned model at the path /Data0/swangek_data/991/CPRD/output/checkpoints/crPreTrain_small_1337_FineTune_Dementia_CR_hes_fusion.ckpt.
+[2026-04-11 01:42:33,538][root][INFO] - This is trained from a checkpointed pre-trained causal experiment, which can be found at /Data0/swangek_data/991/CPRD/output/checkpoints/crPreTrain_small_1337.ckpt.
+Error executing job with overrides: []
+Traceback (most recent call last):
+  File "/Data0/swangek_data/991/CPRD/examples/modelling/SurvivEHR/run_experiment.py", line 309, in <module>
+    run()
+  File "/Data0/swangek_data/conda_envs/survivehr/lib/python3.10/site-packages/hydra/main.py", line 94, in decorated_main
+    _run_hydra(
+  File "/Data0/swangek_data/conda_envs/survivehr/lib/python3.10/site-packages/hydra/_internal/utils.py", line 394, in _run_hydra
+    _run_app(
+  File "/Data0/swangek_data/conda_envs/survivehr/lib/python3.10/site-packages/hydra/_internal/utils.py", line 457, in _run_app
+    run_and_report(
+  File "/Data0/swangek_data/conda_envs/survivehr/lib/python3.10/site-packages/hydra/_internal/utils.py", line 223, in run_and_report
+    raise ex
+  File "/Data0/swangek_data/conda_envs/survivehr/lib/python3.10/site-packages/hydra/_internal/utils.py", line 220, in run_and_report
+    return func()
+  File "/Data0/swangek_data/conda_envs/survivehr/lib/python3.10/site-packages/hydra/_internal/utils.py", line 458, in <lambda>
+    lambda: hydra.run(
+  File "/Data0/swangek_data/conda_envs/survivehr/lib/python3.10/site-packages/hydra/_internal/hydra.py", line 132, in run
+    _ = ret.return_value
+  File "/Data0/swangek_data/conda_envs/survivehr/lib/python3.10/site-packages/hydra/core/utils.py", line 260, in return_value
+    raise self._return_value
+  File "/Data0/swangek_data/conda_envs/survivehr/lib/python3.10/site-packages/hydra/core/utils.py", line 186, in run_job
+    ret.return_value = task_function(task_cfg)
+  File "/Data0/swangek_data/991/CPRD/examples/modelling/SurvivEHR/run_experiment.py", line 261, in run
+    assert cfg.experiment.train is True, f"If you are not training, please load a valid fine-tuned checkpoint. {supervised_ckpt_path} is not valid."
+AssertionError: If you are not training, please load a valid fine-tuned checkpoint. /Data0/swangek_data/991/CPRD/output/checkpoints/crPreTrain_small_1337_FineTune_Dementia_CR_hes_fusion.ckpt is not valid.
+End eval: Sat Apr 11 01:42:42 EDT 2026
+===== ALL DONE =====
+[rerun: b1]
+Bash Check tmux session state
+IN
+tmux list-sessions 2>&1 ; echo "---" ; tmux capture-pane -t hes_fusion -p 2>&1 | tail -40
+
+OUT
+no server running on /tmp/tmux-422975/default
+---
+no server running on /tmp/tmux-422975/default
+[rerun: b2]
+Pipeline ended; the train step ran but produced no checkpoint. Let me find where training actually died.
+
+Bash Find training errors in log
+IN
+grep -n "Step 6: Train\|Start train\|End train\|Error\|Traceback\|RuntimeError\|AssertionError\|OutOfMemory\|CUDA\|epoch" /Data0/swangek_data/991/CPRD/finetune_cr_hes_fusion_log.txt | head -80
+
+OUT
+404:===== Step 6: Train =====
+405:Start train: Sat Apr 11 01:28:15 EDT 2026
+519:    linear_probe_epochs: 0
+533:  num_epochs: 15
+661:`Trainer(val_check_interval=1.0)` was configured so validation will run at the end of the training epoch..
+834:    linear_probe_epochs: 0
+848:  num_epochs: 15
+976:    linear_probe_epochs: 0
+990:  num_epochs: 15
+1118:    linear_probe_epochs: 0
+1132:  num_epochs: 15
+1446:LOCAL_RANK: 3 - CUDA_VISIBLE_DEVICES: [0,1,2,3]
+1447:LOCAL_RANK: 1 - CUDA_VISIBLE_DEVICES: [0,1,2,3]
+1448:LOCAL_RANK: 2 - CUDA_VISIBLE_DEVICES: [0,1,2,3]
+1449:LOCAL_RANK: 0 - CUDA_VISIBLE_DEVICES: [0,1,2,3]
+1463:[2026-04-11 01:31:36,508][root][INFO] - Using reduceonplateau scheduler with config {'scheduler': <torch.optim.lr_scheduler.ReduceLROnPlateau object at 0x7fe0b94258a0>, 'interval': 'epoch', 'monitor': 'val_loss', 'frequency': 1, 'strict': True, 'name': 'reduceonplateau', 'reduce_on_plateau': True}
+1464:[2026-04-11 01:31:36,508][root][INFO] - Using reduceonplateau scheduler with config {'scheduler': <torch.optim.lr_scheduler.ReduceLROnPlateau object at 0x7f905ec00430>, 'interval': 'epoch', 'monitor': 'val_loss', 'frequency': 1, 'strict': True, 'name': 'reduceonplateau', 'reduce_on_plateau': True}
+1465:[2026-04-11 01:31:36,510][root][INFO] - Using reduceonplateau scheduler with config {'scheduler': <torch.optim.lr_scheduler.ReduceLROnPlateau object at 0x7f08261b5720>, 'interval': 'epoch', 'monitor': 'val_loss', 'frequency': 1, 'strict': True, 'name': 'reduceonplateau', 'reduce_on_plateau': True}
+1466:[2026-04-11 01:31:36,532][root][INFO] - Using reduceonplateau scheduler with config {'scheduler': <torch.optim.lr_scheduler.ReduceLROnPlateau object at 0x7fdcfac6db10>, 'interval': 'epoch', 'monitor': 'val_loss', 'frequency': 1, 'strict': True, 'name': 'reduceonplateau', 'reduce_on_plateau': True}
+1480:[2026-04-11 01:34:47,610][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+1488:[2026-04-11 01:34:47,799][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+1496:[2026-04-11 01:34:47,955][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+1504:[2026-04-11 01:34:55,122][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+1512:[2026-04-11 01:35:24,196][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+1520:[2026-04-11 01:35:27,700][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+1528:[2026-04-11 01:35:27,910][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+1536:[2026-04-11 01:35:35,558][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+1544:[2026-04-11 01:35:44,559][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+1551:/Data0/swangek_data/conda_envs/survivehr/lib/python3.10/site-packages/pytorch_lightning/trainer/connectors/logger_connector/result.py:429: It is recommended to use `self.log('Val:OutcomePerformanceMetricsctd', ..., sync_dist=True)` when logging on epoch level in distributed setting to accumulate the metric across devices.
+1552:/Data0/swangek_data/conda_envs/survivehr/lib/python3.10/site-packages/pytorch_lightning/trainer/connectors/logger_connector/result.py:429: It is recommended to use `self.log('Val:OutcomePerformanceMetricsibs', ..., sync_dist=True)` when logging on epoch level in distributed setting to accumulate the metric across devices.
+1553:/Data0/swangek_data/conda_envs/survivehr/lib/python3.10/site-packages/pytorch_lightning/trainer/connectors/logger_connector/result.py:429: It is recommended to use `self.log('Val:OutcomePerformanceMetricsinbll', ..., sync_dist=True)` when logging on epoch level in distributed setting to accumulate the metric across devices.
+1554:/Data0/swangek_data/conda_envs/survivehr/lib/python3.10/site-packages/pytorch_lightning/trainer/connectors/logger_connector/result.py:429: It is recommended to use `self.log('Val:OutcomePerformanceMetrics_risk1_1codesctd', ..., sync_dist=True)` when logging on epoch level in distributed setting to accumulate the metric across devices.
+1555:/Data0/swangek_data/conda_envs/survivehr/lib/python3.10/site-packages/pytorch_lightning/trainer/connectors/logger_connector/result.py:429: It is recommended to use `self.log('Val:OutcomePerformanceMetrics_risk1_1codesibs', ..., sync_dist=True)` when logging on epoch level in distributed setting to accumulate the metric across devices.
+1556:/Data0/swangek_data/conda_envs/survivehr/lib/python3.10/site-packages/pytorch_lightning/trainer/connectors/logger_connector/result.py:429: It is recommended to use `self.log('Val:OutcomePerformanceMetrics_risk1_1codesinbll', ..., sync_dist=True)` when logging on epoch level in distributed setting to accumulate the metric across devices.
+1557:
+                                                                           `Trainer.fit` stopped: `max_epochs=15` reached.
+1602:LOCAL_RANK: 0 - CUDA_VISIBLE_DEVICES: [0,1,2,3]
+1603:LOCAL_RANK: 1 - CUDA_VISIBLE_DEVICES: [0,1,2,3]
+1604:LOCAL_RANK: 3 - CUDA_VISIBLE_DEVICES: [0,1,2,3]
+1605:LOCAL_RANK: 2 - CUDA_VISIBLE_DEVICES: [0,1,2,3]
+1608:[2026-04-11 01:37:18,272][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+1617:[2026-04-11 01:37:22,683][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+1625:[2026-04-11 01:37:23,451][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+1633:[2026-04-11 01:37:24,105][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+1641:[2026-04-11 01:37:26,309][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+1649:[2026-04-11 01:37:26,910][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+1657:[2026-04-11 01:37:37,697][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+1665:[2026-04-11 01:37:38,888][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+1673:[2026-04-11 01:37:41,469][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+1682:[2026-04-11 01:37:43,942][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+1689:[2026-04-11 01:37:43,966][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+1697:[2026-04-11 01:37:55,919][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+1705:[2026-04-11 01:37:57,384][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+1713:[2026-04-11 01:38:03,565][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+1721:[2026-04-11 01:38:05,013][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+1729:[2026-04-11 01:38:05,848][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+1737:[2026-04-11 01:38:07,084][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+1745:[2026-04-11 01:38:07,141][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+1753:[2026-04-11 01:38:07,193][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+1761:[2026-04-11 01:38:07,476][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+1769:[2026-04-11 01:38:07,527][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+1777:[2026-04-11 01:38:07,585][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+1785:[2026-04-11 01:38:08,227][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+1793:[2026-04-11 01:38:08,754][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+1801:[2026-04-11 01:38:08,805][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+1809:[2026-04-11 01:38:08,857][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+1817:[2026-04-11 01:38:09,340][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+1825:[2026-04-11 01:38:09,392][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+1833:[2026-04-11 01:38:09,453][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+1841:[2026-04-11 01:38:09,860][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+1849:[2026-04-11 01:38:10,613][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+1857:[2026-04-11 01:38:11,648][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+1865:[2026-04-11 01:38:11,705][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+1873:[2026-04-11 01:38:11,757][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+1881:[2026-04-11 01:38:12,256][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+1889:[2026-04-11 01:38:13,452][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+1897:[2026-04-11 01:38:13,507][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+1905:[2026-04-11 01:38:13,564][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+1913:[2026-04-11 01:38:14,117][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+1921:[2026-04-11 01:38:14,360][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+1929:[2026-04-11 01:38:14,412][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+[rerun: b3]
+Bash Find key pipeline summary lines
+IN
+grep -n "Epoch\|max_epochs\|checkpoint\|Verify\|k=1\|Total\|Dementia\|RELABELED\|HES-Fusion\|hes_events\|Step 5\|dementia override\|OMOP mapping applied\|unique (insertable)\|after  insert\|before insert" /Data0/swangek_data/991/CPRD/finetune_cr_hes_fusion_log.txt | head -100
+
+OUT
+36:  build_hes_events.py
+56:  dementia override applied     : 55,140
+57:  OMOP mapping applied          : 12,091,945
+58:  unique (insertable) events    : 11,272,858
+60:Wrote /Data0/swangek_data/991/CPRD/data/hes_events_for_db.pickle
+69:  before insert: 132,595,096 rows, 230,001 patients
+70:  after  insert: 143,867,954 rows, 466,359 patients
+83:INFO:root:Building Polars datasets and saving to /Data0/swangek_data/991/CPRD/data/FoundationalModel/FineTune_Dementia_CR_hes_fusion/
+87:  Building HES-Fused Dementia CR Dataset
+91:  Output:           /Data0/swangek_data/991/CPRD/data/FoundationalModel/FineTune_Dementia_CR_hes_fusion/
+108:INFO:root:Created dataset at /Data0/swangek_data/991/CPRD/data/FoundationalModel/FineTune_Dementia_CR_hes_fusion/split=test with 11363 number of samples
+317:INFO:root:Created dataset at /Data0/swangek_data/991/CPRD/data/FoundationalModel/FineTune_Dementia_CR_hes_fusion/split=train with 165522 number of samples
+334:INFO:root:Created dataset at /Data0/swangek_data/991/CPRD/data/FoundationalModel/FineTune_Dementia_CR_hes_fusion/split=val with 8273 number of samples
+338:INFO:root:Using train file-row count dict from /Data0/swangek_data/991/CPRD/data/FoundationalModel/FineTune_Dementia_CR_hes_fusion/file_row_count_dict_train.pickle
+339:INFO:root:Using test file-row count dict from /Data0/swangek_data/991/CPRD/data/FoundationalModel/FineTune_Dementia_CR_hes_fusion/file_row_count_dict_test.pickle
+340:INFO:root:Using val file-row count dict from /Data0/swangek_data/991/CPRD/data/FoundationalModel/FineTune_Dementia_CR_hes_fusion/file_row_count_dict_val.pickle
+344:INFO:root:Loaded /Data0/swangek_data/991/CPRD/data/FoundationalModel/FineTune_Dementia_CR_hes_fusion/split=train/ dataset
+349:INFO:root:Loaded /Data0/swangek_data/991/CPRD/data/FoundationalModel/FineTune_Dementia_CR_hes_fusion/split=test/ dataset
+354:INFO:root:Loaded /Data0/swangek_data/991/CPRD/data/FoundationalModel/FineTune_Dementia_CR_hes_fusion/split=val/ dataset
+366:===== Step 5: Verify dataset =====
+368:  HES-Fusion Dataset Statistics  (index_age=72, no SAW)
+370:Split       Total      k=1      k=2      k=0      k1%   mean_len  med_len
+379:  GP-only baseline (idx65): test k=1 ~60
+380:  HES label augmented:      test k=1 ~301
+381:  This run (HES fusion):    target test k=1 >= 301
+409:[2026-04-11 01:28:30,042][root][INFO] - # Loading DataModule for dataset /Data0/swangek_data/991/CPRD/data/FoundationalModel/FineTune_Dementia_CR_hes_fusion/. This will be loaded in supervised form.
+412:[2026-04-11 01:29:01,078][root][INFO] - Using train file-row count dict from /Data0/swangek_data/991/CPRD/data/FoundationalModel/FineTune_Dementia_CR_hes_fusion/file_row_count_dict_train.pickle
+413:[2026-04-11 01:29:01,079][root][INFO] - Using test file-row count dict from /Data0/swangek_data/991/CPRD/data/FoundationalModel/FineTune_Dementia_CR_hes_fusion/file_row_count_dict_test.pickle
+414:[2026-04-11 01:29:01,079][root][INFO] - Using val file-row count dict from /Data0/swangek_data/991/CPRD/data/FoundationalModel/FineTune_Dementia_CR_hes_fusion/file_row_count_dict_val.pickle
+418:[2026-04-11 01:29:01,187][root][INFO] - Loaded /Data0/swangek_data/991/CPRD/data/FoundationalModel/FineTune_Dementia_CR_hes_fusion/split=train/ dataset
+423:[2026-04-11 01:29:11,597][root][INFO] - Loaded /Data0/swangek_data/991/CPRD/data/FoundationalModel/FineTune_Dementia_CR_hes_fusion/split=test/ dataset
+428:[2026-04-11 01:29:12,662][root][INFO] - Loaded /Data0/swangek_data/991/CPRD/data/FoundationalModel/FineTune_Dementia_CR_hes_fusion/split=val/ dataset
+442:  path_to_ds: /Data0/swangek_data/991/CPRD/data/FoundationalModel/FineTune_Dementia_CR_hes_fusion/
+451:  fine_tune_id: FineTune_Dementia_CR_hes_fusion
+467:  ckpt_dir: /Data0/swangek_data/991/CPRD/output/checkpoints/
+568:[2026-04-11 01:29:19,652][root][INFO] - Creating new fine-tuned model at the path /Data0/swangek_data/991/CPRD/output/checkpoints/crPreTrain_small_1337_FineTune_Dementia_CR_hes_fusion.ckpt.
+569:[2026-04-11 01:29:19,652][root][INFO] - This is trained from a checkpointed pre-trained causal experiment, which can be found at /Data0/swangek_data/991/CPRD/output/checkpoints/crPreTrain_small_1337.ckpt.
+575:[2026-04-11 01:29:19,653][root][INFO] - Loading pre-trained model from checkpoint from /Data0/swangek_data/991/CPRD/output/checkpoints/crPreTrain_small_1337.ckpt.
+587:/Data0/swangek_data/conda_envs/survivehr/lib/python3.10/site-packages/pytorch_lightning/core/saving.py:173: Found keys that are in the model state dict but not in the checkpoint: ['surv_layer.sr_ode.pinet.mapping.0.weight', 'surv_layer.sr_ode.pinet.mapping.0.bias', 'surv_layer.sr_ode.pinet.mapping.2.weight', 'surv_layer.sr_ode.pinet.mapping.2.bias', 'surv_layer.sr_ode.pinet.mapping.4.weight', 'surv_layer.sr_ode.pinet.mapping.4.bias', 'surv_layer.sr_ode.odenet.u', 'surv_layer.sr_ode.odenet.w', 'surv_layer.sr_ode.odenet.BaseNet.mapping.0.weight', 'surv_layer.sr_ode.odenet.BaseNet.mapping.0.bias', 'surv_layer.sr_ode.odenet.BaseNet.mapping.2.weight', 'surv_layer.sr_ode.odenet.BaseNet.mapping.2.bias', 'surv_layer.sr_ode.odenet.BaseNet.mapping.4.weight', 'surv_layer.sr_ode.odenet.BaseNet.mapping.4.bias']
+663:[2026-04-11 01:29:35,604][root][INFO] - Resuming full training state from /Data0/swangek_data/991/CPRD/output/checkpoints/last.ckpt
+670:[2026-04-11 01:29:54,645][root][INFO] - # Loading DataModule for dataset /Data0/swangek_data/991/CPRD/data/FoundationalModel/FineTune_Dementia_CR_hes_fusion/. This will be loaded in supervised form.
+674:[2026-04-11 01:29:54,885][root][INFO] - # Loading DataModule for dataset /Data0/swangek_data/991/CPRD/data/FoundationalModel/FineTune_Dementia_CR_hes_fusion/. This will be loaded in supervised form.
+678:[2026-04-11 01:29:55,522][root][INFO] - # Loading DataModule for dataset /Data0/swangek_data/991/CPRD/data/FoundationalModel/FineTune_Dementia_CR_hes_fusion/. This will be loaded in supervised form.
+681:[2026-04-11 01:30:26,097][root][INFO] - Using train file-row count dict from /Data0/swangek_data/991/CPRD/data/FoundationalModel/FineTune_Dementia_CR_hes_fusion/file_row_count_dict_train.pickle
+682:[2026-04-11 01:30:26,098][root][INFO] - Using test file-row count dict from /Data0/swangek_data/991/CPRD/data/FoundationalModel/FineTune_Dementia_CR_hes_fusion/file_row_count_dict_test.pickle
+683:[2026-04-11 01:30:26,099][root][INFO] - Using val file-row count dict from /Data0/swangek_data/991/CPRD/data/FoundationalModel/FineTune_Dementia_CR_hes_fusion/file_row_count_dict_val.pickle
+687:[2026-04-11 01:30:26,200][root][INFO] - Loaded /Data0/swangek_data/991/CPRD/data/FoundationalModel/FineTune_Dementia_CR_hes_fusion/split=train/ dataset
+690:[2026-04-11 01:30:26,660][root][INFO] - Using train file-row count dict from /Data0/swangek_data/991/CPRD/data/FoundationalModel/FineTune_Dementia_CR_hes_fusion/file_row_count_dict_train.pickle
+691:[2026-04-11 01:30:26,662][root][INFO] - Using test file-row count dict from /Data0/swangek_data/991/CPRD/data/FoundationalModel/FineTune_Dementia_CR_hes_fusion/file_row_count_dict_test.pickle
+692:[2026-04-11 01:30:26,662][root][INFO] - Using val file-row count dict from /Data0/swangek_data/991/CPRD/data/FoundationalModel/FineTune_Dementia_CR_hes_fusion/file_row_count_dict_val.pickle
+696:[2026-04-11 01:30:26,764][root][INFO] - Loaded /Data0/swangek_data/991/CPRD/data/FoundationalModel/FineTune_Dementia_CR_hes_fusion/split=train/ dataset
+699:[2026-04-11 01:30:27,980][root][INFO] - Using train file-row count dict from /Data0/swangek_data/991/CPRD/data/FoundationalModel/FineTune_Dementia_CR_hes_fusion/file_row_count_dict_train.pickle
+700:[2026-04-11 01:30:27,981][root][INFO] - Using test file-row count dict from /Data0/swangek_data/991/CPRD/data/FoundationalModel/FineTune_Dementia_CR_hes_fusion/file_row_count_dict_test.pickle
+701:[2026-04-11 01:30:27,982][root][INFO] - Using val file-row count dict from /Data0/swangek_data/991/CPRD/data/FoundationalModel/FineTune_Dementia_CR_hes_fusion/file_row_count_dict_val.pickle
+705:[2026-04-11 01:30:28,119][root][INFO] - Loaded /Data0/swangek_data/991/CPRD/data/FoundationalModel/FineTune_Dementia_CR_hes_fusion/split=train/ dataset
+710:[2026-04-11 01:30:36,992][root][INFO] - Loaded /Data0/swangek_data/991/CPRD/data/FoundationalModel/FineTune_Dementia_CR_hes_fusion/split=test/ dataset
+717:[2026-04-11 01:30:38,098][root][INFO] - Loaded /Data0/swangek_data/991/CPRD/data/FoundationalModel/FineTune_Dementia_CR_hes_fusion/split=val/ dataset
+720:[2026-04-11 01:30:38,385][root][INFO] - Loaded /Data0/swangek_data/991/CPRD/data/FoundationalModel/FineTune_Dementia_CR_hes_fusion/split=test/ dataset
+731:[2026-04-11 01:30:39,583][root][INFO] - Loaded /Data0/swangek_data/991/CPRD/data/FoundationalModel/FineTune_Dementia_CR_hes_fusion/split=val/ dataset
+734:[2026-04-11 01:30:39,705][root][INFO] - Loaded /Data0/swangek_data/991/CPRD/data/FoundationalModel/FineTune_Dementia_CR_hes_fusion/split=test/ dataset
+743:[2026-04-11 01:30:41,026][root][INFO] - Loaded /Data0/swangek_data/991/CPRD/data/FoundationalModel/FineTune_Dementia_CR_hes_fusion/split=val/ dataset
+757:  path_to_ds: /Data0/swangek_data/991/CPRD/data/FoundationalModel/FineTune_Dementia_CR_hes_fusion/
+766:  fine_tune_id: FineTune_Dementia_CR_hes_fusion
+782:  ckpt_dir: /Data0/swangek_data/991/CPRD/output/checkpoints/
+883:[2026-04-11 01:30:50,339][root][INFO] - Creating new fine-tuned model at the path /Data0/swangek_data/991/CPRD/output/checkpoints/crPreTrain_small_1337_FineTune_Dementia_CR_hes_fusion.ckpt.
+884:[2026-04-11 01:30:50,339][root][INFO] - This is trained from a checkpointed pre-trained causal experiment, which can be found at /Data0/swangek_data/991/CPRD/output/checkpoints/crPreTrain_small_1337.ckpt.
+890:[2026-04-11 01:30:50,341][root][INFO] - Loading pre-trained model from checkpoint from /Data0/swangek_data/991/CPRD/output/checkpoints/crPreTrain_small_1337.ckpt.
+899:  path_to_ds: /Data0/swangek_data/991/CPRD/data/FoundationalModel/FineTune_Dementia_CR_hes_fusion/
+908:  fine_tune_id: FineTune_Dementia_CR_hes_fusion
+924:  ckpt_dir: /Data0/swangek_data/991/CPRD/output/checkpoints/
+1025:[2026-04-11 01:30:53,090][root][INFO] - Creating new fine-tuned model at the path /Data0/swangek_data/991/CPRD/output/checkpoints/crPreTrain_small_1337_FineTune_Dementia_CR_hes_fusion.ckpt.
+1026:[2026-04-11 01:30:53,090][root][INFO] - This is trained from a checkpointed pre-trained causal experiment, which can be found at /Data0/swangek_data/991/CPRD/output/checkpoints/crPreTrain_small_1337.ckpt.
+1032:[2026-04-11 01:30:53,091][root][INFO] - Loading pre-trained model from checkpoint from /Data0/swangek_data/991/CPRD/output/checkpoints/crPreTrain_small_1337.ckpt.
+1041:  path_to_ds: /Data0/swangek_data/991/CPRD/data/FoundationalModel/FineTune_Dementia_CR_hes_fusion/
+1050:  fine_tune_id: FineTune_Dementia_CR_hes_fusion
+1066:  ckpt_dir: /Data0/swangek_data/991/CPRD/output/checkpoints/
+1167:[2026-04-11 01:30:53,514][root][INFO] - Creating new fine-tuned model at the path /Data0/swangek_data/991/CPRD/output/checkpoints/crPreTrain_small_1337_FineTune_Dementia_CR_hes_fusion.ckpt.
+1168:[2026-04-11 01:30:53,514][root][INFO] - This is trained from a checkpointed pre-trained causal experiment, which can be found at /Data0/swangek_data/991/CPRD/output/checkpoints/crPreTrain_small_1337.ckpt.
+1174:[2026-04-11 01:30:53,515][root][INFO] - Loading pre-trained model from checkpoint from /Data0/swangek_data/991/CPRD/output/checkpoints/crPreTrain_small_1337.ckpt.
+1255:[2026-04-11 01:31:18,744][root][INFO] - Resuming full training state from /Data0/swangek_data/991/CPRD/output/checkpoints/last.ckpt
+1349:[2026-04-11 01:31:22,811][root][INFO] - Resuming full training state from /Data0/swangek_data/991/CPRD/output/checkpoints/last.ckpt
+1419:[2026-04-11 01:31:22,930][root][INFO] - Resuming full training state from /Data0/swangek_data/991/CPRD/output/checkpoints/last.ckpt
+1441:wandb: Syncing run crPreTrain_small_1337_FineTune_Dementia_CR_hes_fusion
+1444:/Data0/swangek_data/conda_envs/survivehr/lib/python3.10/site-packages/pytorch_lightning/callbacks/model_checkpoint.py:630: Checkpoint directory /Data0/swangek_data/991/CPRD/output/checkpoints/ exists and is not empty.
+1445:Restoring states from the checkpoint path at /Data0/swangek_data/991/CPRD/output/checkpoints/last.ckpt
+1475:94.0 M    Total params
+1476:376.035   Total estimated model params size (MB)
+1477:Restored all states from the checkpoint at /Data0/swangek_data/991/CPRD/output/checkpoints/last.ckpt
+1557:
+                                                                           `Trainer.fit` stopped: `max_epochs=15` reached.
+1558:[2026-04-11 01:36:56,615][root][INFO] - Re-loading from best cached checkpoint /Data0/swangek_data/991/CPRD/output/checkpoints/crPreTrain_small_1337_FineTune_Dementia_CR_hes_aug.ckpt
+1559:[2026-04-11 01:36:57,495][root][INFO] - Re-loading from best cached checkpoint /Data0/swangek_data/991/CPRD/output/checkpoints/crPreTrain_small_1337_FineTune_Dementia_CR_hes_aug.ckpt
+1560:[2026-04-11 01:37:00,355][root][INFO] - Re-loading from best cached checkpoint /Data0/swangek_data/991/CPRD/output/checkpoints/crPreTrain_small_1337_FineTune_Dementia_CR_hes_aug.ckpt
+1561:
+[2026-04-11 01:37:00,624][root][INFO] - Re-loading from best cached checkpoint /Data0/swangek_data/991/CPRD/output/checkpoints/crPreTrain_small_1337_FineTune_Dementia_CR_hes_aug.ckpt
+3811:[1;34mwandb[0m: 🚀 View run [33mcrPreTrain_small_1337_FineTune_Dementia_CR_hes_fusion[0m at: [34mhttps://wandb.ai/swangek2002-hong-kong-university-of-science-and-technology/SurvivEHR/runs/ujylfevs[0m
+3819:[2026-04-11 01:41:44,339][root][INFO] - # Loading DataModule for dataset /Data0/swangek_data/991/CPRD/data/FoundationalModel/FineTune_Dementia_CR_hes_fusion/. This will be loaded in supervised form.
+3822:[2026-04-11 01:42:15,267][root][INFO] - Using train file-row count dict from /Data0/swangek_data/991/CPRD/data/FoundationalModel/FineTune_Dementia_CR_hes_fusion/file_row_count_dict_train.pickle
+3823:[2026-04-11 01:42:15,268][root][INFO] - Using test file-row count dict from /Data0/swangek_data/991/CPRD/data/FoundationalModel/FineTune_Dementia_CR_hes_fusion/file_row_count_dict_test.pickle
+3824:[2026-04-11 01:42:15,269][root][INFO] - Using val file-row count dict from /Data0/swangek_data/991/CPRD/data/FoundationalModel/FineTune_Dementia_CR_hes_fusion/file_row_count_dict_val.pickle
+3828:[2026-04-11 01:42:15,369][root][INFO] - Loaded /Data0/swangek_data/991/CPRD/data/FoundationalModel/FineTune_Dementia_CR_hes_fusion/split=train/ dataset
+3833:[2026-04-11 01:42:25,615][root][INFO] - Loaded /Data0/swangek_data/991/CPRD/data/FoundationalModel/FineTune_Dementia_CR_hes_fusion/split=test/ dataset
+[rerun: b4]
+Found it. Training didn't actually do any new epochs. The root cause is at lines 1445, 1477, 1557, 1558:
+
+
+Restoring states from the checkpoint path at /Data0/...output/checkpoints/last.ckpt
+Restored all states from the checkpoint at .../last.ckpt
+Trainer.fit stopped: `max_epochs=15` reached.
+Re-loading from best cached checkpoint .../crPreTrain_small_1337_FineTune_Dementia_CR_hes_aug.ckpt
+What happened:
+
+Lightning auto-resumed from a leftover last.ckpt left over from the previous hes_aug run.
+That checkpoint was already at epoch 15, so max_epochs=15 was immediately "reached" and training exited without running a single new batch.
+Worse, the "best" checkpoint selector then fell back to the hes_aug checkpoint, and no crPreTrain_small_1337_FineTune_Dementia_CR_hes_fusion.ckpt was ever written — that's why Step 7 eval dies with "checkpoint not valid".
+Our pipeline script deletes the fusion checkpoint but not last.ckpt. Let me check the dataset stats and the leftover files, then fix.
+
+Bash List checkpoint dir
+IN
+ls -la /Data0/swangek_data/991/CPRD/output/checkpoints/ | head -20
+
+OUT
+total 22551716
+drwxr-xr-x. 2 swangek res       4096 Apr  9 21:16 .
+drwxr-xr-x. 6 swangek res         83 Mar  7 14:11 ..
+-rw-r--r--. 1 swangek res 1255001865 Mar 15 04:43 crPreTrain_small_1337.ckpt
+-rw-r--r--. 1 swangek res 1255002825 Mar 19 16:00 crPreTrain_small_1337-epochepoch=09.ckpt
+-rw-r--r--. 1 swangek res 1129557527 Mar 22 05:57 crPreTrain_small_1337_FineTune_Dementia_CR.ckpt
+-rw-r--r--. 1 swangek res 1129558231 Mar 25 21:37 crPreTrain_small_1337_FineTune_Dementia_CR_Combined.ckpt
+-rw-r--r--. 1 swangek res 1129558039 Apr  9 22:16 crPreTrain_small_1337_FineTune_Dementia_CR_hes_aug.ckpt
+-rw-r--r--. 1 swangek res 1129556951 Apr  9 12:34 crPreTrain_small_1337_FineTune_Dementia_CR_hes_aug.ckpt.bak
+-rw-r--r--. 1 swangek res 1129558231 Mar 27 07:12 crPreTrain_small_1337_FineTune_Dementia_CR_idx60.ckpt
+-rw-r--r--. 1 swangek res 1129557015 Apr  1 02:56 crPreTrain_small_1337_FineTune_Dementia_CR_idx68_cv_fold0.ckpt
+-rw-r--r--. 1 swangek res 1129557015 Apr  1 18:19 crPreTrain_small_1337_FineTune_Dementia_CR_idx68_cv_fold1.ckpt
+-rw-r--r--. 1 swangek res 1129557015 Apr  2 05:10 crPreTrain_small_1337_FineTune_Dementia_CR_idx68_cv_fold2.ckpt
+-rw-r--r--. 1 swangek res 1129557015 Apr  2 20:34 crPreTrain_small_1337_FineTune_Dementia_CR_idx68_cv_fold3.ckpt
+-rw-r--r--. 1 swangek res 1129557015 Apr  3 04:59 crPreTrain_small_1337_FineTune_Dementia_CR_idx68_cv_fold4.ckpt
+-rw-r--r--. 1 swangek res 1129556823 Mar 29 08:53 crPreTrain_small_1337_FineTune_Dementia_CR_idx70.ckpt
+-rw-r--r--. 1 swangek res 1129556823 Mar 29 21:38 crPreTrain_small_1337_FineTune_Dementia_CR_idx74.ckpt
+-rw-r--r--. 1 swangek res 1129555991 Mar 30 22:00 crPreTrain_small_1337_FineTune_Dementia_CR_idx75.ckpt
+-rw-r--r--. 1 swangek res 1129557719 Mar 22 22:21 crPreTrain_small_1337_FineTune_Dementia_CR_noSAW.ckpt
+-rw-r--r--. 1 swangek res 1255001865 Mar 19 15:45 last_backup_epoch9.ckpt
+[rerun: b5]
+Read finetune_cr_hes_fusion_log.txt (lines 366-390)
+Bash Check for last.ckpt
+IN
+ls -la /Data0/swangek_data/991/CPRD/output/checkpoints/ | grep -i last ; echo "---" ; find /Data0/swangek_data/991/CPRD/output/checkpoints/ -name "last*" 2>/dev/null
+
+OUT
+-rw-r--r--. 1 swangek res 1255001865 Mar 19 15:45 last_backup_epoch9.ckpt
+-rw-r--r--. 1 swangek res 1129556951 Apr  9 17:22 last.ckpt
+-rw-r--r--. 1 swangek res 1255001865 Mar 17 03:33 last_pretrain_backup.ckpt
+---
+/Data0/swangek_data/991/CPRD/output/checkpoints/last_backup_epoch9.ckpt
+/Data0/swangek_data/991/CPRD/output/checkpoints/last_pretrain_backup.ckpt
+/Data0/swangek_data/991/CPRD/output/checkpoints/last.ckpt
+[rerun: b6]
+Confirmed: last.ckpt (Apr 9, from hes_aug) is what the trainer auto-resumed. The old last.ckpt already has epoch ≥15 recorded, so with max_epochs=15 Lightning immediately exits.
+
+Good news though: the dataset itself is excellent — HOTFIX 1 clearly worked:
+
+train k=1 = 6,280, val k=1 = 340, test k=1 = 505 (target was ≥301)
+55,140 dementia override applications during HES translation
+I'll fix the pipeline script and restart training only (skip steps 1-5 — data is already built).
+
+Edit run_hes_fusion_pipeline.sh
+Added 3 lines
+Write run_hes_fusion_train_only.sh
+39 lines
+Bash Launch train-only pipeline
+IN
+chmod +x /Data0/swangek_data/991/CPRD/run_hes_fusion_train_only.sh && tmux kill-session -t hes_fusion 2>/dev/null || true ; tmux new-session -d -s hes_fusion_train "bash /Data0/swangek_data/991/CPRD/run_hes_fusion_train_only.sh" && tmux ls && sleep 4 && tail -15 /Data0/swangek_data/991/CPRD/finetune_cr_hes_fusion_train_only_log.txt
+
+OUT
+hes_fusion_train: 1 windows (created Sat Apr 11 12:25:35 2026) [80x24]
+============================================================
+  HES Fusion Fine-Tuning (train + eval only, data pre-built)
+  Start: Sat Apr 11 12:25:35 EDT 2026
+============================================================
+Removed stale checkpoints (fusion ckpt, last.ckpt)
+===== Train =====
+Start train: Sat Apr 11 12:25:35 EDT 2026
+/Data0/swangek_data/conda_envs/survivehr/lib/python3.10/site-packages/lightning_fabric/__init__.py:40: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.
+[rerun: b7]
+Restarted in tmux session hes_fusion_train. Summary of what went wrong and the fix:
+
+Root cause
+Pytorch Lightning's ModelCheckpoint(save_last=True) wrote a last.ckpt during the previous hes_aug fine-tune (dated Apr 9). When our new hes_fusion run started, the trainer auto-resumed from that last.ckpt, which already had current_epoch=15. Since our config says num_epochs: 15, Lightning immediately declared max_epochs=15 reached and exited without training any new batch. It then loaded the "best cached checkpoint" path, which happened to point back at crPreTrain_small_1337_FineTune_Dementia_CR_hes_aug.ckpt — so the eval step later errored out because no *_hes_fusion.ckpt was ever saved.
+
+Fix
+
+run_hes_fusion_pipeline.sh now also rm -f last.ckpt before training (alongside the existing fusion-ckpt removal).
+Created run_hes_fusion_train_only.sh to restart just training + eval — the dataset and fused DB are already built.
+Relaunched in new tmux session hes_fusion_train, logging to /Data0/swangek_data/991/CPRD/finetune_cr_hes_fusion_train_only_log.txt.
+The good news from the failed run
+The data pipeline (steps 1–5) was actually perfect. Dataset stats:
+
+Split	Total	k=1 (dementia)	k=2 (death)	k=0 (censored)	k1%	mean_len
+train	165,522	6,280	8,058	151,184	3.79%	562.7
+val	8,273	340	498	7,435	4.11%	665.1
+test	11,363	505	451	10,407	4.44%	418.3
+Test k=1 = 505, which beats the v5 plan target (≥301) and the hes_aug baseline (~301). HOTFIX 1 (dementia override) applied 55,140 times and HOTFIX 2 (date reformat) processed all HES admissions into canonical YYYY-MM-DD. Monitor the real training with:
+
+
+tail -f /Data0/swangek_data/991/CPRD/finetune_cr_hes_fusion_train_only_log.txt
+finetune_cr_hes_fusion_train_only_log.txt
+用中文给我总结一下，这次训练和之前只用gp做finetune有什么不同，做了哪些修改，如何将hes合并到gp中的
+本次 HES Fusion 训练与 GP-only Fine-tune 的区别总结
+一、根本差异：数据来源从「仅 GP」扩展到「GP + 医院住院记录」
+维度	GP-only baseline	HES label-aug（上一版 v4）	HES Fusion（本次 v5）
+输入序列	仅 GP 的 Read v2 事件	仅 GP 事件	GP + 翻译后的 HES 事件合并成一条时间线
+病例识别	仅 GP 记录里的痴呆 Read 码	GP 记录 + HES 的 ICD-10 痴呆标签（仅改 label）	HES 事件作为原生 Read v2 code 直接进入 diagnosis_table
+能覆盖的患者	只有有 GP 的人	只有有 GP 的人（~4400 只有 HES 的痴呆病人被丢）	所有 449k HES 患者，包括 4400 个没有 GP 的
+test k=1	~60	~301	505 ✅
+二、核心思路：在数据库层做融合，而非事后补丁
+以前的 v3/v4 是建完 parquet 之后再去 "relabel" 最后一个事件。问题是：没有 GP 的那 4400 个病人，FoundationalDataModule 根本不会为他们生成 parquet 行，所以永远丢失。
+
+v5 换了个策略：先把翻译好的 HES 事件作为 Read v2 码直接 INSERT 进 diagnosis_table 的副本，再让 FoundationalDataModule 正常跑。这样：
+
+只有 HES 的病人自动被纳入（因为现在他们在 diagnosis_table 里有事件了）
+有 GP 的病人序列变长（GP + HES 按日期合并排序）
+_reduce_on_outcome 会自动识别翻译后的 HES 痴呆 code 作为 outcome，不需要后处理
+三、具体改了哪些东西（7 个新文件）
+1. build_omop_mapping.py — ICD-10 → Read v2 映射字典
+扫描 omop_condition_occurrence.csv（~34M 行），找出每个 condition_concept_id 同时被 ICD-10 和 Read v2 源码指向的情况，构建一个 {ICD-10: Read v2} 字典。消歧规则：如果一个 code 在 diagnosis_table 里有记录就当 Read v2，否则当 ICD-10。一对多情况下选 diagnosis_table 里出现频次最高的那个 Read v2 code（确保预训练模型认得）。
+
+2. build_hes_events.py — 把 HES 翻译成可插入的事件元组
+读 hesin.csv（入院日期）和 hesin_diag.csv（诊断码）
+对每条诊断：查 OMOP 字典翻译成 Read v2
+从 static_table 查 PRACTICE_ID，确保病人落到正确的 train/val/test split
+最终产出 (PRACTICE_ID, PATIENT_ID, EVENT, DATE) 列表
+这里落地了两个关键 HOTFIX：
+
+HOTFIX 1（痴呆硬编码覆盖，防止标签丢失）
+OMOP 翻译有可能把某些 ICD-10 痴呆码映射到 31 个 canonical 痴呆 Read v2 码之外的码，这样 _reduce_on_outcome 就识别不到、病人被错标成 k=0。所以在翻译前做了硬编码前缀覆盖：
+
+
+DEMENTIA_ICD10_OVERRIDE_PREFIXES = {
+    "F00": "Eu00.",  # AD 痴呆
+    "F01": "Eu01.",  # 血管性痴呆
+    "F02": "F110.",  # 其他疾病引起的痴呆（用整体最高频 code）
+    "F03": "Eu02z",  # 未指定痴呆
+    "G30": "Eu00.",  # 阿尔茨海默病
+}
+所有 F00*/F01*/F02*/F03*/G30* 开头的 ICD-10 在查 OMOP 字典之前就先被映射到 31 个 canonical 码里的高频码。运行记录显示这条规则触发了 55,140 次。
+
+HOTFIX 2（日期格式对齐，防止排序错乱）
+diagnosis_table.DATE 是字符串 YYYY-MM-DD。如果 HES 的日期是 DD/MM/YYYY 或其他格式直接插进去，SQLite 字符串排序会完全错乱，序列顺序就废了。实现：
+
+
+DB_DATE_FMT = "%Y-%m-%d"
+HES_INPUT_FORMATS = ("%Y-%m-%d", "%d/%m/%Y", "%d-%m-%Y", "%Y/%m/%d")
+# 逐条 strptime 尝试，成功后 strftime 成 DB_DATE_FMT；失败的行丢弃并计数
+3. prepare_hes_fusion_db.py — 数据库融合
+shutil.copy2 复制原始 DB 到 example_exercise_database_hes_fusion.db（原始 DB 绝对不动）
+在副本上 executemany 批量 INSERT 11,272,858 条翻译后的 HES 事件
+校验：132,595,096 → 143,867,954 行；230,001 → 466,359 患者（新增 236,358 人）
+检查所有 PRACTICE_ID 是否在原有的 train/val/test splits 中
+4. build_dementia_cr_hes_fusion.py — 指向融合后的 DB
+和 hes_aug 版几乎一样，但有两个关键点：
+
+path_to_db 指向融合后的 DB 副本
+overwrite_meta_information 仍然指向原始 pretrain 的 meta_information_custom.pickle（绝对不能重新生成，否则词表和 one-hot encoder 会变，破坏 pretrained 权重的兼容性）
+不再需要 v3/v4 的 parquet 后处理 relabel 步骤
+5. verify_hes_fusion_dataset.py — 数据集校验
+检查每个 split 的 k=1/k=2/k=0 分布、序列长度、以及是否有 ICD-10 码"泄漏"进 EVENT 列。
+
+6. 两份 YAML 配置（train + eval）
+相对 hes_aug 只改了三处：path_to_db 指向融合 DB；fine_tune_id 改名；notes/tags 更新。其余超参完全一致（无 SAW，index=72，15 epochs，4-GPU DDP）。
+
+7. 两个 shell pipeline 脚本
+run_hes_fusion_pipeline.sh（全流程）和 run_hes_fusion_train_only.sh（只跑训练+评估，用于数据已建好的情况）。
+
+四、关键数字
+指标	数值
+OMOP 字典条目	~数万条 ICD-10 → Read v2
+HES 原始诊断扫描	所有 hesin_diag 行
+成功翻译（OMOP）	12,091,945 条
+痴呆 override 触发	55,140 条
+去重后插入的事件	11,272,858 条
+融合后 diagnosis_table 行数	132.6M → 143.9M
+融合后不同患者数	230k → 466k
+Fine-tune 数据集 total	185,158 (train 165,522 / val 8,273 / test 11,363)
+Fine-tune test k=1	505（GP-only ~60，hes_aug ~301）
+五、为什么要配置 last.ckpt 清理
+首次运行训练阶段 0 epoch 就退出了，原因是 PyTorch Lightning 的 save_last=True 在上一个 hes_aug run 留下了 last.ckpt，里面记录 current_epoch=15。新 run 启动时它会自动 resume 那个 state，看到 max_epochs=15 已达成就直接退出，不跑任何新的 batch，并且把 "best checkpoint" 回退到 hes_aug 的那个。修复：在训练前显式 rm -f last.ckpt，这个清理已经写进两个 shell 脚本。
+
+有几个问题请你回答一下，首先是你是先将所有hes icd10 code都映射到read v2 code了吗？之前我们不是说用omop来做icd10和read之间的映射吗，你是如何做的这个icd10到read的映射？你是通过扫描omop表格看icd-10和read的mapping情况，然后相当于是用omop作为中介构建的icd-10到read v2的映射表是吧？然后用这个映射表将icd10映射到read是吧？然后还对dementia做了强制性到已有的31个read编码的mapping限制是吧。然后mapping完将gp和hes的按照时间合并，得到新的数据库。但是现在是用之前旧的db pretrain出来的模型来在新的db上进行finetune，是这样的吧。看看我对于你这个修改之后的新的模型流程的理解是否有问题
+Show less
+你的理解基本完全正确，我逐条确认一下，顺便把几个容易误解的小细节补充清楚：
+
+1. ICD-10 → Read v2 映射是怎么做的 ✅
+是用 OMOP 作为中介。具体流程：
+
+扫描 omop_condition_occurrence.csv（~34M 行），只保留 condition_concept_id 和 condition_source_value 两列
+对每个 condition_concept_id，收集它所有出现过的 condition_source_value
+在每个 concept 的源码集合里做二分：
+如果一个 code 存在于原始 diagnosis_table 的 EVENT 列，就判定为 Read v2
+否则如果形状匹配 ^[A-Z][0-9]{2}[A-Z0-9]{0,4}$，就判定为 ICD-10
+只要同一个 concept_id 同时含有 ICD-10 和 Read v2 两类源码，就在它们之间建立映射关系
+一对多时（同一个 ICD-10 通过多个 concept 对应多个 Read v2 候选）：选在 diagnosis_table 里频次最高的那个 Read v2 code（保证预训练模型认得这个 token，embedding 有意义）
+所以它确实是离线构建的一张静态 ICD-10 → Read v2 字典（omop_icd10_to_readv2.pickle），在 build_hes_events.py 里按字典查表翻译。
+
+一个小补充：不是所有 HES 的 ICD-10 都能被翻译。如果一个 ICD-10 在 OMOP 里找不到对应的 Read v2 candidate（或对应的 Read v2 都不在 diagnosis_table 里），这条 HES 事件会被丢弃。从日志看 OMOP 映射成功了 12,091,945 条，这就是能翻译的部分。
+
+2. 痴呆的硬编码覆盖（HOTFIX 1）✅
+正确，但有一个顺序上的细节：override 发生在查 OMOP 字典之前，而不是之后。所以只要 ICD-10 以 F00/F01/F02/F03/G30 开头，就直接绕过 OMOP，用硬编码的 5 选 1 Read v2 码：
+
+
+F00 → Eu00.   (AD 痴呆)
+F01 → Eu01.   (血管性痴呆)
+F02 → F110.   (其他疾病引起的痴呆；F110. 是 31 个 canonical 码里整体最高频的)
+F03 → Eu02z   (未指定痴呆)
+G30 → Eu00.   (阿尔茨海默病)
+这 5 个目标全都在 31 个 canonical dementia code 集合里（代码里有 assertion 验证）。这样即使 OMOP 给出一个不在 31 个 canonical 里的 Read v2，也会被这个前缀覆盖，保证 _reduce_on_outcome 一定能识别为 outcome。
+
+日志里这条覆盖规则触发了 55,140 次。
+
+3. GP 和 HES 的"时间合并" ✅ （但细节略有不同）
+你说的"按时间合并，得到新的数据库"是对的，但合并不是我手动做的，而是这样分工：
+
+我做的事：把翻译后的 HES 事件以 (PRACTICE_ID, PATIENT_ID, EVENT, DATE) 的形式直接 INSERT 进 diagnosis_table（副本），和原来的 GP 事件混在同一张表里
+FoundationalDataModule 做的事：读 diagnosis_table 构建每个病人的序列时，会按 DATE 排序（这是它本来就有的行为），所以同一个病人的 GP 事件和 HES 事件就自然交叉排到了一起
+换句话说——数据库层只是简单的行插入（不排序），时间合并是在 DataModule 读序列时隐式完成的。这样做的好处是原始 DB 的结构完全不变，也不用写任何排序逻辑。
+
+数据库的变化：
+
+行数：132,595,096 → 143,867,954（+11.27M 条 HES 事件）
+病人数：230,001 → 466,359（+236,358 个新病人，其中就包括那 ~4400 个没有 GP 只有 HES 的痴呆病人）
+重要：原始 DB (example_exercise_database.db) 从头到尾没动过，所有修改都在副本 example_exercise_database_hes_fusion.db 上。
+
+4. 用旧 pretrain 模型在新 DB 上 fine-tune ✅
+对，但这里有个非常关键的约束：
+
+path_to_db → 指向融合后的新 DB
+meta_information_path → 指向原始 pretrain 的 meta_information_custom.pickle（绝对不能根据新 DB 重新生成）
+原因：meta_information_custom.pickle 定义了词表、token 到 id 的映射、静态 covariate 的 one-hot encoder 等。这些是预训练 checkpoint 权重的 "shape contract"。如果用新 DB 重新生成，词表会变大（可能包含新的 Read v2 token）、id 映射会错位，pretrained 的 token embedding 层就完全对不上了。
+
+为什么可以安全这么做：因为 HOTFIX 1 和映射构建时的约束共同保证了所有写进新 DB 的 HES 翻译事件，都是原始 diagnosis_table 里已经存在的 Read v2 code（映射时只从 diagnosis_table.EVENT 的集合里选候选）。所以融合后 EVENT 列的 vocab 是原始 vocab 的子集，和 pretrain meta_information 完全兼容。
+
+所以整个流水线是：
+
+
+旧 DB (GP only)  ──► PreTrain (crPreTrain_small_1337.ckpt)
+                                    │
+                                    │ (权重 + 原始 meta_information)
+                                    ▼
+旧 DB + 翻译后的 HES 行 ───► 新 DB (fusion)
+                                    │
+                                    ▼
+                            Fine-tune ──► crPreTrain_small_1337_FineTune_Dementia_CR_hes_fusion.ckpt
+你的整体理解完全没问题。写一个简短的确认文档到 plan 文件里，然后我用 AskUserQuestion 确认一下接下来是否需要我改什么东西。
+
+Write modular-booping-sketch.md
+114 lines
+你的理解已经全部确认无误。接下来我用 AskUserQuestion 确认一下你希望接下来怎么走。
+
+AskUserQuestion
+OUT
+User has answered your questions: "你对当前的 HES fusion 流程有什么想调整的吗？"="不用改，只是确认". You can now continue with the user's answers in mind.
+收到。你的理解完全正确，不做任何改动。当前 tmux 会话 hes_fusion_train 正在跑新的 fine-tune，数据集（test k=1 = 505）已经就绪，等训练完成后用 finetune_cr_hes_fusion_train_only_log.txt 查看最终指标即可。
+
+我退出 plan mode。
+
+Claude’s Plan modular-booping-sketch.md
+User approved the plan
+确认完毕，不做任何代码改动。当前 tmux hes_fusion_train 正在跑新的 fine-tune，训练完成后可直接查看 finetune_cr_hes_fusion_train_only_log.txt 里的最终 C_td / IBS / INBLL 指标。
+
+finetune_cr_hes_fusion_train_only_log.txt
+我有一个问题需要你帮我回答一下，就是我不太懂，我们的原始数据是longitudinal data，就是一个患者随着时间的ehr记录，但是我不知道这个longitudinal data是如何被放进训练模型中的，我知道模型中是transformer，会计算出一个read v2标签数九万多（也就是token数量）*384（也就是最后进入分类头之前的数量）的一个矩阵，但是我不太懂longtudinal data是如何被传入transformer的呢？还有我不懂的是我知道训练集验证集测试集三个集合是按照practice id来拆分的，也就是一个患者可能在三个集合中有记录，也就是一个患者的完整的一个longitudinal data是有可能没有被完整的放入模型的，这一点我也不太懂，如果没有被完整的放入模型的话，模型到底接收的是什么样的数据？
+Show less
+很好的两个问题，我分开答，都是理解这套模型的关键点。
+
+问题 1：Longitudinal EHR 是怎么"塞进" transformer 的？
+先澄清一个误解
+你说"一个患者可能在三个集合中有记录"——其实不会。practice_id_splits 是按practice（诊所）划分的，而一个 patient 属于一个 practice（static_table 里的 PRACTICE_ID）。所以同一个病人永远只会出现在一个 split 里，不会跨 split。第二问我再展开。
+
+一个病人 → 一个 token 序列
+对一个病人，pipeline 做的事大致是：
+
+读出该病人所有事件：从 diagnosis_table 拉出所有 (EVENT, DATE)、从 measurement_table/scripts/death 等拉出其他事件，按 DATE 排序，得到一条纯时间线：
+
+
+(t1, read_code_A) → (t2, read_code_B) → (t3, bp_measurement=140) → (t4, read_code_C) → ... → (tN, last_event)
+用 index_inclusion_method 做截断：根据你在 build 脚本里设的 INDEX_ON_AGE=72、study_period=[1998, 2022-10-31]、outcomes=31 dementia codes + DEATH 等规则，只保留 index_date 之前的事件作为输入，然后附加上 index_date 之后的第一个 outcome 事件（如果有的话）作为最后一个 token。这就决定了 k=1/k=2/k=0：
+
+最后一个 token 是痴呆 code → k=1
+最后一个 token 是 DEATH → k=2
+index 之后没发生任何 outcome（追踪到研究期末仍未发生）→ k=0（censored），这时最后 token 是 index 之前的最后一个 GP/HES 事件
+Tokenize：每个 EVENT 字符串（比如 "Eu00.", "F110.", "DEATH"，以及 measurement 分桶 token）用 meta_information_custom.pickle 里的词表映射成 integer token id。这是你说的"9万多个 token"——其实就是那 ~90k 个 Read v2 / measurement / DEATH 等词表条目，每个对应 384 维的 embedding row。
+
+对齐成矩阵：因为不同病人序列长度不同，framework 会对一个 batch 内按最长序列 pad 到统一长度 L，再截断到 block_size=512（超过 512 会被截断，你可以在 YAML 里看到这个参数）。最后喂进模型的是：
+
+
+tokens    : LongTensor [B, L]       # 每个位置是 token id
+delta_t   : FloatTensor [B, L]      # 相邻事件的时间间隔（或绝对时间编码）
+values    : FloatTensor [B, L]      # 连续值（比如 measurement），非连续 token 置 0
+static    : FloatTensor [B, 27]     # 静态 covariate（性别、族裔、IMD、birth year…）
+attn_mask : BoolTensor  [B, L]      # padding 的位置
+Transformer 怎么处理它
+Token embedding：[B, L] → [B, L, 384]（这就是你说的 "9万多 × 384" 的矩阵——那其实是 nn.Embedding 的权重 shape，不是单次输入的 shape）
+时间编码：相邻事件的 delta_t 通过一个 time-encoding / positional-encoding 模块加到 embedding 上。这就是"longitudinal 的体现"——transformer 不需要固定的网格，它靠 delta_t 知道两个事件相隔多久
+6 层 Neo block、6 head、global attention（你的 YAML 里能看到），输出 [B, L, 384]
+取最后一个有效 token 的 hidden state [B, 384] 丢进 competing-risk survival head (SurvLayer: cr)，算出痴呆和死亡两个风险的危险函数
+类比
+这和 NLP 里 transformer 处理"一句话"的流程完全一致——只不过：
+
+NLP: token = word, 位置 = word index
+EHR: token = medical event, 位置 = 事件发生时间（通过 delta_t 编码）
+所以一个 patient = 一个"句子"，序列长度 = 这个病人在 index_date 之前有多少事件。从你的 verify 输出看 mean_len ≈ 558，说明大部分病人被 truncate 到了 512（block_size），这些病人"前面"较早的事件会被砍掉，只保留最近的 512 个。
+
+问题 2：按 practice_id 拆分会不会丢一个病人的部分数据？
+不会丢，但要理解"单位"
+拆分的单位是 practice（诊所），不是 patient。流程：
+
+practice_id_splits.pickle 里已经固定好了 {train: [practice_A, practice_C, ...], val: [practice_B, ...], test: [practice_D, ...]}
+FoundationalDataModule 处理每个病人时，查他的 static_table.PRACTICE_ID，看这个 practice 落在哪个 split，这个病人就整体进那个 split
+一个病人的所有事件都落到同一个 split 里，整条时间线都进去，不会被"切一半给 train 一半给 test"
+为什么要按 practice 而不是按 patient 拆
+这是 CPRD 类研究的标准做法，原因：
+
+防止信息泄漏：同一个 practice 的不同病人共享医生习惯、编码风格、地区政策、设备偏差等。如果同一 practice 的病人分布在 train/test，模型可能学到 practice 层面的 shortcut 而不是疾病信号，测试集就高估了泛化能力
+符合外推场景：实际部署时，模型会被部署到新的没见过的诊所，所以 test 应该模拟"来自未见 practice 的病人"
+那新加进来的 HES-only 病人怎么分？
+这正是 v5 流程的一个关键点：这些病人在 static_table 里本来就有 PRACTICE_ID（从 UKB 注册信息来的），所以即使他们之前没有 GP 事件也不会没人管——prepare_hes_fusion_db.py 插入 HES 事件时用的就是 static_table.PRACTICE_ID，然后 FoundationalDataModule 用同一套 practice_id_splits.pickle 自动把他们分到对应的 split。日志里那句 after insert: 466,359 patients 里多出来的 236,358 人就是这样进来的。
+
+一个细节：序列被 truncate 不等于"拆分丢失"
+即便一个病人的事件超过 512，被砍掉的是时间线最早的部分，不是被分到别的 split。信息没有跨 split 流动，只是被 transformer 的上下文窗口限制了。如果你觉得这是个瓶颈，可以考虑：
+
+增大 block_size（代价是显存和速度）
+或者改用 hierarchical / compression layer（YAML 里有 compression_layer: False 这个开关）
+一句话总结：一个病人被处理成一条按 DATE 排序的 event token 序列（带 delta_t 时间编码），整条序列整体进一个 split（按 practice 划分），transformer 把它当成一个变长"句子"处理，最后一个有效 token 的 hidden state 进 survival head 出风险。你说的 "9万 × 384" 是 token embedding 矩阵的权重形状，不是单次前向传播的输入 shape。
+
+确实，看到现在我很担心截断到block_size=512这件事，我没太懂，所以是对每一个event给tokenize，一个event里面是什么呢？指的是一次诊断或者是一次住院吗？那么如果一次诊断有多个疾病被确诊的话，那是否就会导致超过blocksize的疾病被截断扔掉了？如果是的话，是否有可能dementia或者一些比较重要的疾病被截断扔掉了，导致模型学的性能降低？
+Show less
+这是个非常关键的问题。我先精确回答"一个 event 是什么"，再回答"截断会不会扔掉 dementia"。
+
+Bash Check whether multiple same-day diagnoses are separate rows
+IN
+/Data0/swangek_data/conda_envs/survivehr/bin/python -c "
+import sqlite3
+c = sqlite3.connect('/Data0/swangek_data/991/CPRD/data/example_exercise_database.db')
+cur = c.cursor()
+# Look at same-day events for same patient — is it a rollup or multiple rows?
+cur.execute('''SELECT PATIENT_ID, DATE, COUNT(*) AS n
+               FROM diagnosis_table GROUP BY PATIENT_ID, DATE
+               ORDER BY n DESC LIMIT 5''')
+print('top same-day event counts per patient:')
+for r in cur.fetchall(): print(' ', r)
+# Show actual rows for one of them
+cur.execute('''SELECT PATIENT_ID, DATE, COUNT(*) FROM diagnosis_table
+               GROUP BY PATIENT_ID, DATE HAVING COUNT(*)>=5 LIMIT 1''')
+pid, date, _ = cur.fetchone()
+cur.execute('SELECT PATIENT_ID,DATE,EVENT FROM diagnosis_table WHERE PATIENT_ID=? AND DATE=?',(pid,date))
+print(f'sample rows for patient {pid} on {date}:')
+for r in cur.fetchall(): print(' ', r)
+c.close()
+" 2>&1
+
+OUT
+Command running in background with ID: bp8if1psn. Output is being written to: /tmp/claude-422975/-Data0-swangek-data-991/4fdbd1cf-d136-4ecb-94f4-7fa6ba883921/tasks/bp8if1psn.output
+[rerun: b1]
+Bash Check background output
+IN
+sleep 15 && cat /tmp/claude-422975/-Data0-swangek-data-991/4fdbd1cf-d136-4ecb-94f4-7fa6ba883921/tasks/bp8if1psn.output 2>&1
+
+OUT
+[rerun: b2]
+Bash Sample same-day rows
+IN
+/Data0/swangek_data/conda_envs/survivehr/bin/python -c "
+import sqlite3
+c = sqlite3.connect('/Data0/swangek_data/991/CPRD/data/example_exercise_database.db')
+cur = c.cursor()
+cur.execute('SELECT PATIENT_ID, DATE, COUNT(*) FROM diagnosis_table GROUP BY PATIENT_ID, DATE HAVING COUNT(*)>=5 LIMIT 1')
+pid, date, n = cur.fetchone()
+print(f'pid={pid} date={date} n={n}')
+cur.execute('SELECT EVENT FROM diagnosis_table WHERE PATIENT_ID=? AND DATE=?',(pid,date))
+for r in cur.fetchall(): print(' ',r[0])
+c.close()
+" 2>&1
+
+OUT
+pid=1000011 date=2020-08-27 n=9
+  DEATH
+  DEATH
+  DEATH
+  DEATH
+  DEATH
+  DEATH
+  DEATH
+  DEATH
+  DEATH
+[rerun: b3]
+Bash Sample non-DEATH same-day rows
+IN
+/Data0/swangek_data/conda_envs/survivehr/bin/python -c "
+import sqlite3
+c = sqlite3.connect('/Data0/swangek_data/991/CPRD/data/example_exercise_database.db')
+cur = c.cursor()
+cur.execute('''SELECT PATIENT_ID, DATE, COUNT(*) FROM diagnosis_table
+               WHERE EVENT != 'DEATH'
+               GROUP BY PATIENT_ID, DATE HAVING COUNT(*)>=4 LIMIT 3''')
+for pid,date,n in cur.fetchall():
+    print(f'=== pid={pid} date={date} n={n} ===')
+    cur.execute('SELECT EVENT FROM diagnosis_table WHERE PATIENT_ID=? AND DATE=?',(pid,date))
+    for r in cur.fetchall(): print(' ',r[0])
+c.close()
+" 2>&1
+
+OUT
+Command running in background with ID: bpbkrzxkf. Output is being written to: /tmp/claude-422975/-Data0-swangek-data-991/4fdbd1cf-d136-4ecb-94f4-7fa6ba883921/tasks/bpbkrzxkf.output
+[rerun: b4]
+Bash Read background output
+IN
+sleep 30 && /Data0/swangek_data/conda_envs/survivehr/bin/python -c "print(open('/tmp/claude-422975/-Data0-swangek-data-991/4fdbd1cf-d136-4ecb-94f4-7fa6ba883921/tasks/bpbkrzxkf.output').read())"
+
+OUT
+=== pid=1000032 date=2012-05-25 n=43 ===
+  XaIRc
+  XaDvl
+  424..
+  XE2mS
+  42P..
+  XaIdY
+  42N..
+  XE2mO
+  XE2eC
+  X76tb
+  XaERs
+  XaIqS
+  42J..
+  XaItX
+  44J5.
+  42L..
+  XaK8y
+  42M..
+  XE2mQ
+  XaELW
+  4142.
+  X76tC
+  XE2pb
+  XE2mR
+  XaIRl
+  X77Wg
+  426..
+  4143.
+  Xa96v
+  X77WP
+  XaETf
+  XaETQ
+  XE2pf
+  XaIRj
+  42K..
+  42A..
+  XaCJj
+  XaIRf
+  XaIRi
+  9N2S.
+  429..
+  XaEJK
+  XE2mP
+=== pid=1000097 date=2007-04-19 n=6 ===
+  14Z1.
+  2469.
+  1226.
+  1228.
+  246..
+  246A.
+=== pid=1000097 date=2012-09-19 n=4 ===
+  2469.
+  246..
+  246A.
+  9Na..
+[rerun: b5]
+Grep "block_size|max_seq_len|truncat|\[-block_size|[:max_len]|seq_len|:-1]|\[-self\.block_size|\[self\.block_size:|\[-.*:\]" (in /Data0/swangek_data/991/FastEHR)
+31 lines of output
+Grep "block_size" (in /Data0/swangek_data/991/FastEHR, glob: *.py)
+1 line of output
+Grep "truncat|\[-|max_len|block_size|max_seq" (in /Data0/swangek_data/991/FastEHR, glob: FastEHR/**/*.py)
+19 lines of output
+Read foundational_loader.py (lines 581-670)
+Grep "max_seq_length|block_size" (in /Data0/swangek_data/991/CPRD/examples/modelling/SurvivEHR, glob: *.py)
+6 lines of output
+我看了 FastEHR 的 dataloader 代码和你的 YAML 设置，发现一个非常重要的机制让你可以放心——让我完整解释。
+
+一、"一个 event" 到底是什么
+一个 event 就是 diagnosis_table（或 measurement_table、scripts、death）里的一行。具体到 diagnosis_table，一行 = (PRACTICE_ID, PATIENT_ID, EVENT, DATE)，一个 EVENT 字符串就是一个 Read v2 code。
+
+所以"一次就诊开了 5 个诊断"就是 5 行，即 5 个独立的 token，它们共享同一个 DATE，但在序列里是 5 个连续的 token。
+
+我刚在 DB 里实测了一下，确实见到过极端的情况——比如 patient 1000032 在 2012-05-25 这一天单日就有 43 个 diagnosis events（心血管相关的一大堆 Read 码堆在一起）:
+
+
+XaIRc, XaDvl, 424.., XE2mS, 42P.., XaIdY, 42N.., XE2mO, XE2eC, X76tb, ...（共 43 个）
+同一天出现"爆炸式"的事件确实存在（多半是一次彻底体检或者 HES 住院时的诊断清单）。所以你的担心是合理的。
+
+二、截断发生在哪、怎么发生
+在 FastEHR/dataloader/foundational_loader.py 第 598-653 行，流程是这样的（按顺序）：
+
+Step A — 先去重（这一步就大幅缩短序列）
+你的 YAML 里 repeating_events: False，所以在 tokenize 前有这段代码：
+
+
+if not self.repeating_events:
+    # 对每个 unique event 只保留"最后一次"出现的位置
+    last_unique_indices = sorted({x: i for i, x in enumerate(sequence_tokens)}.values())
+也就是说，一个 Read code 不管出现过多少次（同一天 43 个里有重复的、或跨年重复测高血压），只保留最新那一次。这让真实序列长度远小于原始事件数。从 verify_hes_fusion_dataset.py 的输出也能验证这一点：
+
+中位数长度：train 228，val 395，test 176
+均值长度：train 562，val 665，test 418
+所以大多数病人去重后根本到不了 512。只有长尾的那一部分才会被截断。
+
+Step B — 截断时"从尾部往回取 512"（默认 eval 模式）
+第 622-627 行：
+
+
+if self.random_context_window:
+    start_pos = np.random.randint(...)   # 训练时可选随机窗口增广
+else:
+    start_pos = len(encoded_tokens) - self.max_seq_length if ... else 0
+end_pos = start_pos + self.max_seq_length
+默认是保留最新的 512 个 token（start_pos = len - 512），最老的历史会被砍掉。
+
+Step C — 关键救命机制：global_diagnoses=True
+你的 YAML 里有 global_diagnoses: True，这触发第 629-644 行这段代码：
+
+
+if self.global_diagnoses:
+    # 在被砍掉的那段前缀里，把所有属于 diagnosis_table 的事件拎出来，
+    # 重新 prepend 回窗口最前面
+    earlier_global_events = self.tokenizer.encode([
+        _event for _event in sequence_tokens[:start_pos]
+        if _event in self.meta_information["diagnosis_table"].event.tolist()
+    ])
+    ...
+这一行是核心：即使一个 diagnosis event 位于被截掉的"远古"历史里，只要它是 diagnosis_table 里的 Read v2 code，就会被抢救回来塞到序列开头。也就是说：
+
+被截掉的是：老的 measurements（血压、BMI 那种频繁重测的）、老的 prescriptions
+不会被截掉的是：diagnosis_table 里的所有 Read v2 诊断码，包括我们刚插进去的 HES 翻译后的 dementia code、DEATH token
+三、回答你最担心的问题
+dementia 或重要疾病会不会被截断扔掉？
+
+**不会。**有三重保护：
+
+repeating_events=False 的去重让长序列的有效长度剧烈收缩，大部分病人根本到不了 512。
+global_diagnoses=True 的 rescue：任何 diagnosis_table 里的 Read v2 诊断 code（包括 31 个 canonical dementia code 和 HES 翻译后的 dementia token）都会被强行塞回窗口，不管它在原始时间线里多早。
+_reduce_on_outcome 先截 outcome：事实上在上面这些 slice 发生之前，index_inclusion_method 已经把序列切成"index_date 前的历史 + index_date 后的第一个 outcome"。最后一个 token 一定是 outcome 本身（k=1 的 dementia code、k=2 的 DEATH、或 k=0 的最后普通事件）。这个"最后一个 token"参与 loss 计算，永远不会被丢。
+但有一个小 caveat 需要注意
+global_diagnoses 救回来的是老历史里的诊断，它们被当成"不带时间上下文的背景 token"塞到窗口最前面——所以它们的准确时间顺序与相对位置会有一点点失真（它们被压扁到窗口前）。对"是否有 outcome"这种二分信号没影响，但对"什么时候发生"的细粒度时间建模略有损失。
+
+另外，非诊断类事件（measurement、prescription）在超长序列里会被截断丢失。如果某些血压 / HbA1c 测量对 dementia 预测有价值，这部分历史会流失。但由于去重后测量的最新值都是保留的，模型仍能看到"最近的血压水平"这类信息，损失主要是老的时间序列形状。
+
+四、验证一下你当前数据里到底多少病人被截
+从 verify 输出粗估：
+
+split	mean_len	median_len	推断
+train	562.7	228	中位数远小于 512，少数病人超长
+val	665.1	395	均值超 512，约一半以上被截
+test	418.3	176	大多数没被截
+均值 > 中位数说明是右偏长尾分布：大多数病人序列不长，但有一小撮超长病人把均值拉高。对这一小撮病人，global_diagnoses 的 rescue 机制就起作用——即便他们被截，所有 diagnosis 都会被保留下来。
+
+一句话总结
+你担心的"dementia code 被截断丢失"不会发生，因为 global_diagnoses=True 专门保护了所有 diagnosis_table 里的 Read v2 诊断码（HOTFIX 1 确保 HES dementia 翻译后就是这类码）。会被截断丢失的只是老的 measurement / prescription，它们对时间序列建模略有损失但不会影响痴呆标签识别。真正决定 k=1/k=0 的"最后一个 outcome token"由 _reduce_on_outcome 在更早的阶段就锁定，永远在序列里。
+
+如果你想实测一下这个 rescue 机制的覆盖面，我可以写个小脚本统计 "有多少病人原始长度 > 512"、"这些病人里有多少 dementia code 是被 global rescue 救回来的"——你觉得需要吗？
+
+收到通知，之前的后台命令已完成（与当前问题无关，只是早先探索 DB 时的一个查询）。当前讨论告一段落——等你决定是否需要我写那个"截断救援覆盖面"的统计脚本。
+
+收到，这是之前另一个探索 DB 的后台命令完成通知，也与当前讨论无关。等你决定下一步。

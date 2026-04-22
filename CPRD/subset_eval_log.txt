@@ -1,0 +1,1448 @@
+/Data0/swangek_data/conda_envs/survivehr/lib/python3.10/site-packages/lightning_fabric/__init__.py:40: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.
+[2026-04-17 01:30:15,358][root][INFO] - Running cr on 48 CPUs and 1 GPUs
+[2026-04-17 01:30:15,364][root][INFO] - ====================================================================================================
+[2026-04-17 01:30:15,364][root][INFO] - # Loading DataModule for dataset /Data0/swangek_data/991/CPRD/data/FoundationalModel/FineTune_Dementia_CR_hes_fusion_subset_test/. This will be loaded in supervised form.
+[2026-04-17 01:30:15,364][root][INFO] - ====================================================================================================
+[2026-04-17 01:30:46,339][root][INFO] - Using meta information from /Data0/swangek_data/991/CPRD/data/FoundationalModel/PreTrain/meta_information_custom.pickle
+[2026-04-17 01:30:46,352][root][INFO] - Using train file-row count dict from /Data0/swangek_data/991/CPRD/data/FoundationalModel/FineTune_Dementia_CR_hes_fusion_subset_test/file_row_count_dict_train.pickle
+[2026-04-17 01:30:46,352][root][INFO] - Using test file-row count dict from /Data0/swangek_data/991/CPRD/data/FoundationalModel/FineTune_Dementia_CR_hes_fusion_subset_test/file_row_count_dict_test.pickle
+[2026-04-17 01:30:46,353][root][INFO] - Using val file-row count dict from /Data0/swangek_data/991/CPRD/data/FoundationalModel/FineTune_Dementia_CR_hes_fusion_subset_test/file_row_count_dict_val.pickle
+[2026-04-17 01:30:46,426][root][INFO] - Tokenzier created based on 373,927,777 tokens
+[2026-04-17 01:30:46,507][root][INFO] - Using tabular tokenizer, created from meta information and containing 108118 tokens
+[2026-04-17 01:30:46,507][root][INFO] - Set seed to 1337
+[2026-04-17 01:30:46,508][root][INFO] - Loaded /Data0/swangek_data/991/CPRD/data/FoundationalModel/FineTune_Dementia_CR_hes_fusion_subset_test/split=train/ dataset
+[2026-04-17 01:30:46,508][root][INFO] - Pre-loading 710 parquet files into memory...
+[2026-04-17 01:30:56,769][root][INFO] - Pre-loaded 710 files into memory
+[2026-04-17 01:30:56,769][root][INFO] - with 165,522 samples
+[2026-04-17 01:30:57,284][root][INFO] - Set seed to 42
+[2026-04-17 01:30:57,284][root][INFO] - Loaded /Data0/swangek_data/991/CPRD/data/FoundationalModel/FineTune_Dementia_CR_hes_fusion_subset_test/split=test/ dataset
+[2026-04-17 01:30:57,284][root][INFO] - Pre-loading 48 parquet files into memory...
+[2026-04-17 01:30:57,731][root][INFO] - Pre-loaded 48 files into memory
+[2026-04-17 01:30:57,731][root][INFO] - with 8,292 samples
+[2026-04-17 01:30:58,245][root][INFO] - Set seed to 42
+[2026-04-17 01:30:58,245][root][INFO] - Loaded /Data0/swangek_data/991/CPRD/data/FoundationalModel/FineTune_Dementia_CR_hes_fusion_subset_test/split=val/ dataset
+[2026-04-17 01:30:58,245][root][INFO] - Pre-loading 36 parquet files into memory...
+[2026-04-17 01:30:58,819][root][INFO] - Pre-loaded 36 files into memory
+[2026-04-17 01:30:58,819][root][INFO] - with 8,273 samples
+[2026-04-17 01:30:59,340][root][INFO] - Creating supervised collator for DataModule
+[2026-04-17 01:30:59,340][root][INFO] - Scaling supervised target ages by a factor of 5.0 times the context scale.
+[2026-04-17 01:31:04,206][root][INFO] - is_decoder: true
+data:
+  batch_size: 32
+  unk_freq_threshold: 0.0
+  min_workers: 12
+  global_diagnoses: true
+  repeating_events: false
+  path_to_db: /Data0/swangek_data/991/CPRD/data/example_exercise_database_hes_fusion.db
+  path_to_ds: /Data0/swangek_data/991/CPRD/data/FoundationalModel/FineTune_Dementia_CR_hes_fusion_subset_test/
+  meta_information_path: /Data0/swangek_data/991/CPRD/data/FoundationalModel/PreTrain/meta_information_custom.pickle
+  subsample_training: null
+  num_static_covariates: 27
+  supervised_time_scale: 5.0
+experiment:
+  type: fine-tune
+  project_name: SurvivEHR
+  run_id: crPreTrain_small_1337
+  fine_tune_id: FineTune_Dementia_CR_hes_fusion
+  notes: Subset eval - fusion model on hes_aug-overlap patients only
+  tags:
+  - dementia
+  - fine-tune
+  - competing-risk
+  - idx72
+  - hes-fusion
+  - no-saw
+  - subset-eval
+  train: false
+  test: true
+  verbose: true
+  seed: 1337
+  log: true
+  log_dir: /Data0/swangek_data/991/CPRD/output/
+  ckpt_dir: /Data0/swangek_data/991/CPRD/output/checkpoints/
+fine_tuning:
+  fine_tune_outcomes:
+  - - F110.
+    - Eu00.
+    - Eu01.
+    - Eu02z
+    - Eu002
+    - E00..
+    - Eu023
+    - Eu00z
+    - Eu025
+    - Eu01z
+    - E001.
+    - F1100
+    - Eu001
+    - E004.
+    - Eu000
+    - Eu02.
+    - Eu013
+    - E000.
+    - Eu01y
+    - E001z
+    - F1101
+    - Eu020
+    - E004z
+    - E0021
+    - Eu02y
+    - Eu012
+    - Eu011
+    - E00z.
+    - E0040
+    - E003.
+    - E0020
+  - - DEATH
+  custom_outcome_method:
+    _target_: null
+  custom_stratification_method:
+    _target_: null
+  use_callbacks:
+    hidden_embedding:
+      num_batches: 0
+      mask_static: false
+      mask_value: false
+    performance_metrics: true
+    rmst: false
+  compression_layer: false
+  llrd: null
+  PEFT:
+    method: null
+    adapter_dim: 8
+  backbone:
+    linear_probe_epochs: 0
+    unfreeze_top_k: null
+  head:
+    surv_weight: 1
+    value_weight: 0
+    learning_rate: 0.0005
+  sample_weighting:
+    mode: null
+    event_lambda: 1.0
+    alpha: 2.0
+    tau: 0.33
+    w_t_max: 3.0
+    w_total_max: 20.0
+optim:
+  num_epochs: 15
+  learning_rate: 5.0e-05
+  scheduler_warmup: false
+  scheduler: reduceonplateau
+  scheduler_periods: 10000
+  learning_rate_decay: 0.8
+  val_check_interval: 1.0
+  early_stop: true
+  early_stop_patience: 10
+  log_every_n_steps: 20
+  limit_val_batches: 1.0
+  limit_test_batches: null
+  accumulate_grad_batches: 4
+transformer:
+  block_type: Neo
+  block_size: 512
+  n_layer: 6
+  n_head: 6
+  n_embd: 384
+  layer_norm_bias: false
+  attention_type: global
+  bias: true
+  dropout: 0.1
+  attention_dropout: 0.1
+  resid_dropout: 0.1
+  private_heads: 0
+head:
+  SurvLayer: cr
+  surv_weight: 1
+  tokens_for_univariate_regression: <9247 token IDs omitted>
+  value_weight: 0.1
+
+[2026-04-17 01:31:04,208][root][INFO] - ====================================================================================================
+[2026-04-17 01:31:04,208][root][INFO] - # Fine-tune learning experiment with a new competing-risk head
+[2026-04-17 01:31:04,208][root][INFO] - ====================================================================================================
+[2026-04-17 01:31:04,208][root][INFO] - Loading a fine-tuned model with the checkpoint path /Data0/swangek_data/991/CPRD/output/checkpoints/crPreTrain_small_1337_FineTune_Dementia_CR_hes_fusion.ckpt. Evaluating supervised performance
+[2026-04-17 01:31:04,209][root][INFO] - Setting outcome list based on cfg.fine_tuning.fine_tune_outcomes
+[2026-04-17 01:31:04,209][root][INFO] - Grouped outcomes: 2 groups, [31, 1] codes each
+[2026-04-17 01:31:04,209][root][INFO] -   Group 1: ['F110.', 'Eu00.', 'Eu01.']... -> tokens [94982, 90700, 83333]... (31 total)
+[2026-04-17 01:31:04,209][root][INFO] -   Group 2: ['DEATH']... -> tokens [108117]... (1 total)
+[2026-04-17 01:31:04,209][root][INFO] - Running competing-risk fine-tuning experiment
+[2026-04-17 01:31:04,210][root][INFO] - Loading fine-tuned checkpoint from /Data0/swangek_data/991/CPRD/output/checkpoints/crPreTrain_small_1337_FineTune_Dementia_CR_hes_fusion.ckpt
+[2026-04-17 01:31:06,701][torch.distributed.nn.jit.instantiator][INFO] - Created a temporary directory at /tmp/tmpgltqmh6i
+[2026-04-17 01:31:06,702][torch.distributed.nn.jit.instantiator][INFO] - Writing /tmp/tmpgltqmh6i/_remote_module_non_scriptable.py
+[2026-04-17 01:31:07,060][root][INFO] - Sample weighting mode: None (lambda=1.0, alpha=2.0, tau=0.33, w_t_max=3.0, w_total_max=20.0)
+[2026-04-17 01:31:07,079][root][INFO] - Using Temporal Positional Encoding. This module uses the patient's age at an event within their time series.
+[2026-04-17 01:31:08,243][root][INFO] - Using a DeSurv Competing-Risk head.
+[2026-04-17 01:31:08,244][root][INFO] - 	With concurrent strategy=None for handling simultaneous events.
+[2026-04-17 01:31:08,244][root][INFO] - 	Evaluating on a time grid between [0.0, 1.0] with 1000 intervals
+[2026-04-17 01:31:09,107][root][INFO] - Competing-risk with 2 grouped risks
+[2026-04-17 01:31:09,110][root][INFO] - Using a DeSurv Competing-Risk head.
+[2026-04-17 01:31:09,110][root][INFO] - 	With concurrent strategy=None for handling simultaneous events.
+[2026-04-17 01:31:09,110][root][INFO] - 	Evaluating on a time grid between [0.0, 1.0] with 1000 intervals
+FineTuneExperiment(
+  (model): SurvStreamGPTForCausalModelling(
+    (transformer): TTETransformer(
+      (wpe): TemporalPositionalEncoding()
+      (wte): DataEmbeddingLayer(
+        (static_proj): Linear(in_features=27, out_features=384, bias=True)
+        (dynamic_embedding_layer): SplitDynamicEmbeddingLayer(
+          (cat_event_embed_layer): Embedding(108118, 384, padding_idx=0)
+          (cat_event_proj): Linear(in_features=384, out_features=384, bias=True)
+          (num_value_embed_layer): EmbeddingBag(108118, 384, mode='sum', padding_idx=0)
+          (num_value_proj): Linear(in_features=384, out_features=384, bias=True)
+        )
+      )
+      (drop): Dropout(p=0.1, inplace=False)
+      (blocks): ModuleList(
+        (0-5): 6 x Block(
+          (ln_1): LayerNorm((384,), eps=1e-05, elementwise_affine=True)
+          (attn): MultiHeadedSelfAttention(
+            (attn_dropout): Dropout(p=0.1, inplace=False)
+            (resid_dropout): Dropout(p=0.1, inplace=False)
+            (k_proj): Linear(in_features=384, out_features=384, bias=False)
+            (v_proj): Linear(in_features=384, out_features=384, bias=False)
+            (q_proj): Linear(in_features=384, out_features=384, bias=False)
+            (out_proj): Linear(in_features=384, out_features=384, bias=True)
+          )
+          (ln_2): LayerNorm((384,), eps=1e-05, elementwise_affine=True)
+          (mlp): MLP(
+            (c_fc): Linear(in_features=384, out_features=1536, bias=True)
+            (acti): ReLU()
+            (c_proj): Linear(in_features=1536, out_features=384, bias=True)
+            (dropout): Dropout(p=0.1, inplace=False)
+          )
+        )
+      )
+      (ln_f): LayerNorm((384,), eps=1e-05, elementwise_affine=True)
+    )
+    (surv_layer): None
+    (value_layer): None
+  )
+  (surv_layer): ODESurvCompetingRiskLayer(
+    (sr_ode): ODESurvMultiple(
+      (pinet): FCNet(
+        (mapping): Sequential(
+          (0): Linear(in_features=384, out_features=32, bias=True)
+          (1): ReLU()
+          (2): Linear(in_features=32, out_features=32, bias=True)
+          (3): ReLU()
+          (4): Linear(in_features=32, out_features=2, bias=True)
+          (5): Softmax(dim=1)
+        )
+      )
+      (odenet): CondODENet(
+        (BaseNet): FCNet(
+          (mapping): Sequential(
+            (0): Linear(in_features=385, out_features=32, bias=True)
+            (1): ReLU()
+            (2): Linear(in_features=32, out_features=32, bias=True)
+            (3): ReLU()
+            (4): Linear(in_features=32, out_features=2, bias=True)
+            (5): Softplus(beta=1, threshold=20)
+          )
+        )
+      )
+    )
+  )
+)
+[2026-04-17 01:31:09,501][root][INFO] - Created Performance metric callback. Calculating metrics for dict_keys([94982, 90700, 83333, 82288, 79247, 79414, 81371, 76690, 65087, 61743, 65752, 59774, 58547, 66370, 57197, 69130, 47122, 47100, 33641, 33592, 33667, 24477, 33593, 24425, 5939, 5938, 5937, 5840, 5839, 5838, 5837, 108117]) with map {94982: 0, 90700: 0, 83333: 0, 82288: 0, 79247: 0, 79414: 0, 81371: 0, 76690: 0, 65087: 0, 61743: 0, 65752: 0, 59774: 0, 58547: 0, 66370: 0, 57197: 0, 69130: 0, 47122: 0, 47100: 0, 33641: 0, 33592: 0, 33667: 0, 24477: 0, 33593: 0, 24425: 0, 5939: 0, 5938: 0, 5937: 0, 5840: 0, 5839: 0, 5838: 0, 5837: 0, 108117: 1}
+[2026-04-17 01:31:09,502][root][INFO] - Test-only mode — using single device to avoid DistributedSampler duplication
+GPU available: True (cuda), used: True
+TPU available: False, using: 0 TPU cores
+IPU available: False, using: 0 IPUs
+HPU available: False, using: 0 HPUs
+`Trainer(limit_val_batches=1.0)` was configured so 100% of the batches will be used..
+`Trainer(val_check_interval=1.0)` was configured so validation will run at the end of the training epoch..
+[2026-04-17 01:31:09,513][root][INFO] - Re-loading from best cached checkpoint /Data0/swangek_data/991/CPRD/output/checkpoints/crPreTrain_small_1337_FineTune_Dementia_CR_hes_fusion.ckpt
+[2026-04-17 01:31:11,234][root][INFO] - Sample weighting mode: None (lambda=1.0, alpha=2.0, tau=0.33, w_t_max=3.0, w_total_max=20.0)
+[2026-04-17 01:31:11,235][root][INFO] - Using Temporal Positional Encoding. This module uses the patient's age at an event within their time series.
+[2026-04-17 01:31:12,412][root][INFO] - Using a DeSurv Competing-Risk head.
+[2026-04-17 01:31:12,412][root][INFO] - 	With concurrent strategy=None for handling simultaneous events.
+[2026-04-17 01:31:12,412][root][INFO] - 	Evaluating on a time grid between [0.0, 1.0] with 1000 intervals
+[2026-04-17 01:31:13,259][root][INFO] - Competing-risk with 2 grouped risks
+[2026-04-17 01:31:13,262][root][INFO] - Using a DeSurv Competing-Risk head.
+[2026-04-17 01:31:13,262][root][INFO] - 	With concurrent strategy=None for handling simultaneous events.
+[2026-04-17 01:31:13,262][root][INFO] - 	Evaluating on a time grid between [0.0, 1.0] with 1000 intervals
+[2026-04-17 01:31:13,447][root][INFO] - Testing model.
+wandb: WARNING The anonymous setting has no effect and will be removed in a future version.
+wandb: [wandb.login()] Loaded credentials for https://api.wandb.ai from /home/swangek/.netrc.
+wandb: Currently logged in as: swangek2002 (swangek2002-hong-kong-university-of-science-and-technology) to https://api.wandb.ai. Use `wandb login --relogin` to force relogin
+wandb: setting up run y86t4p0z
+wandb: Tracking run with wandb version 0.25.0
+wandb: Run data is saved locally in /Data0/swangek_data/991/CPRD/output/wandb/run-20260417_013114-y86t4p0z
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run crPreTrain_small_1337_FineTune_Dementia_CR_hes_fusion
+wandb: ⭐️ View project at https://wandb.ai/swangek2002-hong-kong-university-of-science-and-technology/SurvivEHR
+wandb: 🚀 View run at https://wandb.ai/swangek2002-hong-kong-university-of-science-and-technology/SurvivEHR/runs/y86t4p0z
+LOCAL_RANK: 0 - CUDA_VISIBLE_DEVICES: [0]
+Testing: |          | 0/? [00:00<?, ?it/s]Testing:   0%|          | 0/260 [00:00<?, ?it/s]Testing DataLoader 0:   0%|          | 0/260 [00:00<?, ?it/s]/Data0/swangek_data/conda_envs/survivehr/lib/python3.10/site-packages/pytorch_lightning/trainer/connectors/logger_connector/result.py:211: You called `self.log('test_loss_values', ...)` in your `test_step` but the value needs to be floating point. Converting it to torch.float32.
+Testing DataLoader 0:   0%|          | 1/260 [00:05<24:49,  0.17it/s]Testing DataLoader 0:   1%|          | 2/260 [00:07<16:26,  0.26it/s][2026-04-17 01:31:28,471][root][WARNING] - Only censored events in batch. Evaluating metrics will be unstable.
+[2026-04-17 01:31:28,473][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+[2026-04-17 01:31:28,474][root][WARNING] - lbls=[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]; target_ages=[0.45402718 0.196274   0.09797268 0.2936985  0.3943014  0.14794521
+ 0.23989049 0.42586288 0.08909588 0.22476712 0.0215889  0.49676704
+ 0.39123288 0.23999996 0.10476723 0.05819187 0.14553432 0.38509598
+ 0.21534233 0.36197263 0.28273964 0.2523834  0.51923275 0.27506846
+ 0.01446571 0.09380817 0.3189041  0.3274521  0.40547943 0.03846588
+ 0.31868497 0.18805465]
+Testing DataLoader 0:   1%|          | 3/260 [00:09<13:37,  0.31it/s]Testing DataLoader 0:   2%|▏         | 4/260 [00:11<12:15,  0.35it/s]Testing DataLoader 0:   2%|▏         | 5/260 [00:13<11:20,  0.37it/s][2026-04-17 01:31:37,303][root][WARNING] - Only censored events in batch. Evaluating metrics will be unstable.
+[2026-04-17 01:31:37,305][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+[2026-04-17 01:31:37,305][root][WARNING] - lbls=[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]; target_ages=[0.48065776 0.3419178  0.2778082  0.33983555 0.15232888 0.42739734
+ 0.09906845 0.34356174 0.08438358 0.3283287  0.15112343 0.42476693
+ 0.25073966 0.15463027 0.47901362 0.44800013 0.49621925 0.2055891
+ 0.26871222 0.17819175 0.44854793 0.21315078 0.33643836 0.13720532
+ 0.33501378 0.32328779 0.05490417 0.48734245 0.26915056 0.28252068
+ 0.3919998  0.28690416]
+Testing DataLoader 0:   2%|▏         | 6/260 [00:18<12:57,  0.33it/s]Testing DataLoader 0:   3%|▎         | 7/260 [00:20<12:11,  0.35it/s][2026-04-17 01:31:41,021][root][WARNING] - Only censored events in batch. Evaluating metrics will be unstable.
+[2026-04-17 01:31:41,023][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+[2026-04-17 01:31:41,023][root][WARNING] - lbls=[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]; target_ages=[0.36986294 0.23145218 0.15200004 0.29063016 0.3254795  0.2238905
+ 0.03780823 0.3025753  0.01961651 0.34071237 0.26904106 0.2599453
+ 0.23254795 0.10816441 0.25731507 0.31835613 0.27978078 0.43342477
+ 0.17720547 0.3556164  0.03824653 0.267507   0.12284946 0.0337534
+ 0.35649318 0.51090395 0.25205478 0.07254791 0.219726   0.37600002
+ 0.15934238 0.15189037]
+Testing DataLoader 0:   3%|▎         | 8/260 [00:22<11:35,  0.36it/s]Testing DataLoader 0:   3%|▎         | 9/260 [00:24<11:10,  0.37it/s]Testing DataLoader 0:   4%|▍         | 10/260 [00:26<10:53,  0.38it/s]Testing DataLoader 0:   4%|▍         | 11/260 [00:27<10:33,  0.39it/s]Testing DataLoader 0:   5%|▍         | 12/260 [00:29<10:17,  0.40it/s]Testing DataLoader 0:   5%|▌         | 13/260 [00:31<10:03,  0.41it/s]Testing DataLoader 0:   5%|▌         | 14/260 [00:33<09:51,  0.42it/s]Testing DataLoader 0:   6%|▌         | 15/260 [00:35<09:40,  0.42it/s]Testing DataLoader 0:   6%|▌         | 16/260 [00:37<09:30,  0.43it/s]Testing DataLoader 0:   7%|▋         | 17/260 [00:39<09:21,  0.43it/s][2026-04-17 01:32:00,149][root][WARNING] - Only censored events in batch. Evaluating metrics will be unstable.
+[2026-04-17 01:32:00,152][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+[2026-04-17 01:32:00,153][root][WARNING] - lbls=[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]; target_ages=[0.2294796  0.07813702 0.3063013  0.47978076 0.35232848 0.30126017
+ 0.18487664 0.30695897 0.0819727  0.1390686  0.21709594 0.36613712
+ 0.2665205  0.4412056  0.22575359 0.4268492  0.04241085 0.36712304
+ 0.5180275  0.16405487 0.31934243 0.2585205  0.34871215 0.1676712
+ 0.2590685  0.20832881 0.35057545 0.09917812 0.01852055 0.37742463
+ 0.282411   0.21961632]
+Testing DataLoader 0:   7%|▋         | 18/260 [00:41<09:14,  0.44it/s]Testing DataLoader 0:   7%|▋         | 19/260 [00:43<09:07,  0.44it/s]Testing DataLoader 0:   8%|▊         | 20/260 [00:45<09:00,  0.44it/s]Testing DataLoader 0:   8%|▊         | 21/260 [00:46<08:54,  0.45it/s]Testing DataLoader 0:   8%|▊         | 22/260 [00:48<08:48,  0.45it/s]Testing DataLoader 0:   9%|▉         | 23/260 [00:51<08:45,  0.45it/s]Testing DataLoader 0:   9%|▉         | 24/260 [00:52<08:41,  0.45it/s][2026-04-17 01:32:13,872][root][WARNING] - Only censored events in batch. Evaluating metrics will be unstable.
+[2026-04-17 01:32:13,874][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+[2026-04-17 01:32:13,875][root][WARNING] - lbls=[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]; target_ages=[0.3489315  0.26575336 0.22399998 0.15693149 0.35123292 0.15846577
+ 0.34937    0.11890411 0.20032883 0.2992878  0.1671234  0.4603838
+ 0.06169853 0.33621922 0.09205475 0.18454781 0.0492054  0.34783554
+ 0.2374794  0.44953403 0.4473425  0.16887665 0.18893147 0.16821918
+ 0.30849323 0.3270138  0.25731507 0.1620821  0.05315075 0.35846576
+ 0.18257542 0.23156166]
+Testing DataLoader 0:  10%|▉         | 25/260 [00:54<08:36,  0.46it/s]Testing DataLoader 0:  10%|█         | 26/260 [00:56<08:31,  0.46it/s]Testing DataLoader 0:  10%|█         | 27/260 [00:58<08:27,  0.46it/s]Testing DataLoader 0:  11%|█         | 28/260 [01:00<08:23,  0.46it/s]Testing DataLoader 0:  11%|█         | 29/260 [01:02<08:19,  0.46it/s]Testing DataLoader 0:  12%|█▏        | 30/260 [01:04<08:17,  0.46it/s]Testing DataLoader 0:  12%|█▏        | 31/260 [01:07<08:16,  0.46it/s]Testing DataLoader 0:  12%|█▏        | 32/260 [01:09<08:12,  0.46it/s]Testing DataLoader 0:  13%|█▎        | 33/260 [01:11<08:09,  0.46it/s]Testing DataLoader 0:  13%|█▎        | 34/260 [01:12<08:04,  0.47it/s]Testing DataLoader 0:  13%|█▎        | 35/260 [01:14<08:01,  0.47it/s]Testing DataLoader 0:  14%|█▍        | 36/260 [01:16<07:57,  0.47it/s]Testing DataLoader 0:  14%|█▍        | 37/260 [01:18<07:53,  0.47it/s]Testing DataLoader 0:  15%|█▍        | 38/260 [01:20<07:50,  0.47it/s]Testing DataLoader 0:  15%|█▌        | 39/260 [01:22<07:47,  0.47it/s]Testing DataLoader 0:  15%|█▌        | 40/260 [01:24<07:43,  0.47it/s][2026-04-17 01:32:45,164][root][WARNING] - Only censored events in batch. Evaluating metrics will be unstable.
+[2026-04-17 01:32:45,166][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+[2026-04-17 01:32:45,167][root][WARNING] - lbls=[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]; target_ages=[0.2875616  0.02728767 0.20536995 0.19046573 0.16263008 0.36504096
+ 0.37336978 0.3928768  0.3071781  0.44449311 0.24953422 0.30838355
+ 0.29446584 0.2538082  0.21994515 0.36098614 0.5540823  0.36350688
+ 0.42728767 0.22575359 0.05358906 0.22783546 0.05578079 0.32569867
+ 0.01621933 0.03747959 0.04602737 0.07616444 0.3919998  0.09961643
+ 0.38663006 0.19638367]
+Testing DataLoader 0:  16%|█▌        | 41/260 [01:26<07:40,  0.48it/s]Testing DataLoader 0:  16%|█▌        | 42/260 [01:28<07:37,  0.48it/s]Testing DataLoader 0:  17%|█▋        | 43/260 [01:30<07:34,  0.48it/s]Testing DataLoader 0:  17%|█▋        | 44/260 [01:31<07:30,  0.48it/s][2026-04-17 01:32:52,708][root][WARNING] - Only censored events in batch. Evaluating metrics will be unstable.
+[2026-04-17 01:32:52,710][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+[2026-04-17 01:32:52,711][root][WARNING] - lbls=[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]; target_ages=[0.44416445 0.23210964 0.07167129 0.44504127 0.13698617 0.2337534
+ 0.21008225 0.4848217  0.196274   0.33194503 0.29402733 0.0356163
+ 0.51452065 0.34860268 0.1905754  0.09260273 0.439452   0.2945753
+ 0.2103014  0.35802728 0.15682201 0.23134232 0.21731511 0.2
+ 0.19715062 0.36186314 0.58049315 0.43583545 0.23320541 0.3190136
+ 0.15145206 0.17534256]
+Testing DataLoader 0:  17%|█▋        | 45/260 [01:33<07:28,  0.48it/s]Testing DataLoader 0:  18%|█▊        | 46/260 [01:35<07:25,  0.48it/s][2026-04-17 01:32:56,551][root][WARNING] - Only censored events in batch. Evaluating metrics will be unstable.
+[2026-04-17 01:32:56,553][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+[2026-04-17 01:32:56,554][root][WARNING] - lbls=[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]; target_ages=[0.4341917  0.32405472 0.24175338 0.28043842 0.22487679 0.2084383
+ 0.29008216 0.13709584 0.33841094 0.01326027 0.06673984 0.3241644
+ 0.17391777 0.33830148 0.329315   0.18191776 0.17928772 0.08131504
+ 0.2853697  0.22684936 0.47178078 0.45315075 0.36043835 0.34684944
+ 0.17621918 0.0918356  0.21260281 0.03528767 0.29676706 0.3059725
+ 0.37972602 0.24142475]
+Testing DataLoader 0:  18%|█▊        | 47/260 [01:37<07:22,  0.48it/s]Testing DataLoader 0:  18%|█▊        | 48/260 [01:39<07:19,  0.48it/s]Testing DataLoader 0:  19%|█▉        | 49/260 [01:41<07:16,  0.48it/s]Testing DataLoader 0:  19%|█▉        | 50/260 [01:43<07:13,  0.48it/s]Testing DataLoader 0:  20%|█▉        | 51/260 [01:45<07:11,  0.48it/s][2026-04-17 01:33:06,070][root][WARNING] - Only censored events in batch. Evaluating metrics will be unstable.
+[2026-04-17 01:33:06,072][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+[2026-04-17 01:33:06,072][root][WARNING] - lbls=[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]; target_ages=[0.1681095  0.09523296 0.13797244 0.24624653 0.35901374 0.27835616
+ 0.29994527 0.20679455 0.36175328 0.01117802 0.31178093 0.08515072
+ 0.18849316 0.2961096  0.13282184 0.14158897 0.05347938 0.22147942
+ 0.17830142 0.05063019 0.29019165 0.34301358 0.26805478 0.18136978
+ 0.353096   0.20975342 0.2755068  0.02827396 0.43386307 0.17873974
+ 0.22630139 0.2538082 ]
+Testing DataLoader 0:  20%|██        | 52/260 [01:47<07:08,  0.49it/s][2026-04-17 01:33:08,008][root][WARNING] - Only censored events in batch. Evaluating metrics will be unstable.
+[2026-04-17 01:33:08,010][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+[2026-04-17 01:33:08,010][root][WARNING] - lbls=[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]; target_ages=[0.25775337 0.3198904  0.26432878 0.5118906  0.09676705 0.47978097
+ 0.2585207  0.1812603  0.08394527 0.511233   0.08065758 0.38531512
+ 0.19890423 0.43353423 0.4144659  0.30476722 0.4533697  0.48065758
+ 0.39945203 0.28460273 0.2253151  0.04843845 0.47978097 0.09917812
+ 0.0595068  0.07715072 0.25260276 0.27989045 0.19419174 0.30739728
+ 0.18421917 0.27517813]
+Testing DataLoader 0:  20%|██        | 53/260 [01:49<07:06,  0.49it/s][2026-04-17 01:33:09,909][root][WARNING] - Only censored events in batch. Evaluating metrics will be unstable.
+[2026-04-17 01:33:09,911][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+[2026-04-17 01:33:09,911][root][WARNING] - lbls=[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]; target_ages=[0.266959   0.14465752 0.3649315  0.20339736 0.04317798 0.21654797
+ 0.52164364 0.41008204 0.29117793 0.26191768 0.44273987 0.40219194
+ 0.05983562 0.1269041  0.02498627 0.05906849 0.29545194 0.26871222
+ 0.18443832 0.1260273  0.09687672 0.5021372  0.07693157 0.38520545
+ 0.2627945  0.42553443 0.3044384  0.1264656  0.43802738 0.47408217
+ 0.39561653 0.15079442]
+Testing DataLoader 0:  21%|██        | 54/260 [01:50<07:03,  0.49it/s][2026-04-17 01:33:11,828][root][WARNING] - Only censored events in batch. Evaluating metrics will be unstable.
+[2026-04-17 01:33:11,830][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+[2026-04-17 01:33:11,831][root][WARNING] - lbls=[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]; target_ages=[0.18564396 0.29665738 0.31035614 0.29534245 0.09358902 0.35452062
+ 0.2014246  0.04339714 0.03704109 0.46104127 0.16131496 0.22290401
+ 0.18958893 0.17830124 0.325589   0.1133152  0.13216439 0.22663002
+ 0.5161646  0.15758896 0.24153423 0.03199997 0.45128784 0.4683834
+ 0.27791786 0.32657528 0.27616444 0.39331493 0.53183556 0.14224663
+ 0.3499178  0.15813693]
+Testing DataLoader 0:  21%|██        | 55/260 [01:52<07:00,  0.49it/s]Testing DataLoader 0:  22%|██▏       | 56/260 [01:54<06:58,  0.49it/s][2026-04-17 01:33:15,523][root][WARNING] - Only censored events in batch. Evaluating metrics will be unstable.
+[2026-04-17 01:33:15,525][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+[2026-04-17 01:33:15,525][root][WARNING] - lbls=[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]; target_ages=[0.03594513 0.3596714  0.07134247 0.26169872 0.22838363 0.33008212
+ 0.1035616  0.10465755 0.2936987  0.23189048 0.47693157 0.3128767
+ 0.16339722 0.24953422 0.2772602  0.3713972  0.12087669 0.05238361
+ 0.1522192  0.50564367 0.39923286 0.12109585 0.2294794  0.18465748
+ 0.08887653 0.247233   0.06432877 0.31627387 0.22717819 0.14082202
+ 0.14619179 0.48547935]
+Testing DataLoader 0:  22%|██▏       | 57/260 [01:56<06:55,  0.49it/s][2026-04-17 01:33:17,392][root][WARNING] - Only censored events in batch. Evaluating metrics will be unstable.
+[2026-04-17 01:33:17,394][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+[2026-04-17 01:33:17,394][root][WARNING] - lbls=[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]; target_ages=[0.05238342 0.26947957 0.14860268 0.223452   0.2931505  0.20339736
+ 0.31879443 0.25030136 0.38060266 0.40306854 0.20920543 0.13183574
+ 0.46893138 0.4510687  0.02947941 0.09216423 0.05610962 0.38794518
+ 0.3039999  0.33786297 0.31550676 0.3928768  0.20712319 0.46816444
+ 0.30038357 0.2717808  0.47375336 0.24471226 0.22136994 0.05457516
+ 0.27605477 0.33326036]
+Testing DataLoader 0:  22%|██▏       | 58/260 [01:58<06:52,  0.49it/s][2026-04-17 01:33:19,432][root][WARNING] - Only censored events in batch. Evaluating metrics will be unstable.
+[2026-04-17 01:33:19,482][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+[2026-04-17 01:33:19,483][root][WARNING] - lbls=[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]; target_ages=[0.2642191  0.4561096  0.18805484 0.20810947 0.43353423 0.32821923
+ 0.24350682 0.12843838 0.522192   0.43123284 0.2201643  0.40306854
+ 0.52942485 0.20679455 0.27517813 0.22356167 0.22487679 0.30564386
+ 0.25775337 0.50684947 0.33742467 0.29545212 0.11506844 0.3966028
+ 0.3138632  0.43068504 0.28175336 0.3681097  0.23178081 0.06597252
+ 0.33052063 0.38301373]
+Testing DataLoader 0:  23%|██▎       | 59/260 [02:00<06:50,  0.49it/s][2026-04-17 01:33:21,577][root][WARNING] - Only censored events in batch. Evaluating metrics will be unstable.
+[2026-04-17 01:33:21,623][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+[2026-04-17 01:33:21,624][root][WARNING] - lbls=[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]; target_ages=[0.20427398 0.05282192 0.24230137 0.09819183 0.33830148 0.07758904
+ 0.30575353 0.28427392 0.05632877 0.4328766  0.41994515 0.11375351
+ 0.38947946 0.29479447 0.4097534  0.2838356  0.38860264 0.32821923
+ 0.04010963 0.17205468 0.35101357 0.41852036 0.45293158 0.3283287
+ 0.33786297 0.3732605  0.5078354  0.27221927 0.12701377 0.03978081
+ 0.20449314 0.12942448]
+Testing DataLoader 0:  23%|██▎       | 60/260 [02:02<06:48,  0.49it/s][2026-04-17 01:33:23,632][root][WARNING] - Only censored events in batch. Evaluating metrics will be unstable.
+[2026-04-17 01:33:23,634][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+[2026-04-17 01:33:23,634][root][WARNING] - lbls=[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]; target_ages=[0.50849307 0.20394516 0.2286026  0.16778088 0.4842739  0.25501364
+ 0.2135891  0.29709587 0.15868492 0.27561647 0.16252041 0.26575336
+ 0.219726   0.06115074 0.30520535 0.156493   0.26169854 0.1643837
+ 0.29293156 0.08701382 0.38301373 0.11364384 0.49862996 0.5123289
+ 0.36175346 0.1357809  0.21797256 0.3148493  0.27693158 0.28328782
+ 0.15189056 0.17490426]
+Testing DataLoader 0:  23%|██▎       | 61/260 [02:04<06:46,  0.49it/s]Testing DataLoader 0:  24%|██▍       | 62/260 [02:06<06:44,  0.49it/s][2026-04-17 01:33:27,496][root][WARNING] - Only censored events in batch. Evaluating metrics will be unstable.
+[2026-04-17 01:33:27,498][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+[2026-04-17 01:33:27,499][root][WARNING] - lbls=[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]; target_ages=[0.35353413 0.07594528 0.25369874 0.4060274  0.27057534 0.3198904
+ 0.16800003 0.23627396 0.2819727  0.41041088 0.391452   0.42498645
+ 0.25512314 0.20778084 0.2286026  0.21797276 0.5230686  0.22136994
+ 0.3658083  0.30684948 0.08252048 0.29008216 0.3953972  0.09435616
+ 0.07463016 0.5260273  0.51978076 0.34564382 0.48547953 0.23024654
+ 0.2567671  0.08536987]
+[2026-04-17 01:33:27,500][root][WARNING] - Only censored events in batch. Evaluating metrics will be unstable.
+[2026-04-17 01:33:27,502][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+[2026-04-17 01:33:27,502][root][WARNING] - lbls=[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]; target_ages=[0.35353413 0.07594528 0.25369874 0.4060274  0.27057534 0.3198904
+ 0.16800003 0.23627396 0.2819727  0.41041088 0.391452   0.42498645
+ 0.25512314 0.20778084 0.2286026  0.21797276 0.5230686  0.22136994
+ 0.3658083  0.30684948 0.08252048 0.29008216 0.3953972  0.09435616
+ 0.07463016 0.5260273  0.51978076 0.34564382 0.48547953 0.23024654
+ 0.2567671  0.08536987]
+[2026-04-17 01:33:27,504][root][WARNING] - Only censored events in batch. Evaluating metrics will be unstable.
+[2026-04-17 01:33:27,505][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+[2026-04-17 01:33:27,506][root][WARNING] - lbls=[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]; target_ages=[0.35353413 0.07594528 0.25369874 0.4060274  0.27057534 0.3198904
+ 0.16800003 0.23627396 0.2819727  0.41041088 0.391452   0.42498645
+ 0.25512314 0.20778084 0.2286026  0.21797276 0.5230686  0.22136994
+ 0.3658083  0.30684948 0.08252048 0.29008216 0.3953972  0.09435616
+ 0.07463016 0.5260273  0.51978076 0.34564382 0.48547953 0.23024654
+ 0.2567671  0.08536987]
+Testing DataLoader 0:  24%|██▍       | 63/260 [02:08<06:42,  0.49it/s][2026-04-17 01:33:29,403][root][WARNING] - Only censored events in batch. Evaluating metrics will be unstable.
+[2026-04-17 01:33:29,404][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+[2026-04-17 01:33:29,405][root][WARNING] - lbls=[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]; target_ages=[0.11791782 0.31923276 0.41939735 0.25358906 0.03945198 0.17490406
+ 0.47419167 0.29764384 0.50619185 0.2814247  0.29687673 0.39495867
+ 0.26104107 0.49095878 0.2847124  0.2795616  0.43967113 0.47945195
+ 0.09052067 0.25030136 0.4936987  0.32810956 0.15791778 0.52865773
+ 0.15693149 0.18191776 0.43221912 0.19616432 0.32219163 0.21490422
+ 0.18454799 0.26663017]
+Testing DataLoader 0:  25%|██▍       | 64/260 [02:10<06:39,  0.49it/s]Testing DataLoader 0:  25%|██▌       | 65/260 [02:12<06:37,  0.49it/s][2026-04-17 01:33:33,315][root][WARNING] - Only censored events in batch. Evaluating metrics will be unstable.
+[2026-04-17 01:33:33,319][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+[2026-04-17 01:33:33,320][root][WARNING] - lbls=[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]; target_ages=[0.2778082  0.3157261  0.2500822  0.43682194 0.28591785 0.00219192
+ 0.24799995 0.5259178  0.28076726 0.34312344 0.30663013 0.0721096
+ 0.3152876  0.06915073 0.26641083 0.3161642  0.30794525 0.3662466
+ 0.41994515 0.40876713 0.07517795 0.31068498 0.31232873 0.25315076
+ 0.17183551 0.17052059 0.23967132 0.22520542 0.23079452 0.27287674
+ 0.47561628 0.29621926]
+Testing DataLoader 0:  25%|██▌       | 66/260 [02:14<06:35,  0.49it/s][2026-04-17 01:33:35,199][root][WARNING] - Only censored events in batch. Evaluating metrics will be unstable.
+[2026-04-17 01:33:35,201][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+[2026-04-17 01:33:35,201][root][WARNING] - lbls=[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]; target_ages=[0.15627384 0.21808223 0.337315   0.35463008 0.38432884 0.188274
+ 0.4964382  0.415452   0.14958897 0.22071227 0.08416443 0.24328765
+ 0.54323274 0.2556711  0.43583566 0.50005496 0.08372593 0.28657532
+ 0.34936982 0.4490959  0.51923275 0.25369853 0.396274   0.3452055
+ 0.08482208 0.21906853 0.02180824 0.26345214 0.05961647 0.14673977
+ 0.1128767  0.09873962]
+Testing DataLoader 0:  26%|██▌       | 67/260 [02:16<06:32,  0.49it/s][2026-04-17 01:33:37,151][root][WARNING] - Only censored events in batch. Evaluating metrics will be unstable.
+[2026-04-17 01:33:37,152][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+[2026-04-17 01:33:37,153][root][WARNING] - lbls=[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]; target_ages=[0.391452   0.19178085 0.26432878 0.24230137 0.24295883 0.23539734
+ 0.51978093 0.2444931  0.09293155 0.24295883 0.2894245  0.1054245
+ 0.03967113 0.49775353 0.28427392 0.42410964 0.5135342  0.1709589
+ 0.35550672 0.31364384 0.42049313 0.31189042 0.48076707 0.26443845
+ 0.15890408 0.26180822 0.04383564 0.21797256 0.4121643  0.07758904
+ 0.51671237 0.31791782]
+Testing DataLoader 0:  26%|██▌       | 68/260 [02:18<06:30,  0.49it/s][2026-04-17 01:33:39,079][root][WARNING] - Only censored events in batch. Evaluating metrics will be unstable.
+[2026-04-17 01:33:39,081][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+[2026-04-17 01:33:39,082][root][WARNING] - lbls=[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]; target_ages=[0.3039999  0.45128784 0.31879464 0.46662998 0.2726574  0.14378071
+ 0.08602734 0.20153408 0.43298626 0.24295883 0.11309586 0.36427385
+ 0.3859726  0.09052067 0.39265767 0.14619179 0.09983559 0.42323285
+ 0.5331507  0.28131503 0.05797253 0.17019176 0.47002736 0.2206028
+ 0.04284935 0.45402735 0.2881096  0.22071227 0.3161644  0.3785204
+ 0.4619177  0.18991795]
+[2026-04-17 01:33:39,083][root][WARNING] - Only censored events in batch. Evaluating metrics will be unstable.
+[2026-04-17 01:33:39,085][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+[2026-04-17 01:33:39,085][root][WARNING] - lbls=[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]; target_ages=[0.3039999  0.45128784 0.31879464 0.46662998 0.2726574  0.14378071
+ 0.08602734 0.20153408 0.43298626 0.24295883 0.11309586 0.36427385
+ 0.3859726  0.09052067 0.39265767 0.14619179 0.09983559 0.42323285
+ 0.5331507  0.28131503 0.05797253 0.17019176 0.47002736 0.2206028
+ 0.04284935 0.45402735 0.2881096  0.22071227 0.3161644  0.3785204
+ 0.4619177  0.18991795]
+[2026-04-17 01:33:39,087][root][WARNING] - Only censored events in batch. Evaluating metrics will be unstable.
+[2026-04-17 01:33:39,088][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+[2026-04-17 01:33:39,088][root][WARNING] - lbls=[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]; target_ages=[0.3039999  0.45128784 0.31879464 0.46662998 0.2726574  0.14378071
+ 0.08602734 0.20153408 0.43298626 0.24295883 0.11309586 0.36427385
+ 0.3859726  0.09052067 0.39265767 0.14619179 0.09983559 0.42323285
+ 0.5331507  0.28131503 0.05797253 0.17019176 0.47002736 0.2206028
+ 0.04284935 0.45402735 0.2881096  0.22071227 0.3161644  0.3785204
+ 0.4619177  0.18991795]
+Testing DataLoader 0:  27%|██▋       | 69/260 [02:20<06:27,  0.49it/s][2026-04-17 01:33:41,035][root][WARNING] - Only censored events in batch. Evaluating metrics will be unstable.
+[2026-04-17 01:33:41,036][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+[2026-04-17 01:33:41,037][root][WARNING] - lbls=[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]; target_ages=[0.3539726  0.40449315 0.04887676 0.33994523 0.11309586 0.3264658
+ 0.309589   0.21095887 0.29819185 0.05841083 0.5044384  0.23660278
+ 0.05304108 0.0683836  0.27484933 0.34345207 0.50608236 0.32438356
+ 0.15024662 0.25610963 0.25983563 0.29841098 0.42838365 0.3063013
+ 0.23605461 0.12010956 0.14136982 0.1054245  0.3503561  0.301589
+ 0.12241097 0.19978085]
+Testing DataLoader 0:  27%|██▋       | 70/260 [02:22<06:25,  0.49it/s][2026-04-17 01:33:42,795][root][WARNING] - Only censored events in batch. Evaluating metrics will be unstable.
+[2026-04-17 01:33:42,798][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+[2026-04-17 01:33:42,798][root][WARNING] - lbls=[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]; target_ages=[0.5014793  0.14531498 0.5080549  0.31408232 0.32164383 0.43802738
+ 0.39605483 0.31441098 0.08931522 0.41720542 0.49315053 0.3466301
+ 0.26158905 0.38191777 0.3849863  0.22049312 0.23583564 0.5259178
+ 0.19791774 0.53095895 0.4519453  0.47704107 0.20712337 0.2918356
+ 0.32734242 0.26389045 0.19550686 0.2570959  0.22772598 0.15353432
+ 0.1967123  0.19473973]
+Testing DataLoader 0:  27%|██▋       | 71/260 [02:23<06:22,  0.49it/s]Testing DataLoader 0:  28%|██▊       | 72/260 [02:25<06:20,  0.49it/s][2026-04-17 01:33:46,583][root][WARNING] - Only censored events in batch. Evaluating metrics will be unstable.
+[2026-04-17 01:33:46,586][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+[2026-04-17 01:33:46,586][root][WARNING] - lbls=[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]; target_ages=[0.27715072 0.31134242 0.21205482 0.16284923 0.33424664 0.1808218
+ 0.4729864  0.3307398  0.2009863  0.23002739 0.20383568 0.07375336
+ 0.31309587 0.25216445 0.32383555 0.11506844 0.47506866 0.3583563
+ 0.06312313 0.03890419 0.42498627 0.16306858 0.16120549 0.15594521
+ 0.38575345 0.29260272 0.06739712 0.27199993 0.35210973 0.07276706
+ 0.41347963 0.20263004]
+Testing DataLoader 0:  28%|██▊       | 73/260 [02:27<06:18,  0.49it/s]Testing DataLoader 0:  28%|██▊       | 74/260 [02:29<06:15,  0.49it/s]Testing DataLoader 0:  29%|██▉       | 75/260 [02:31<06:13,  0.50it/s]Testing DataLoader 0:  29%|██▉       | 76/260 [02:33<06:11,  0.50it/s][2026-04-17 01:33:54,329][root][WARNING] - Only censored events in batch. Evaluating metrics will be unstable.
+[2026-04-17 01:33:54,331][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+[2026-04-17 01:33:54,331][root][WARNING] - lbls=[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]; target_ages=[0.17194518 0.35320568 0.25687677 0.0809864  0.17676696 0.05983562
+ 0.28295898 0.07364388 0.05468502 0.30465755 0.2945753  0.53413695
+ 0.23528767 0.05961647 0.35243836 0.14290409 0.22520542 0.1395069
+ 0.3662464  0.16405487 0.41073972 0.12372608 0.13873959 0.15901355
+ 0.32712325 0.0309042  0.15528774 0.19605485 0.2538082  0.3556164
+ 0.24536991 0.20120564]
+Testing DataLoader 0:  30%|██▉       | 77/260 [02:35<06:09,  0.50it/s]Testing DataLoader 0:  30%|███       | 78/260 [02:37<06:07,  0.50it/s][2026-04-17 01:33:58,106][root][WARNING] - Only censored events in batch. Evaluating metrics will be unstable.
+[2026-04-17 01:33:58,108][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+[2026-04-17 01:33:58,109][root][WARNING] - lbls=[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]; target_ages=[0.23101369 0.20646572 0.28000012 0.30235615 0.40120563 0.34761637
+ 0.29282188 0.45304108 0.23309593 0.03780823 0.3072876  0.05326023
+ 0.42378062 0.54290426 0.5372055  0.22476712 0.0782465  0.29216424
+ 0.4103014  0.31846562 0.522411   0.23605481 0.04284935 0.12591782
+ 0.48799992 0.20021935 0.34553432 0.33567125 0.1681095  0.30093154
+ 0.47002736 0.17884922]
+Testing DataLoader 0:  30%|███       | 79/260 [02:39<06:04,  0.50it/s][2026-04-17 01:33:59,986][root][WARNING] - Only censored events in batch. Evaluating metrics will be unstable.
+[2026-04-17 01:33:59,988][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+[2026-04-17 01:33:59,988][root][WARNING] - lbls=[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]; target_ages=[0.17468491 0.08438339 0.2955616  0.4716711  0.06969853 0.29150695
+ 0.26005477 0.4903013  0.46257553 0.3774248  0.368548   0.18772602
+ 0.3194521  0.37632865 0.4318905  0.3315069  0.21742478 0.48219165
+ 0.3985754  0.36712322 0.4243288  0.3573698  0.27572593 0.26630154
+ 0.3864109  0.11134243 0.24230137 0.3990137  0.18476716 0.4088766
+ 0.30104122 0.3975889 ]
+Testing DataLoader 0:  31%|███       | 80/260 [02:41<06:02,  0.50it/s]Testing DataLoader 0:  31%|███       | 81/260 [02:42<05:59,  0.50it/s]Testing DataLoader 0:  32%|███▏      | 82/260 [02:44<05:57,  0.50it/s][2026-04-17 01:34:05,739][root][WARNING] - Only censored events in batch. Evaluating metrics will be unstable.
+[2026-04-17 01:34:05,741][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+[2026-04-17 01:34:05,741][root][WARNING] - lbls=[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]; target_ages=[0.08449306 0.20120545 0.23780823 0.27375335 0.45271224 0.5087122
+ 0.08241101 0.24295902 0.09764385 0.13599987 0.09095898 0.30104104
+ 0.27430135 0.25402737 0.509589   0.27232876 0.19912338 0.5031231
+ 0.4318905  0.05676708 0.03353424 0.46816444 0.2716713  0.34761637
+ 0.17589054 0.18652038 0.02794514 0.21632881 0.09008217 0.09709587
+ 0.34630126 0.3034521 ]
+Testing DataLoader 0:  32%|███▏      | 83/260 [02:46<05:55,  0.50it/s][2026-04-17 01:34:07,505][root][WARNING] - Only censored events in batch. Evaluating metrics will be unstable.
+[2026-04-17 01:34:07,507][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+[2026-04-17 01:34:07,507][root][WARNING] - lbls=[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]; target_ages=[0.2604931  0.31419182 0.21983567 0.27101365 0.11539726 0.47463018
+ 0.2815342  0.14202747 0.03715057 0.2842741  0.22794513 0.04547939
+ 0.21808223 0.43978062 0.22739735 0.4871233  0.1976986  0.3845478
+ 0.40767115 0.21194515 0.07430134 0.34860268 0.08153419 0.25052053
+ 0.39320546 0.18202725 0.5038902  0.17490406 0.23956165 0.30421925
+ 0.34882182 0.49512348]
+Testing DataLoader 0:  32%|███▏      | 84/260 [02:48<05:53,  0.50it/s][2026-04-17 01:34:09,378][root][WARNING] - Only censored events in batch. Evaluating metrics will be unstable.
+[2026-04-17 01:34:09,380][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+[2026-04-17 01:34:09,380][root][WARNING] - lbls=[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]; target_ages=[0.07901363 0.5150684  0.27671242 0.43594512 0.3830139  0.318137
+ 0.28745213 0.38180828 0.15178089 0.21095887 0.5223013  0.35397282
+ 0.24712333 0.35539722 0.19353428 0.36799985 0.2950136  0.1503561
+ 0.18728752 0.18520546 0.17556171 0.0650959  0.30750674 0.44328785
+ 0.25019187 0.4520548  0.20997258 0.23605481 0.46071243 0.04295902
+ 0.1709589  0.12964383]
+Testing DataLoader 0:  33%|███▎      | 85/260 [02:50<05:50,  0.50it/s]Testing DataLoader 0:  33%|███▎      | 86/260 [02:52<05:48,  0.50it/s][2026-04-17 01:34:13,059][root][WARNING] - Only censored events in batch. Evaluating metrics will be unstable.
+[2026-04-17 01:34:13,061][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+[2026-04-17 01:34:13,061][root][WARNING] - lbls=[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]; target_ages=[0.20208225 0.31758898 0.51452065 0.02235622 0.2539177  0.14542465
+ 0.19079456 0.42410964 0.3274521  0.43901366 0.31079465 0.5098082
+ 0.23199996 0.25819188 0.50958884 0.17643833 0.1035616  0.12295894
+ 0.35309583 0.03583565 0.25249308 0.18235627 0.368219   0.45643845
+ 0.23923282 0.24668483 0.23715058 0.08679447 0.4927122  0.04854793
+ 0.513315   0.25095883]
+Testing DataLoader 0:  33%|███▎      | 87/260 [02:54<05:46,  0.50it/s][2026-04-17 01:34:14,829][root][WARNING] - Only censored events in batch. Evaluating metrics will be unstable.
+[2026-04-17 01:34:14,831][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+[2026-04-17 01:34:14,832][root][WARNING] - lbls=[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]; target_ages=[0.29709587 0.04515076 0.08065758 0.27747956 0.22180824 0.49753436
+ 0.19123287 0.10750675 0.5157261  0.0510685  0.26991788 0.40854797
+ 0.08942471 0.25183564 0.47298622 0.4211506  0.09534264 0.32526016
+ 0.32756156 0.35452062 0.0276165  0.09994526 0.46871242 0.3320549
+ 0.28690416 0.16734238 0.1732603  0.18564396 0.4809862  0.11309586
+ 0.09983559 0.5230684 ]
+Testing DataLoader 0:  34%|███▍      | 88/260 [02:55<05:43,  0.50it/s][2026-04-17 01:34:16,716][root][WARNING] - Only censored events in batch. Evaluating metrics will be unstable.
+[2026-04-17 01:34:16,718][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+[2026-04-17 01:34:16,718][root][WARNING] - lbls=[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]; target_ages=[0.37720567 0.35035628 0.13402748 0.3307398  0.01084938 0.33249322
+ 0.32712325 0.49994525 0.48504105 0.30893153 0.18860264 0.1077259
+ 0.29380816 0.2745207  0.37205467 0.0543562  0.51693153 0.37983552
+ 0.07473965 0.33786297 0.03704109 0.4580822  0.29819185 0.19517803
+ 0.06345196 0.30816442 0.27484933 0.377096   0.25600013 0.34356174
+ 0.2604931  0.223452  ]
+Testing DataLoader 0:  34%|███▍      | 89/260 [02:57<05:41,  0.50it/s][2026-04-17 01:34:18,662][root][WARNING] - Only censored events in batch. Evaluating metrics will be unstable.
+[2026-04-17 01:34:18,664][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+[2026-04-17 01:34:18,664][root][WARNING] - lbls=[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]; target_ages=[0.23463002 0.21019173 0.26147938 0.1274519  0.01468487 0.26728764
+ 0.48504123 0.1039999  0.11265735 0.06991787 0.08504105 0.40295905
+ 0.2585205  0.43671227 0.27813703 0.21863022 0.26136988 0.46257535
+ 0.14706859 0.20405483 0.26772594 0.08471222 0.3427946  0.16613694
+ 0.47210962 0.27189046 0.14575347 0.25545198 0.29567128 0.03495903
+ 0.52394545 0.32821923]
+Testing DataLoader 0:  35%|███▍      | 90/260 [02:59<05:39,  0.50it/s][2026-04-17 01:34:20,413][root][WARNING] - Only censored events in batch. Evaluating metrics will be unstable.
+[2026-04-17 01:34:20,416][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+[2026-04-17 01:34:20,416][root][WARNING] - lbls=[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]; target_ages=[0.15046577 0.13030148 0.32723275 0.13698617 0.15276718 0.19364396
+ 0.3190136  0.08273964 0.32120553 0.25161648 0.3607672  0.05534248
+ 0.31506842 0.25369874 0.18378067 0.20482197 0.2856985  0.4238905
+ 0.2819727  0.25884932 0.01260281 0.21205482 0.36241093 0.2876711
+ 0.21610947 0.23002739 0.4726576  0.21534252 0.21391793 0.5022467
+ 0.37830123 0.24832878]
+[2026-04-17 01:34:20,418][root][WARNING] - Only censored events in batch. Evaluating metrics will be unstable.
+[2026-04-17 01:34:20,419][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+[2026-04-17 01:34:20,420][root][WARNING] - lbls=[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]; target_ages=[0.15046577 0.13030148 0.32723275 0.13698617 0.15276718 0.19364396
+ 0.3190136  0.08273964 0.32120553 0.25161648 0.3607672  0.05534248
+ 0.31506842 0.25369874 0.18378067 0.20482197 0.2856985  0.4238905
+ 0.2819727  0.25884932 0.01260281 0.21205482 0.36241093 0.2876711
+ 0.21610947 0.23002739 0.4726576  0.21534252 0.21391793 0.5022467
+ 0.37830123 0.24832878]
+[2026-04-17 01:34:20,421][root][WARNING] - Only censored events in batch. Evaluating metrics will be unstable.
+[2026-04-17 01:34:20,423][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+[2026-04-17 01:34:20,423][root][WARNING] - lbls=[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]; target_ages=[0.15046577 0.13030148 0.32723275 0.13698617 0.15276718 0.19364396
+ 0.3190136  0.08273964 0.32120553 0.25161648 0.3607672  0.05534248
+ 0.31506842 0.25369874 0.18378067 0.20482197 0.2856985  0.4238905
+ 0.2819727  0.25884932 0.01260281 0.21205482 0.36241093 0.2876711
+ 0.21610947 0.23002739 0.4726576  0.21534252 0.21391793 0.5022467
+ 0.37830123 0.24832878]
+Testing DataLoader 0:  35%|███▌      | 91/260 [03:01<05:37,  0.50it/s]Testing DataLoader 0:  35%|███▌      | 92/260 [03:03<05:35,  0.50it/s]Testing DataLoader 0:  36%|███▌      | 93/260 [03:05<05:32,  0.50it/s]Testing DataLoader 0:  36%|███▌      | 94/260 [03:07<05:30,  0.50it/s][2026-04-17 01:34:28,033][root][WARNING] - Only censored events in batch. Evaluating metrics will be unstable.
+[2026-04-17 01:34:28,035][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+[2026-04-17 01:34:28,036][root][WARNING] - lbls=[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]; target_ages=[0.24241105 0.3958355  0.07846566 0.321863   0.25709572 0.35101375
+ 0.24964389 0.19605485 0.2993973  0.13479462 0.05895901 0.2538082
+ 0.25150698 0.04536991 0.21008205 0.3391781  0.42213708 0.09172592
+ 0.4242193  0.501589   0.31397247 0.4257534  0.18246575 0.21008205
+ 0.35013694 0.52273977 0.29479447 0.26421928 0.4646574  0.07189045
+ 0.22235623 0.377096  ]
+Testing DataLoader 0:  37%|███▋      | 95/260 [03:09<05:28,  0.50it/s][2026-04-17 01:34:29,987][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+[2026-04-17 01:34:29,987][root][WARNING] - lbls=[0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]; target_ages=[0.39649314 0.17084941 0.1025753  0.18049316 0.21819171 0.47945195
+ 0.20208225 0.48295918 0.21939716 0.2604931  0.12383556 0.32898635
+ 0.26016444 0.3091507  0.1831234  0.28405476 0.36405468 0.47002736
+ 0.3915617  0.07693138 0.40175343 0.33282202 0.34202728 0.27441102
+ 0.1297535  0.01676712 0.29567128 0.14980832 0.30641097 0.3127672
+ 0.2356163  0.37764376]
+Testing DataLoader 0:  37%|███▋      | 96/260 [03:11<05:26,  0.50it/s]Testing DataLoader 0:  37%|███▋      | 97/260 [03:13<05:24,  0.50it/s]Testing DataLoader 0:  38%|███▊      | 98/260 [03:14<05:22,  0.50it/s]Testing DataLoader 0:  38%|███▊      | 99/260 [03:16<05:20,  0.50it/s][2026-04-17 01:34:37,762][root][WARNING] - Only censored events in batch. Evaluating metrics will be unstable.
+[2026-04-17 01:34:37,764][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+[2026-04-17 01:34:37,764][root][WARNING] - lbls=[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]; target_ages=[0.2426302  0.43989047 0.25501385 0.24032879 0.25731507 0.11715069
+ 0.21523285 0.09654808 0.25369874 0.26630154 0.3578081  0.3104658
+ 0.15386315 0.08142471 0.21610966 0.08580818 0.3545204  0.34673977
+ 0.33841094 0.19901371 0.2955618  0.2881096  0.4126026  0.2510685
+ 0.36361638 0.2206028  0.391452   0.27145213 0.29095897 0.39879456
+ 0.1044384  0.05610962]
+Testing DataLoader 0:  38%|███▊      | 100/260 [03:18<05:18,  0.50it/s]Testing DataLoader 0:  39%|███▉      | 101/260 [03:20<05:16,  0.50it/s]Testing DataLoader 0:  39%|███▉      | 102/260 [03:22<05:13,  0.50it/s]Testing DataLoader 0:  40%|███▉      | 103/260 [03:24<05:11,  0.50it/s]Testing DataLoader 0:  40%|████      | 104/260 [03:26<05:09,  0.50it/s]Testing DataLoader 0:  40%|████      | 105/260 [03:28<05:07,  0.50it/s]Testing DataLoader 0:  41%|████      | 106/260 [03:30<05:05,  0.50it/s]Testing DataLoader 0:  41%|████      | 107/260 [03:32<05:03,  0.50it/s]Testing DataLoader 0:  42%|████▏     | 108/260 [03:34<05:01,  0.50it/s][2026-04-17 01:34:55,244][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+[2026-04-17 01:34:55,244][root][WARNING] - lbls=[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0]; target_ages=[0.2590685  0.3896986  0.39309615 0.23167114 0.38356152 0.3038904
+ 0.08504124 0.18498631 0.23386307 0.19375344 0.3869589  0.27463016
+ 0.19375344 0.24613705 0.24482194 0.38630143 0.0997261  0.46619186
+ 0.05073986 0.30520535 0.4056986  0.2510685  0.36745206 0.09589043
+ 0.23178081 0.38904113 0.30027407 0.04756165 0.1349041  0.47484952
+ 0.20690422 0.2758356 ]
+Testing DataLoader 0:  42%|████▏     | 109/260 [03:36<04:59,  0.50it/s]Testing DataLoader 0:  42%|████▏     | 110/260 [03:38<04:57,  0.50it/s]Testing DataLoader 0:  43%|████▎     | 111/260 [03:40<04:55,  0.50it/s]Testing DataLoader 0:  43%|████▎     | 112/260 [03:42<04:53,  0.50it/s]Testing DataLoader 0:  43%|████▎     | 113/260 [03:44<04:51,  0.50it/s][2026-04-17 01:35:04,949][root][WARNING] - Only censored events in batch. Evaluating metrics will be unstable.
+[2026-04-17 01:35:04,952][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+[2026-04-17 01:35:04,952][root][WARNING] - lbls=[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]; target_ages=[0.42936993 0.15539722 0.11879444 0.34016418 0.07682209 0.29293156
+ 0.26498643 0.18389054 0.12284927 0.25424653 0.38432884 0.24109593
+ 0.10531501 0.31715068 0.31265754 0.37008208 0.27364388 0.06257534
+ 0.2108492  0.26389045 0.16997261 0.3948494  0.45424634 0.07287674
+ 0.40865764 0.36865768 0.26213703 0.2809864  0.40920544 0.46575338
+ 0.31978074 0.3292057 ]
+[2026-04-17 01:35:04,954][root][WARNING] - Only censored events in batch. Evaluating metrics will be unstable.
+[2026-04-17 01:35:04,955][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+[2026-04-17 01:35:04,956][root][WARNING] - lbls=[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]; target_ages=[0.42936993 0.15539722 0.11879444 0.34016418 0.07682209 0.29293156
+ 0.26498643 0.18389054 0.12284927 0.25424653 0.38432884 0.24109593
+ 0.10531501 0.31715068 0.31265754 0.37008208 0.27364388 0.06257534
+ 0.2108492  0.26389045 0.16997261 0.3948494  0.45424634 0.07287674
+ 0.40865764 0.36865768 0.26213703 0.2809864  0.40920544 0.46575338
+ 0.31978074 0.3292057 ]
+[2026-04-17 01:35:04,957][root][WARNING] - Only censored events in batch. Evaluating metrics will be unstable.
+[2026-04-17 01:35:04,959][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+[2026-04-17 01:35:04,959][root][WARNING] - lbls=[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]; target_ages=[0.42936993 0.15539722 0.11879444 0.34016418 0.07682209 0.29293156
+ 0.26498643 0.18389054 0.12284927 0.25424653 0.38432884 0.24109593
+ 0.10531501 0.31715068 0.31265754 0.37008208 0.27364388 0.06257534
+ 0.2108492  0.26389045 0.16997261 0.3948494  0.45424634 0.07287674
+ 0.40865764 0.36865768 0.26213703 0.2809864  0.40920544 0.46575338
+ 0.31978074 0.3292057 ]
+Testing DataLoader 0:  44%|████▍     | 114/260 [03:46<04:49,  0.50it/s]Testing DataLoader 0:  44%|████▍     | 115/260 [03:47<04:47,  0.50it/s]Testing DataLoader 0:  45%|████▍     | 116/260 [03:49<04:45,  0.50it/s][2026-04-17 01:35:10,815][root][WARNING] - Only censored events in batch. Evaluating metrics will be unstable.
+[2026-04-17 01:35:10,816][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+[2026-04-17 01:35:10,817][root][WARNING] - lbls=[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]; target_ages=[0.31649303 0.2782467  0.16526031 0.17578086 0.32953435 0.39189053
+ 0.3710684  0.09983559 0.3166027  0.08175354 0.1822466  0.06027393
+ 0.26586303 0.33972606 0.13457528 0.4234522  0.06443844 0.16471234
+ 0.47912312 0.47616464 0.4009861  0.3420275  0.3031233  0.19452056
+ 0.40054798 0.28208217 0.19649315 0.13556175 0.25326043 0.2689314
+ 0.26597252 0.11835613]
+Testing DataLoader 0:  45%|████▌     | 117/260 [03:51<04:43,  0.50it/s]Testing DataLoader 0:  45%|████▌     | 118/260 [03:53<04:41,  0.50it/s]Testing DataLoader 0:  46%|████▌     | 119/260 [03:55<04:39,  0.50it/s]Testing DataLoader 0:  46%|████▌     | 120/260 [03:57<04:37,  0.50it/s]Testing DataLoader 0:  47%|████▋     | 121/260 [03:59<04:35,  0.50it/s]Testing DataLoader 0:  47%|████▋     | 122/260 [04:01<04:33,  0.51it/s][2026-04-17 01:35:22,437][root][WARNING] - Only censored events in batch. Evaluating metrics will be unstable.
+[2026-04-17 01:35:22,439][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+[2026-04-17 01:35:22,440][root][WARNING] - lbls=[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]; target_ages=[0.35101375 0.23090419 0.0819727  0.20756169 0.43112335 0.2669588
+ 0.13446578 0.27758902 0.10641098 0.11463013 0.19824657 0.20547943
+ 0.44832897 0.144767   0.21775341 0.29391783 0.09764385 0.23495884
+ 0.2932602  0.02115078 0.3878355  0.3460823  0.11704101 0.13884926
+ 0.08153419 0.12098618 0.10695896 0.42882174 0.1957262  0.46290416
+ 0.18498631 0.1105753 ]
+Testing DataLoader 0:  47%|████▋     | 123/260 [04:03<04:31,  0.51it/s]Testing DataLoader 0:  48%|████▊     | 124/260 [04:05<04:29,  0.51it/s]Testing DataLoader 0:  48%|████▊     | 125/260 [04:07<04:27,  0.51it/s]Testing DataLoader 0:  48%|████▊     | 126/260 [04:09<04:25,  0.51it/s][2026-04-17 01:35:30,247][root][WARNING] - Only censored events in batch. Evaluating metrics will be unstable.
+[2026-04-17 01:35:30,249][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+[2026-04-17 01:35:30,250][root][WARNING] - lbls=[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]; target_ages=[0.47057515 0.00712318 0.28646582 0.5122191  0.2051506  0.2679451
+ 0.27978078 0.35134238 0.27101365 0.10191784 0.37994537 0.1981369
+ 0.2374794  0.49479428 0.26301384 0.2619179  0.2295889  0.35539705
+ 0.32701358 0.10652065 0.20482197 0.10279465 0.21041088 0.27463016
+ 0.41139716 0.13369866 0.29490414 0.3523287  0.31232873 0.04931507
+ 0.23868504 0.08997269]
+Testing DataLoader 0:  49%|████▉     | 127/260 [04:11<04:23,  0.51it/s]Testing DataLoader 0:  49%|████▉     | 128/260 [04:13<04:21,  0.51it/s]Testing DataLoader 0:  50%|████▉     | 129/260 [04:15<04:19,  0.51it/s][2026-04-17 01:35:36,108][root][WARNING] - Only censored events in batch. Evaluating metrics will be unstable.
+[2026-04-17 01:35:36,110][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+[2026-04-17 01:35:36,110][root][WARNING] - lbls=[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]; target_ages=[0.28361645 0.1128767  0.37994537 0.16328755 0.19473973 0.25446567
+ 0.42279452 0.27156162 0.2477808  0.31715068 0.04668503 0.19375344
+ 0.24712333 0.09545211 0.14684944 0.4899725  0.4622465  0.04701366
+ 0.34958896 0.2912876  0.20668487 0.08153439 0.11528759 0.29194528
+ 0.20131512 0.3924385  0.00964394 0.2393425  0.19178085 0.39879456
+ 0.24230137 0.35989037]
+Testing DataLoader 0:  50%|█████     | 130/260 [04:17<04:17,  0.51it/s][2026-04-17 01:35:38,073][root][WARNING] - Only censored events in batch. Evaluating metrics will be unstable.
+[2026-04-17 01:35:38,075][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+[2026-04-17 01:35:38,076][root][WARNING] - lbls=[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]; target_ages=[0.41336995 0.10301361 0.16887684 0.2379177  0.2144659  0.30575332
+ 0.22443847 0.21610947 0.30246583 0.43912354 0.2276165  0.42980823
+ 0.34684944 0.28350678 0.32701358 0.08887672 0.09567127 0.439452
+ 0.05621929 0.10816441 0.24591789 0.18936996 0.45556164 0.2467947
+ 0.39583588 0.2642191  0.29063016 0.38115063 0.32613698 0.3991232
+ 0.21490422 0.21150684]
+Testing DataLoader 0:  50%|█████     | 131/260 [04:19<04:15,  0.51it/s]Testing DataLoader 0:  51%|█████     | 132/260 [04:20<04:13,  0.51it/s][2026-04-17 01:35:41,816][root][WARNING] - Only censored events in batch. Evaluating metrics will be unstable.
+[2026-04-17 01:35:41,818][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+[2026-04-17 01:35:41,818][root][WARNING] - lbls=[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]; target_ages=[0.5398356  0.34257546 0.44953424 0.5530958  0.25632876 0.5435616
+ 0.47189045 0.15002747 0.22323303 0.32810956 0.04854793 0.41041088
+ 0.23035602 0.07178078 0.38487682 0.23704109 0.22564392 0.37128773
+ 0.09358902 0.2875616  0.53643835 0.4800001  0.4650959  0.2562193
+ 0.29512328 0.24032879 0.4991781  0.35309583 0.29808217 0.5161646
+ 0.24010964 0.17873974]
+Testing DataLoader 0:  51%|█████     | 133/260 [04:22<04:11,  0.51it/s][2026-04-17 01:35:43,704][root][WARNING] - Only censored events in batch. Evaluating metrics will be unstable.
+[2026-04-17 01:35:43,706][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+[2026-04-17 01:35:43,706][root][WARNING] - lbls=[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]; target_ages=[0.16383553 0.15013695 0.53512305 0.3419178  0.51221925 0.5046574
+ 0.5430136  0.22706851 0.3689863  0.4263014  0.20723304 0.5384108
+ 0.02224655 0.28306848 0.5606575  0.33775347 0.3189041  0.56372607
+ 0.3944109  0.42882195 0.25676727 0.3424658  0.03956165 0.5095892
+ 0.20405483 0.38564378 0.07473965 0.25610942 0.4234522  0.04646568
+ 0.18202743 0.5559452 ]
+Testing DataLoader 0:  52%|█████▏    | 134/260 [04:24<04:08,  0.51it/s][2026-04-17 01:35:45,389][root][WARNING] - Only censored events in batch. Evaluating metrics will be unstable.
+[2026-04-17 01:35:45,391][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+[2026-04-17 01:35:45,391][root][WARNING] - lbls=[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]; target_ages=[0.47791785 0.56098634 0.12197246 0.5383013  0.52810955 0.25183564
+ 0.08263016 0.31561643 0.3507946  0.43342456 0.5274523  0.4772602
+ 0.5155069  0.30180836 0.07890415 0.17523289 0.20306854 0.27046567
+ 0.21665744 0.5203289  0.35649318 0.19287682 0.48405474 0.47967148
+ 0.28635615 0.28646582 0.3489315  0.2473425  0.3143015  0.22991772
+ 0.08306847 0.40997276]
+Testing DataLoader 0:  52%|█████▏    | 135/260 [04:26<04:06,  0.51it/s]Testing DataLoader 0:  52%|█████▏    | 136/260 [04:28<04:04,  0.51it/s][2026-04-17 01:35:49,190][root][WARNING] - Only censored events in batch. Evaluating metrics will be unstable.
+[2026-04-17 01:35:49,193][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+[2026-04-17 01:35:49,193][root][WARNING] - lbls=[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]; target_ages=[0.5066301  0.26443824 0.07517815 0.01632881 0.50695896 0.27364367
+ 0.49950677 0.3143015  0.3563837  0.12153415 0.05643826 0.5307396
+ 0.34115067 0.11134243 0.13797244 0.17380829 0.40964374 0.20273972
+ 0.23068485 0.0838356  0.14827386 0.26915073 0.22498627 0.53610975
+ 0.3390684  0.40317804 0.35813695 0.08449326 0.20942459 0.24920559
+ 0.38158894 0.40054798]
+[2026-04-17 01:35:49,195][root][WARNING] - Only censored events in batch. Evaluating metrics will be unstable.
+[2026-04-17 01:35:49,197][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+[2026-04-17 01:35:49,197][root][WARNING] - lbls=[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]; target_ages=[0.5066301  0.26443824 0.07517815 0.01632881 0.50695896 0.27364367
+ 0.49950677 0.3143015  0.3563837  0.12153415 0.05643826 0.5307396
+ 0.34115067 0.11134243 0.13797244 0.17380829 0.40964374 0.20273972
+ 0.23068485 0.0838356  0.14827386 0.26915073 0.22498627 0.53610975
+ 0.3390684  0.40317804 0.35813695 0.08449326 0.20942459 0.24920559
+ 0.38158894 0.40054798]
+[2026-04-17 01:35:49,198][root][WARNING] - Only censored events in batch. Evaluating metrics will be unstable.
+[2026-04-17 01:35:49,200][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+[2026-04-17 01:35:49,200][root][WARNING] - lbls=[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]; target_ages=[0.5066301  0.26443824 0.07517815 0.01632881 0.50695896 0.27364367
+ 0.49950677 0.3143015  0.3563837  0.12153415 0.05643826 0.5307396
+ 0.34115067 0.11134243 0.13797244 0.17380829 0.40964374 0.20273972
+ 0.23068485 0.0838356  0.14827386 0.26915073 0.22498627 0.53610975
+ 0.3390684  0.40317804 0.35813695 0.08449326 0.20942459 0.24920559
+ 0.38158894 0.40054798]
+Testing DataLoader 0:  53%|█████▎    | 137/260 [04:30<04:02,  0.51it/s][2026-04-17 01:35:51,108][root][WARNING] - Only censored events in batch. Evaluating metrics will be unstable.
+[2026-04-17 01:35:51,110][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+[2026-04-17 01:35:51,111][root][WARNING] - lbls=[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]; target_ages=[0.3264658  0.2055891  0.39704114 0.16153412 0.5353426  0.38202745
+ 0.05578079 0.39901352 0.1452055  0.10235615 0.54465735 0.27978095
+ 0.3943014  0.3007124  0.07813702 0.15627384 0.47408217 0.27035618
+ 0.5366575  0.28624648 0.11013699 0.2665205  0.23430137 0.34410954
+ 0.19309577 0.36657542 0.4417532  0.4047123  0.54071236 0.38608226
+ 0.5545206  0.28701383]
+Testing DataLoader 0:  53%|█████▎    | 138/260 [04:32<04:00,  0.51it/s][2026-04-17 01:35:52,832][root][WARNING] - Only censored events in batch. Evaluating metrics will be unstable.
+[2026-04-17 01:35:52,834][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+[2026-04-17 01:35:52,835][root][WARNING] - lbls=[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]; target_ages=[0.28657532 0.26926023 0.53106844 0.50641096 0.35167122 0.4070135
+ 0.3297535  0.3035616  0.4643286  0.15210953 0.03627396 0.5615341
+ 0.19123307 0.49895877 0.5357807  0.40076715 0.10082188 0.13819161
+ 0.14816436 0.03616447 0.2028492  0.356493   0.36317825 0.35868493
+ 0.20854798 0.13906841 0.21753426 0.55441076 0.2973152  0.53556174
+ 0.18772602 0.219726  ]
+Testing DataLoader 0:  53%|█████▎    | 139/260 [04:33<03:58,  0.51it/s]Testing DataLoader 0:  54%|█████▍    | 140/260 [04:35<03:56,  0.51it/s][2026-04-17 01:35:56,508][root][WARNING] - Only censored events in batch. Evaluating metrics will be unstable.
+[2026-04-17 01:35:56,510][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+[2026-04-17 01:35:56,510][root][WARNING] - lbls=[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]; target_ages=[0.17117806 0.08504124 0.13545208 0.42969877 0.3676714  0.14882202
+ 0.20273972 0.37435627 0.49720535 0.297863   0.06717797 0.21950683
+ 0.5171507  0.5053148  0.28821927 0.1250412  0.5498083  0.42476693
+ 0.08723278 0.42498645 0.3981369  0.03364372 0.39046574 0.23517819
+ 0.08821926 0.28175354 0.26202756 0.19594517 0.37446576 0.38005486
+ 0.31013697 0.05523281]
+Testing DataLoader 0:  54%|█████▍    | 141/260 [04:37<03:54,  0.51it/s][2026-04-17 01:35:58,350][root][WARNING] - Only censored events in batch. Evaluating metrics will be unstable.
+[2026-04-17 01:35:58,371][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+[2026-04-17 01:35:58,372][root][WARNING] - lbls=[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]; target_ages=[0.07879448 0.18509598 0.40821934 0.23638363 0.22991791 0.34389037
+ 0.31408215 0.35002726 0.39517802 0.514959   0.3436714  0.26389045
+ 0.4004385  0.09808216 0.26761645 0.35243836 0.05030136 0.48219165
+ 0.21128769 0.31068498 0.309589   0.4876713  0.35539722 0.1035616
+ 0.23978081 0.36032867 0.29282206 0.26684934 0.39123306 0.31189042
+ 0.5646027  0.1316164 ]
+[2026-04-17 01:35:58,374][root][WARNING] - Only censored events in batch. Evaluating metrics will be unstable.
+[2026-04-17 01:35:58,375][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+[2026-04-17 01:35:58,375][root][WARNING] - lbls=[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]; target_ages=[0.07879448 0.18509598 0.40821934 0.23638363 0.22991791 0.34389037
+ 0.31408215 0.35002726 0.39517802 0.514959   0.3436714  0.26389045
+ 0.4004385  0.09808216 0.26761645 0.35243836 0.05030136 0.48219165
+ 0.21128769 0.31068498 0.309589   0.4876713  0.35539722 0.1035616
+ 0.23978081 0.36032867 0.29282206 0.26684934 0.39123306 0.31189042
+ 0.5646027  0.1316164 ]
+[2026-04-17 01:35:58,377][root][WARNING] - Only censored events in batch. Evaluating metrics will be unstable.
+[2026-04-17 01:35:58,378][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+[2026-04-17 01:35:58,379][root][WARNING] - lbls=[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]; target_ages=[0.07879448 0.18509598 0.40821934 0.23638363 0.22991791 0.34389037
+ 0.31408215 0.35002726 0.39517802 0.514959   0.3436714  0.26389045
+ 0.4004385  0.09808216 0.26761645 0.35243836 0.05030136 0.48219165
+ 0.21128769 0.31068498 0.309589   0.4876713  0.35539722 0.1035616
+ 0.23978081 0.36032867 0.29282206 0.26684934 0.39123306 0.31189042
+ 0.5646027  0.1316164 ]
+Testing DataLoader 0:  55%|█████▍    | 142/260 [04:39<03:52,  0.51it/s][2026-04-17 01:36:00,310][root][WARNING] - Only censored events in batch. Evaluating metrics will be unstable.
+[2026-04-17 01:36:00,312][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+[2026-04-17 01:36:00,312][root][WARNING] - lbls=[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]; target_ages=[0.13720551 0.20997258 0.3105755  0.23353425 0.5431234  0.43167114
+ 0.1892601  0.3556164  0.438356   0.13238354 0.0899725  0.17567138
+ 0.36109582 0.40756148 0.1025753  0.08219185 0.27616444 0.40832883
+ 0.5022465  0.3293152  0.02586308 0.41665745 0.04482193 0.26849326
+ 0.25041103 0.16208228 0.08350696 0.15989037 0.14706841 0.21260281
+ 0.26301366 0.06728764]
+Testing DataLoader 0:  55%|█████▌    | 143/260 [04:41<03:50,  0.51it/s][2026-04-17 01:36:02,057][root][WARNING] - Only censored events in batch. Evaluating metrics will be unstable.
+[2026-04-17 01:36:02,059][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+[2026-04-17 01:36:02,059][root][WARNING] - lbls=[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]; target_ages=[0.5395069  0.09106846 0.2843836  0.06400013 0.24295902 0.09621906
+ 0.20591792 0.50717795 0.08536987 0.4931507  0.4333151  0.37731513
+ 0.06575336 0.49019185 0.5187944  0.2513973  0.30860272 0.53556174
+ 0.12065754 0.4969862  0.14465752 0.09424667 0.23002739 0.37819177
+ 0.23616429 0.18202743 0.5020275  0.26356164 0.5595617  0.28876725
+ 0.31463012 0.25731507]
+Testing DataLoader 0:  55%|█████▌    | 144/260 [04:43<03:48,  0.51it/s][2026-04-17 01:36:03,838][root][WARNING] - Only censored events in batch. Evaluating metrics will be unstable.
+[2026-04-17 01:36:03,840][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+[2026-04-17 01:36:03,840][root][WARNING] - lbls=[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]; target_ages=[0.41293144 0.195726   0.30805475 0.32515067 0.34169865 0.26761645
+ 0.39046574 0.35605487 0.16273975 0.0856987  0.2341919  0.23112336
+ 0.5265751  0.32712325 0.27506846 0.1635069  0.41183567 0.40778083
+ 0.3263561  0.35254782 0.27199993 0.07616444 0.46947938 0.3629589
+ 0.0304657  0.15134239 0.48668498 0.06191788 0.3100273  0.35868493
+ 0.3279999  0.21698627]
+Testing DataLoader 0:  56%|█████▌    | 145/260 [04:44<03:45,  0.51it/s][2026-04-17 01:36:05,590][root][WARNING] - Only censored events in batch. Evaluating metrics will be unstable.
+[2026-04-17 01:36:05,592][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+[2026-04-17 01:36:05,592][root][WARNING] - lbls=[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]; target_ages=[0.2810959  0.27408218 0.18542461 0.2557808  0.262685   0.4665205
+ 0.4140276  0.5194519  0.08624649 0.49621925 0.31978074 0.25512332
+ 0.2642191  0.31156158 0.19441089 0.10969868 0.20361634 0.19068488
+ 0.1147398  0.16306858 0.20832881 0.16010952 0.4516163  0.0908493
+ 0.2009863  0.3381918  0.11298618 0.2061369  0.39561635 0.25282192
+ 0.3031233  0.54213697]
+[2026-04-17 01:36:05,594][root][WARNING] - Only censored events in batch. Evaluating metrics will be unstable.
+[2026-04-17 01:36:05,596][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+[2026-04-17 01:36:05,596][root][WARNING] - lbls=[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]; target_ages=[0.2810959  0.27408218 0.18542461 0.2557808  0.262685   0.4665205
+ 0.4140276  0.5194519  0.08624649 0.49621925 0.31978074 0.25512332
+ 0.2642191  0.31156158 0.19441089 0.10969868 0.20361634 0.19068488
+ 0.1147398  0.16306858 0.20832881 0.16010952 0.4516163  0.0908493
+ 0.2009863  0.3381918  0.11298618 0.2061369  0.39561635 0.25282192
+ 0.3031233  0.54213697]
+[2026-04-17 01:36:05,598][root][WARNING] - Only censored events in batch. Evaluating metrics will be unstable.
+[2026-04-17 01:36:05,599][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+[2026-04-17 01:36:05,599][root][WARNING] - lbls=[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]; target_ages=[0.2810959  0.27408218 0.18542461 0.2557808  0.262685   0.4665205
+ 0.4140276  0.5194519  0.08624649 0.49621925 0.31978074 0.25512332
+ 0.2642191  0.31156158 0.19441089 0.10969868 0.20361634 0.19068488
+ 0.1147398  0.16306858 0.20832881 0.16010952 0.4516163  0.0908493
+ 0.2009863  0.3381918  0.11298618 0.2061369  0.39561635 0.25282192
+ 0.3031233  0.54213697]
+Testing DataLoader 0:  56%|█████▌    | 146/260 [04:46<03:43,  0.51it/s]Testing DataLoader 0:  57%|█████▋    | 147/260 [04:48<03:41,  0.51it/s][2026-04-17 01:36:09,278][root][WARNING] - Only censored events in batch. Evaluating metrics will be unstable.
+[2026-04-17 01:36:09,280][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+[2026-04-17 01:36:09,280][root][WARNING] - lbls=[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]; target_ages=[0.34301376 0.28120556 0.09227409 0.27002734 0.21227399 0.1948494
+ 0.16153431 0.40821916 0.45632878 0.5454248  0.35758916 0.2848219
+ 0.18958911 0.0613699  0.41391772 0.33084926 0.4490961  0.19846573
+ 0.39408225 0.24865742 0.26684934 0.05567112 0.28778076 0.43364373
+ 0.470685   0.195726   0.37216434 0.15978089 0.09468498 0.1812603
+ 0.55769885 0.29972592]
+Testing DataLoader 0:  57%|█████▋    | 148/260 [04:50<03:39,  0.51it/s]Testing DataLoader 0:  57%|█████▋    | 149/260 [04:52<03:37,  0.51it/s][2026-04-17 01:36:13,115][root][WARNING] - Only censored events in batch. Evaluating metrics will be unstable.
+[2026-04-17 01:36:13,117][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+[2026-04-17 01:36:13,117][root][WARNING] - lbls=[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]; target_ages=[0.07879448 0.42706853 0.41435623 0.54257524 0.30454808 0.40909576
+ 0.4373699  0.1349041  0.36800003 0.25468484 0.10947933 0.1287672
+ 0.29446563 0.2679453  0.49665737 0.06893139 0.11178074 0.28054792
+ 0.2735344  0.24175338 0.23901367 0.14882183 0.5553974  0.2782465
+ 0.25413704 0.3911232  0.3484932  0.45534247 0.1868492  0.41227397
+ 0.30904102 0.18487664]
+Testing DataLoader 0:  58%|█████▊    | 150/260 [04:54<03:35,  0.51it/s][2026-04-17 01:36:14,865][root][WARNING] - Only censored events in batch. Evaluating metrics will be unstable.
+[2026-04-17 01:36:14,867][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+[2026-04-17 01:36:14,868][root][WARNING] - lbls=[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]; target_ages=[0.14498635 0.43024674 0.50509584 0.10169868 0.14443836 0.16734257
+ 0.5198906  0.14290409 0.2932602  0.2513973  0.49797267 0.21435623
+ 0.5395071  0.21490403 0.39506835 0.41621932 0.11013699 0.09983559
+ 0.38849315 0.20449314 0.2599453  0.49589044 0.11506844 0.4814245
+ 0.2530411  0.04876709 0.32536983 0.17512341 0.36712322 0.12558898
+ 0.1363287  0.46071225]
+[2026-04-17 01:36:14,870][root][WARNING] - Only censored events in batch. Evaluating metrics will be unstable.
+[2026-04-17 01:36:14,871][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+[2026-04-17 01:36:14,871][root][WARNING] - lbls=[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]; target_ages=[0.14498635 0.43024674 0.50509584 0.10169868 0.14443836 0.16734257
+ 0.5198906  0.14290409 0.2932602  0.2513973  0.49797267 0.21435623
+ 0.5395071  0.21490403 0.39506835 0.41621932 0.11013699 0.09983559
+ 0.38849315 0.20449314 0.2599453  0.49589044 0.11506844 0.4814245
+ 0.2530411  0.04876709 0.32536983 0.17512341 0.36712322 0.12558898
+ 0.1363287  0.46071225]
+[2026-04-17 01:36:14,873][root][WARNING] - Only censored events in batch. Evaluating metrics will be unstable.
+[2026-04-17 01:36:14,874][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+[2026-04-17 01:36:14,875][root][WARNING] - lbls=[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]; target_ages=[0.14498635 0.43024674 0.50509584 0.10169868 0.14443836 0.16734257
+ 0.5198906  0.14290409 0.2932602  0.2513973  0.49797267 0.21435623
+ 0.5395071  0.21490403 0.39506835 0.41621932 0.11013699 0.09983559
+ 0.38849315 0.20449314 0.2599453  0.49589044 0.11506844 0.4814245
+ 0.2530411  0.04876709 0.32536983 0.17512341 0.36712322 0.12558898
+ 0.1363287  0.46071225]
+Testing DataLoader 0:  58%|█████▊    | 151/260 [04:55<03:33,  0.51it/s][2026-04-17 01:36:16,784][root][WARNING] - Only censored events in batch. Evaluating metrics will be unstable.
+[2026-04-17 01:36:16,786][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+[2026-04-17 01:36:16,786][root][WARNING] - lbls=[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]; target_ages=[0.23221913 0.42487678 0.26717815 0.05567112 0.20021915 0.2238905
+ 0.17030144 0.28471223 0.13358898 0.14093152 0.15802726 0.34980813
+ 0.12767124 0.23813686 0.16076717 0.5312878  0.04558907 0.3217535
+ 0.05063019 0.24054794 0.06169853 0.46005479 0.28964385 0.23813686
+ 0.06389046 0.2519451  0.3137533  0.24712333 0.27747956 0.22586289
+ 0.3367672  0.30169868]
+Testing DataLoader 0:  58%|█████▊    | 152/260 [04:57<03:31,  0.51it/s][2026-04-17 01:36:18,580][root][WARNING] - Only censored events in batch. Evaluating metrics will be unstable.
+[2026-04-17 01:36:18,582][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+[2026-04-17 01:36:18,582][root][WARNING] - lbls=[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]; target_ages=[0.07232876 0.06400013 0.0702465  0.02673988 0.297863   0.29884928
+ 0.09906864 0.2500822  0.2580822  0.56416434 0.387397   0.27747935
+ 0.30947953 0.14060268 0.38882178 0.3002739  0.44208223 0.24547958
+ 0.06367131 0.4889864  0.23145199 0.368548   0.4951233  0.21008225
+ 0.4416439  0.24010944 0.34082165 0.5023562  0.28690395 0.06564369
+ 0.5243837  0.39693147]
+Testing DataLoader 0:  59%|█████▉    | 153/260 [04:59<03:29,  0.51it/s]Testing DataLoader 0:  59%|█████▉    | 154/260 [05:01<03:27,  0.51it/s][2026-04-17 01:36:22,282][root][WARNING] - Only censored events in batch. Evaluating metrics will be unstable.
+[2026-04-17 01:36:22,284][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+[2026-04-17 01:36:22,285][root][WARNING] - lbls=[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]; target_ages=[0.21994515 0.16241093 0.32000008 0.30169868 0.19967118 0.29884928
+ 0.41654795 0.42147923 0.494685   0.18158913 0.35002747 0.25545216
+ 0.28865737 0.37435627 0.1878357  0.29260272 0.34531498 0.29260272
+ 0.20197257 0.3380823  0.37786293 0.14224644 0.3499178  0.15178089
+ 0.19715062 0.19824657 0.2735344  0.41347924 0.26268482 0.20997277
+ 0.32997265 0.36547947]
+Testing DataLoader 0:  60%|█████▉    | 155/260 [05:03<03:25,  0.51it/s][2026-04-17 01:36:24,129][root][WARNING] - Only censored events in batch. Evaluating metrics will be unstable.
+[2026-04-17 01:36:24,131][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+[2026-04-17 01:36:24,131][root][WARNING] - lbls=[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]; target_ages=[0.45183563 0.07846566 0.21610947 0.2014246  0.06136971 0.5210959
+ 0.51999986 0.49446565 0.12493134 0.33928758 0.28679448 0.49884948
+ 0.1620821  0.25117797 0.39879456 0.30093154 0.09139709 0.13194522
+ 0.04241104 0.27945194 0.28876725 0.40208206 0.30750674 0.28635615
+ 0.25194532 0.43715078 0.02410965 0.23178081 0.39178085 0.42794532
+ 0.38673973 0.07452049]
+Testing DataLoader 0:  60%|██████    | 156/260 [05:05<03:23,  0.51it/s][2026-04-17 01:36:25,881][root][WARNING] - Only censored events in batch. Evaluating metrics will be unstable.
+[2026-04-17 01:36:25,883][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+[2026-04-17 01:36:25,883][root][WARNING] - lbls=[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]; target_ages=[0.19331512 0.45194513 0.07473965 0.25326023 0.13073978 0.12098636
+ 0.31123275 0.04383564 0.27704105 0.24756165 0.3166027  0.38663006
+ 0.5398356  0.20021915 0.20668487 0.21972618 0.3077259  0.21863022
+ 0.06871223 0.35199985 0.3732601  0.39835605 0.41150683 0.19791774
+ 0.37358913 0.29961643 0.3090412  0.28175354 0.20865765 0.5141916
+ 0.35824662 0.05610962]
+Testing DataLoader 0:  60%|██████    | 157/260 [05:06<03:21,  0.51it/s][2026-04-17 01:36:27,695][root][WARNING] - Only censored events in batch. Evaluating metrics will be unstable.
+[2026-04-17 01:36:27,697][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+[2026-04-17 01:36:27,698][root][WARNING] - lbls=[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]; target_ages=[0.03309593 0.22641106 0.33369866 0.45786324 0.33775347 0.01830139
+ 0.09172611 0.28778076 0.01698628 0.3652603  0.09523277 0.13293152
+ 0.26060277 0.21567135 0.38487682 0.47298604 0.39221898 0.40953428
+ 0.17150688 0.28602734 0.21819171 0.25128785 0.27024668 0.10597267
+ 0.13139725 0.08394508 0.4364933  0.07364388 0.4730959  0.17315063
+ 0.38838348 0.30991784]
+[2026-04-17 01:36:27,700][root][WARNING] - Only censored events in batch. Evaluating metrics will be unstable.
+[2026-04-17 01:36:27,701][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+[2026-04-17 01:36:27,702][root][WARNING] - lbls=[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]; target_ages=[0.03309593 0.22641106 0.33369866 0.45786324 0.33775347 0.01830139
+ 0.09172611 0.28778076 0.01698628 0.3652603  0.09523277 0.13293152
+ 0.26060277 0.21567135 0.38487682 0.47298604 0.39221898 0.40953428
+ 0.17150688 0.28602734 0.21819171 0.25128785 0.27024668 0.10597267
+ 0.13139725 0.08394508 0.4364933  0.07364388 0.4730959  0.17315063
+ 0.38838348 0.30991784]
+[2026-04-17 01:36:27,703][root][WARNING] - Only censored events in batch. Evaluating metrics will be unstable.
+[2026-04-17 01:36:27,705][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+[2026-04-17 01:36:27,705][root][WARNING] - lbls=[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]; target_ages=[0.03309593 0.22641106 0.33369866 0.45786324 0.33775347 0.01830139
+ 0.09172611 0.28778076 0.01698628 0.3652603  0.09523277 0.13293152
+ 0.26060277 0.21567135 0.38487682 0.47298604 0.39221898 0.40953428
+ 0.17150688 0.28602734 0.21819171 0.25128785 0.27024668 0.10597267
+ 0.13139725 0.08394508 0.4364933  0.07364388 0.4730959  0.17315063
+ 0.38838348 0.30991784]
+Testing DataLoader 0:  61%|██████    | 158/260 [05:08<03:19,  0.51it/s][2026-04-17 01:36:29,550][root][WARNING] - Only censored events in batch. Evaluating metrics will be unstable.
+[2026-04-17 01:36:29,552][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+[2026-04-17 01:36:29,553][root][WARNING] - lbls=[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]; target_ages=[0.49665737 0.17402725 0.5292055  0.11199989 0.4141369  0.3311781
+ 0.03134251 0.5386303  0.23112316 0.21709594 0.3068493  0.18487683
+ 0.12252064 0.3166027  0.38586313 0.05326042 0.08920536 0.2805481
+ 0.18465748 0.53610957 0.3569315  0.32515067 0.4426302  0.259507
+ 0.4309042  0.33731517 0.28164387 0.18465748 0.08613701 0.20416431
+ 0.02706833 0.31682187]
+Testing DataLoader 0:  61%|██████    | 159/260 [05:10<03:17,  0.51it/s]Testing DataLoader 0:  62%|██████▏   | 160/260 [05:12<03:15,  0.51it/s][2026-04-17 01:36:33,316][root][WARNING] - Only censored events in batch. Evaluating metrics will be unstable.
+[2026-04-17 01:36:33,318][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+[2026-04-17 01:36:33,319][root][WARNING] - lbls=[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]; target_ages=[0.13161659 0.10169868 0.43210965 0.44471225 0.20569858 0.36054802
+ 0.3390686  0.15517807 0.5513426  0.49709588 0.16635609 0.09764385
+ 0.51693153 0.33698636 0.01304111 0.2799999  0.13621922 0.35035628
+ 0.06915073 0.43758887 0.21610966 0.18531513 0.19430122 0.35682184
+ 0.27221927 0.2866848  0.52284926 0.38619193 0.33468494 0.04416428
+ 0.40591794 0.3480547 ]
+Testing DataLoader 0:  62%|██████▏   | 161/260 [05:14<03:13,  0.51it/s][2026-04-17 01:36:35,170][root][WARNING] - Only censored events in batch. Evaluating metrics will be unstable.
+[2026-04-17 01:36:35,172][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+[2026-04-17 01:36:35,172][root][WARNING] - lbls=[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]; target_ages=[0.3143013  0.28920555 0.20076713 0.348493   0.3254795  0.13413696
+ 0.2487671  0.223452   0.32854787 0.21512337 0.4214796  0.00909595
+ 0.43210965 0.35035628 0.4787945  0.19276714 0.39780825 0.3738081
+ 0.14641094 0.02410965 0.19890404 0.45567113 0.44975358 0.31189042
+ 0.32547933 0.32580814 0.05610962 0.43967134 0.29073963 0.5379726
+ 0.34915066 0.37183553]
+Testing DataLoader 0:  62%|██████▏   | 162/260 [05:16<03:11,  0.51it/s][2026-04-17 01:36:37,048][root][WARNING] - Only censored events in batch. Evaluating metrics will be unstable.
+[2026-04-17 01:36:37,050][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+[2026-04-17 01:36:37,051][root][WARNING] - lbls=[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]; target_ages=[0.05117817 0.09380817 0.17764378 0.2595068  0.25052053 0.40383568
+ 0.39134255 0.03397255 0.38345203 0.17720547 0.0613699  0.3546303
+ 0.07726021 0.07934246 0.26684934 0.34213695 0.53008235 0.5261372
+ 0.06290416 0.22969857 0.2543562  0.2248766  0.35397243 0.14389038
+ 0.32427406 0.24942474 0.38991776 0.38399982 0.29260272 0.27134246
+ 0.40076715 0.3822464 ]
+Testing DataLoader 0:  63%|██████▎   | 163/260 [05:18<03:09,  0.51it/s][2026-04-17 01:36:38,910][root][WARNING] - Only censored events in batch. Evaluating metrics will be unstable.
+[2026-04-17 01:36:38,912][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+[2026-04-17 01:36:38,912][root][WARNING] - lbls=[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]; target_ages=[0.05731506 0.27189046 0.0346302  0.40098628 0.5284384  0.34115085
+ 0.5117809  0.4641096  0.23923282 0.41084918 0.5335892  0.46158925
+ 0.21906853 0.55517805 0.4174246  0.4005478  0.40153426 0.31824645
+ 0.14980812 0.49578094 0.33369845 0.22630139 0.08876705 0.2243288
+ 0.29041082 0.34728757 0.29983577 0.26016426 0.35386294 0.4234518
+ 0.26136988 0.28778076]
+Testing DataLoader 0:  63%|██████▎   | 164/260 [05:19<03:07,  0.51it/s][2026-04-17 01:36:40,675][root][WARNING] - Only censored events in batch. Evaluating metrics will be unstable.
+[2026-04-17 01:36:40,678][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+[2026-04-17 01:36:40,678][root][WARNING] - lbls=[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]; target_ages=[0.25457534 0.20460281 0.30334243 0.05753422 0.28635615 0.07046566
+ 0.447781   0.5103561  0.41852054 0.25490418 0.0801096  0.4656437
+ 0.10410957 0.32482204 0.19890404 0.10421906 0.40120563 0.5054247
+ 0.22936992 0.2768219  0.2276165  0.55517805 0.32208213 0.13413696
+ 0.39726028 0.13293152 0.40087682 0.37457523 0.11090412 0.41172582
+ 0.04482174 0.25775337]
+[2026-04-17 01:36:40,680][root][WARNING] - Only censored events in batch. Evaluating metrics will be unstable.
+[2026-04-17 01:36:40,682][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+[2026-04-17 01:36:40,682][root][WARNING] - lbls=[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]; target_ages=[0.25457534 0.20460281 0.30334243 0.05753422 0.28635615 0.07046566
+ 0.447781   0.5103561  0.41852054 0.25490418 0.0801096  0.4656437
+ 0.10410957 0.32482204 0.19890404 0.10421906 0.40120563 0.5054247
+ 0.22936992 0.2768219  0.2276165  0.55517805 0.32208213 0.13413696
+ 0.39726028 0.13293152 0.40087682 0.37457523 0.11090412 0.41172582
+ 0.04482174 0.25775337]
+[2026-04-17 01:36:40,683][root][WARNING] - Only censored events in batch. Evaluating metrics will be unstable.
+[2026-04-17 01:36:40,685][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+[2026-04-17 01:36:40,685][root][WARNING] - lbls=[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]; target_ages=[0.25457534 0.20460281 0.30334243 0.05753422 0.28635615 0.07046566
+ 0.447781   0.5103561  0.41852054 0.25490418 0.0801096  0.4656437
+ 0.10410957 0.32482204 0.19890404 0.10421906 0.40120563 0.5054247
+ 0.22936992 0.2768219  0.2276165  0.55517805 0.32208213 0.13413696
+ 0.39726028 0.13293152 0.40087682 0.37457523 0.11090412 0.41172582
+ 0.04482174 0.25775337]
+Testing DataLoader 0:  63%|██████▎   | 165/260 [05:21<03:05,  0.51it/s][2026-04-17 01:36:42,402][root][WARNING] - Only censored events in batch. Evaluating metrics will be unstable.
+[2026-04-17 01:36:42,404][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+[2026-04-17 01:36:42,405][root][WARNING] - lbls=[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]; target_ages=[0.21249314 0.02520561 0.22652054 0.28087673 0.44657555 0.07923298
+ 0.31726035 0.05599995 0.39079437 0.3639454  0.19638367 0.26663017
+ 0.05227394 0.2945753  0.3606575  0.41424674 0.2806576  0.0801096
+ 0.21271229 0.38947946 0.561096   0.08558903 0.50915086 0.07134247
+ 0.02454796 0.36142462 0.3915619  0.25358906 0.43265763 0.09983559
+ 0.2477808  0.35572606]
+Testing DataLoader 0:  64%|██████▍   | 166/260 [05:23<03:03,  0.51it/s][2026-04-17 01:36:44,209][root][WARNING] - Only censored events in batch. Evaluating metrics will be unstable.
+[2026-04-17 01:36:44,211][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+[2026-04-17 01:36:44,212][root][WARNING] - lbls=[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]; target_ages=[0.3025755  0.215452   0.28767127 0.35386315 0.5000547  0.07517795
+ 0.47123298 0.33435613 0.06465759 0.17271233 0.04810963 0.50947934
+ 0.4843834  0.2875616  0.5490414  0.25545216 0.3513426  0.0801094
+ 0.55057526 0.11934242 0.3499178  0.4127121  0.10027409 0.12021904
+ 0.13052063 0.49621925 0.3457535  0.28000012 0.14312324 0.3689863
+ 0.345644   0.53183556]
+Testing DataLoader 0:  64%|██████▍   | 167/260 [05:25<03:01,  0.51it/s]Testing DataLoader 0:  65%|██████▍   | 168/260 [05:27<02:59,  0.51it/s][2026-04-17 01:36:47,823][root][WARNING] - Only censored events in batch. Evaluating metrics will be unstable.
+[2026-04-17 01:36:47,825][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+[2026-04-17 01:36:47,825][root][WARNING] - lbls=[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]; target_ages=[0.29336986 0.44449311 0.22893143 0.23660278 0.44427413 0.2679453
+ 0.24832878 0.481534   0.5094795  0.35824662 0.13873959 0.30520535
+ 0.3044382  0.2872328  0.367671   0.02290401 0.297863   0.23605481
+ 0.3606575  0.35627404 0.46191806 0.3539726  0.4825205  0.26641083
+ 0.5625206  0.47638378 0.43736973 0.23386307 0.07517815 0.25216445
+ 0.41008204 0.39890423]
+Testing DataLoader 0:  65%|██████▌   | 169/260 [05:28<02:57,  0.51it/s][2026-04-17 01:36:49,826][root][WARNING] - Only censored events in batch. Evaluating metrics will be unstable.
+[2026-04-17 01:36:49,871][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+[2026-04-17 01:36:49,872][root][WARNING] - lbls=[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]; target_ages=[0.24668483 0.21457538 0.20547943 0.41545218 0.25216427 0.38991776
+ 0.5032328  0.05676708 0.05139732 0.16635609 0.37315065 0.36569864
+ 0.5347946  0.5553972  0.38005465 0.45917815 0.30947953 0.3160549
+ 0.11901379 0.31079444 0.13271236 0.30367127 0.3798357  0.35473976
+ 0.3998905  0.33884925 0.4140274  0.09863015 0.36898613 0.23408222
+ 0.31835613 0.5231779 ]
+Testing DataLoader 0:  65%|██████▌   | 170/260 [05:30<02:55,  0.51it/s][2026-04-17 01:36:51,760][root][WARNING] - Only censored events in batch. Evaluating metrics will be unstable.
+[2026-04-17 01:36:51,763][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+[2026-04-17 01:36:51,763][root][WARNING] - lbls=[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]; target_ages=[0.2689314  0.29468498 0.04339733 0.46728763 0.2524933  0.20964375
+ 0.16789055 0.44208223 0.50783575 0.05753422 0.31769866 0.48646584
+ 0.1522192  0.40854797 0.1086029  0.31178093 0.3316164  0.24832878
+ 0.2693699  0.3100273  0.16679458 0.3700823  0.3746849  0.14027405
+ 0.4486576  0.4768219  0.27090397 0.08624668 0.10378075 0.47134247
+ 0.43868485 0.19813709]
+Testing DataLoader 0:  66%|██████▌   | 171/260 [05:32<02:53,  0.51it/s]Testing DataLoader 0:  66%|██████▌   | 172/260 [05:34<02:51,  0.51it/s]Testing DataLoader 0:  67%|██████▋   | 173/260 [05:36<02:49,  0.51it/s][2026-04-17 01:36:57,444][root][WARNING] - Only censored events in batch. Evaluating metrics will be unstable.
+[2026-04-17 01:36:57,446][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+[2026-04-17 01:36:57,446][root][WARNING] - lbls=[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]; target_ages=[0.28208217 0.28778076 0.30564386 0.544767   0.34542465 0.25446588
+ 0.51978093 0.36098632 0.22367115 0.47616425 0.08449306 0.3982466
+ 0.3127672  0.3452055  0.2739725  0.12997246 0.09052067 0.37961656
+ 0.36920547 0.556822   0.4646574  0.30027407 0.11364384 0.2103014
+ 0.04164391 0.4318905  0.3915617  0.51671237 0.19276714 0.30465755
+ 0.482411   0.11583576]
+Testing DataLoader 0:  67%|██████▋   | 174/260 [05:38<02:47,  0.51it/s][2026-04-17 01:36:59,309][root][WARNING] - Only censored events in batch. Evaluating metrics will be unstable.
+[2026-04-17 01:36:59,311][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+[2026-04-17 01:36:59,311][root][WARNING] - lbls=[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]; target_ages=[0.38608208 0.05030136 0.31353435 0.10684929 0.42421913 0.36931515
+ 0.3658083  0.14345208 0.13994522 0.54915047 0.43463022 0.29994527
+ 0.41928786 0.35846576 0.23649311 0.37698632 0.37545222 0.32854804
+ 0.44997254 0.24032879 0.4032875  0.17249317 0.25315076 0.5317259
+ 0.38334236 0.05567112 0.31769866 0.45720538 0.05819168 0.5452057
+ 0.25063    0.4449316 ]
+Testing DataLoader 0:  67%|██████▋   | 175/260 [05:40<02:45,  0.51it/s][2026-04-17 01:37:01,260][root][WARNING] - Only censored events in batch. Evaluating metrics will be unstable.
+[2026-04-17 01:37:01,261][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+[2026-04-17 01:37:01,262][root][WARNING] - lbls=[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]; target_ages=[0.33249322 0.01610966 0.23945217 0.09764385 0.37008208 0.04767113
+ 0.57490385 0.3287672  0.24668483 0.41808224 0.08219185 0.5732603
+ 0.35156155 0.10816441 0.2650959  0.21621914 0.5574795  0.24460259
+ 0.06750679 0.09512329 0.45884934 0.3559452  0.4659725  0.12504101
+ 0.25446567 0.33928758 0.04690399 0.54202765 0.42378083 0.01523285
+ 0.27079448 0.21347943]
+Testing DataLoader 0:  68%|██████▊   | 176/260 [05:42<02:43,  0.51it/s]Testing DataLoader 0:  68%|██████▊   | 177/260 [05:44<02:41,  0.51it/s]Testing DataLoader 0:  68%|██████▊   | 178/260 [05:46<02:39,  0.51it/s][2026-04-17 01:37:06,990][root][WARNING] - Only censored events in batch. Evaluating metrics will be unstable.
+[2026-04-17 01:37:06,991][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+[2026-04-17 01:37:06,992][root][WARNING] - lbls=[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]; target_ages=[0.06728764 0.06027393 0.19605485 0.3368767  0.2735342  0.22323284
+ 0.05939712 0.30454788 0.2290411  0.39726028 0.48789042 0.05030136
+ 0.19967118 0.05906849 0.00317802 0.2646574  0.3082741  0.5545206
+ 0.03243828 0.35901374 0.2905205  0.32679445 0.3184658  0.37161636
+ 0.27101365 0.06147938 0.48789042 0.37873974 0.3653698  0.17665748
+ 0.21687679 0.32065755]
+Testing DataLoader 0:  69%|██████▉   | 179/260 [05:48<02:37,  0.51it/s]Testing DataLoader 0:  69%|██████▉   | 180/260 [05:49<02:35,  0.51it/s]Testing DataLoader 0:  70%|██████▉   | 181/260 [05:51<02:33,  0.51it/s]Testing DataLoader 0:  70%|███████   | 182/260 [05:53<02:31,  0.51it/s]Testing DataLoader 0:  70%|███████   | 183/260 [05:55<02:29,  0.51it/s]Testing DataLoader 0:  71%|███████   | 184/260 [05:57<02:27,  0.51it/s]Testing DataLoader 0:  71%|███████   | 185/260 [05:59<02:25,  0.51it/s][2026-04-17 01:37:20,418][root][WARNING] - Only censored events in batch. Evaluating metrics will be unstable.
+[2026-04-17 01:37:20,420][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+[2026-04-17 01:37:20,420][root][WARNING] - lbls=[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]; target_ages=[0.38312322 0.18191776 0.22542457 0.20646591 0.5582466  0.31298637
+ 0.31287688 0.03057537 0.25457534 0.2294794  0.22969857 0.43473968
+ 0.4103014  0.17369862 0.37873974 0.22608224 0.34783572 0.227178
+ 0.15430145 0.26706848 0.22630139 0.0856987  0.26619187 0.06301365
+ 0.5448767  0.39682198 0.06334247 0.2642191  0.31857547 0.03638344
+ 0.17961636 0.27090415]
+Testing DataLoader 0:  72%|███████▏  | 186/260 [06:01<02:23,  0.51it/s][2026-04-17 01:37:22,343][root][WARNING] - Only censored events in batch. Evaluating metrics will be unstable.
+[2026-04-17 01:37:22,346][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+[2026-04-17 01:37:22,346][root][WARNING] - lbls=[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]; target_ages=[0.31824645 0.3612055  0.25720558 0.12942466 0.33402747 0.03594513
+ 0.36646575 0.4196163  0.10136986 0.19583568 0.2880001  0.14432888
+ 0.24054794 0.37961635 0.19408207 0.5155069  0.33435613 0.2922739
+ 0.13260269 0.20909595 0.14772606 0.43802738 0.15189037 0.4759453
+ 0.40734234 0.46542454 0.513315   0.17545204 0.18301372 0.5896986
+ 0.10224666 0.27090415]
+Testing DataLoader 0:  72%|███████▏  | 187/260 [06:03<02:21,  0.51it/s]Testing DataLoader 0:  72%|███████▏  | 188/260 [06:05<02:19,  0.51it/s]Testing DataLoader 0:  73%|███████▎  | 189/260 [06:07<02:17,  0.51it/s]Testing DataLoader 0:  73%|███████▎  | 190/260 [06:09<02:15,  0.51it/s]Testing DataLoader 0:  73%|███████▎  | 191/260 [06:11<02:14,  0.51it/s]Testing DataLoader 0:  74%|███████▍  | 192/260 [06:12<02:12,  0.51it/s]Testing DataLoader 0:  74%|███████▍  | 193/260 [06:14<02:10,  0.51it/s]Testing DataLoader 0:  75%|███████▍  | 194/260 [06:16<02:08,  0.51it/s]Testing DataLoader 0:  75%|███████▌  | 195/260 [06:18<02:06,  0.52it/s]Testing DataLoader 0:  75%|███████▌  | 196/260 [06:20<02:04,  0.52it/s][2026-04-17 01:37:41,366][root][WARNING] - Only censored events in batch. Evaluating metrics will be unstable.
+[2026-04-17 01:37:41,369][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+[2026-04-17 01:37:41,369][root][WARNING] - lbls=[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]; target_ages=[0.19649315 0.53687686 0.24153423 0.06465759 0.5465206  0.40668488
+ 0.2880001  0.5457535  0.22410965 0.55145186 0.29797268 0.2810959
+ 0.37041092 0.33282202 0.13194522 0.17775345 0.3087124  0.2729864
+ 0.46673965 0.2562191  0.46312314 0.12197266 0.501589   0.1114521
+ 0.17621918 0.30147934 0.11561642 0.4103014  0.13545208 0.2595068
+ 0.29194507 0.55156153]
+Testing DataLoader 0:  76%|███████▌  | 197/260 [06:22<02:02,  0.52it/s]Testing DataLoader 0:  76%|███████▌  | 198/260 [06:24<02:00,  0.52it/s]Testing DataLoader 0:  77%|███████▋  | 199/260 [06:26<01:58,  0.52it/s]Testing DataLoader 0:  77%|███████▋  | 200/260 [06:28<01:56,  0.52it/s]Testing DataLoader 0:  77%|███████▋  | 201/260 [06:30<01:54,  0.52it/s]Testing DataLoader 0:  78%|███████▊  | 202/260 [06:32<01:52,  0.52it/s]Testing DataLoader 0:  78%|███████▊  | 203/260 [06:33<01:50,  0.52it/s][2026-04-17 01:37:54,763][root][WARNING] - Only censored events in batch. Evaluating metrics will be unstable.
+[2026-04-17 01:37:54,765][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+[2026-04-17 01:37:54,765][root][WARNING] - lbls=[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]; target_ages=[0.17556171 0.18454799 0.24098626 0.36021918 0.34224662 0.344767
+ 0.30202731 0.33106843 0.3404932  0.08208237 0.501808   0.03145218
+ 0.2547945  0.12986298 0.19747944 0.27890414 0.24613705 0.4295891
+ 0.39265728 0.17117806 0.10312328 0.40591773 0.22367135 0.20394516
+ 0.2762739  0.5007122  0.21665764 0.47605497 0.37347946 0.13424663
+ 0.40591773 0.23758908]
+Testing DataLoader 0:  78%|███████▊  | 204/260 [06:35<01:48,  0.52it/s]Testing DataLoader 0:  79%|███████▉  | 205/260 [06:37<01:46,  0.52it/s]Testing DataLoader 0:  79%|███████▉  | 206/260 [06:39<01:44,  0.52it/s]Testing DataLoader 0:  80%|███████▉  | 207/260 [06:41<01:42,  0.52it/s]Testing DataLoader 0:  80%|████████  | 208/260 [06:43<01:40,  0.52it/s]Testing DataLoader 0:  80%|████████  | 209/260 [06:45<01:38,  0.52it/s][2026-04-17 01:38:06,305][root][WARNING] - Only censored events in batch. Evaluating metrics will be unstable.
+[2026-04-17 01:38:06,307][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+[2026-04-17 01:38:06,308][root][WARNING] - lbls=[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]; target_ages=[0.19857521 0.47145215 0.12241097 0.3063013  0.2570959  0.05446567
+ 0.40493163 0.52350694 0.22991791 0.28427392 0.05117798 0.14805469
+ 0.31419164 0.35167122 0.16800003 0.37994537 0.22126026 0.38816452
+ 0.09501381 0.30060273 0.24438362 0.25786304 0.19802742 0.58005464
+ 0.27419186 0.16876698 0.17632885 0.25512332 0.27813703 0.10947933
+ 0.2717808  0.5232878 ]
+Testing DataLoader 0:  81%|████████  | 210/260 [06:47<01:36,  0.52it/s]Testing DataLoader 0:  81%|████████  | 211/260 [06:49<01:35,  0.52it/s]Testing DataLoader 0:  82%|████████▏ | 212/260 [06:51<01:33,  0.52it/s]Testing DataLoader 0:  82%|████████▏ | 213/260 [06:53<01:31,  0.52it/s][2026-04-17 01:38:13,830][root][WARNING] - Only censored events in batch. Evaluating metrics will be unstable.
+[2026-04-17 01:38:13,832][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+[2026-04-17 01:38:13,833][root][WARNING] - lbls=[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]; target_ages=[0.01150684 0.03265762 0.23572597 0.09643841 0.4272875  0.25873986
+ 0.46849307 0.07682209 0.43484935 0.23704109 0.35879478 0.34367123
+ 0.45293158 0.270356   0.5418081  0.35298634 0.40997258 0.43495864
+ 0.41610947 0.20789051 0.42772618 0.38421917 0.34969863 0.41972598
+ 0.21632881 0.15430145 0.08745213 0.24054794 0.30126038 0.08613701
+ 0.35627404 0.3353426 ]
+[2026-04-17 01:38:13,835][root][WARNING] - Only censored events in batch. Evaluating metrics will be unstable.
+[2026-04-17 01:38:13,836][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+[2026-04-17 01:38:13,836][root][WARNING] - lbls=[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]; target_ages=[0.01150684 0.03265762 0.23572597 0.09643841 0.4272875  0.25873986
+ 0.46849307 0.07682209 0.43484935 0.23704109 0.35879478 0.34367123
+ 0.45293158 0.270356   0.5418081  0.35298634 0.40997258 0.43495864
+ 0.41610947 0.20789051 0.42772618 0.38421917 0.34969863 0.41972598
+ 0.21632881 0.15430145 0.08745213 0.24054794 0.30126038 0.08613701
+ 0.35627404 0.3353426 ]
+[2026-04-17 01:38:13,838][root][WARNING] - Only censored events in batch. Evaluating metrics will be unstable.
+[2026-04-17 01:38:13,839][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+[2026-04-17 01:38:13,840][root][WARNING] - lbls=[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]; target_ages=[0.01150684 0.03265762 0.23572597 0.09643841 0.4272875  0.25873986
+ 0.46849307 0.07682209 0.43484935 0.23704109 0.35879478 0.34367123
+ 0.45293158 0.270356   0.5418081  0.35298634 0.40997258 0.43495864
+ 0.41610947 0.20789051 0.42772618 0.38421917 0.34969863 0.41972598
+ 0.21632881 0.15430145 0.08745213 0.24054794 0.30126038 0.08613701
+ 0.35627404 0.3353426 ]
+Testing DataLoader 0:  82%|████████▏ | 214/260 [06:54<01:29,  0.52it/s]Testing DataLoader 0:  83%|████████▎ | 215/260 [06:56<01:27,  0.52it/s]Testing DataLoader 0:  83%|████████▎ | 216/260 [06:58<01:25,  0.52it/s]Testing DataLoader 0:  83%|████████▎ | 217/260 [07:00<01:23,  0.52it/s]Testing DataLoader 0:  84%|████████▍ | 218/260 [07:02<01:21,  0.52it/s]Testing DataLoader 0:  84%|████████▍ | 219/260 [07:04<01:19,  0.52it/s]Testing DataLoader 0:  85%|████████▍ | 220/260 [07:06<01:17,  0.52it/s]Testing DataLoader 0:  85%|████████▌ | 221/260 [07:08<01:15,  0.52it/s]Testing DataLoader 0:  85%|████████▌ | 222/260 [07:10<01:13,  0.52it/s]Testing DataLoader 0:  86%|████████▌ | 223/260 [07:11<01:11,  0.52it/s]Testing DataLoader 0:  86%|████████▌ | 224/260 [07:13<01:09,  0.52it/s][2026-04-17 01:38:34,630][root][WARNING] - Only censored events in batch. Evaluating metrics will be unstable.
+[2026-04-17 01:38:34,632][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+[2026-04-17 01:38:34,632][root][WARNING] - lbls=[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]; target_ages=[0.16000004 0.31364384 0.48076707 0.22553425 0.3539726  0.24383564
+ 0.09216442 0.36372605 0.345644   0.267507   0.19364376 0.31693155
+ 0.1494793  0.11331501 0.31901377 0.30509585 0.23473969 0.20405483
+ 0.21205464 0.46958905 0.2987396  0.2018629  0.18290424 0.24054794
+ 0.11002751 0.5106848  0.459507   0.16427402 0.25742453 0.40668488
+ 0.42498627 0.16175327]
+Testing DataLoader 0:  87%|████████▋ | 225/260 [07:15<01:07,  0.52it/s][2026-04-17 01:38:36,523][root][WARNING] - Only censored events in batch. Evaluating metrics will be unstable.
+[2026-04-17 01:38:36,526][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+[2026-04-17 01:38:36,526][root][WARNING] - lbls=[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]; target_ages=[0.1367672  0.20131512 0.36328775 0.5606575  0.08843841 0.2623562
+ 0.47254792 0.250959   0.4660824  0.29621905 0.42652074 0.30695876
+ 0.32197267 0.47473985 0.09775333 0.31627387 0.39605483 0.11024666
+ 0.17775345 0.07254791 0.17216435 0.10750675 0.4206028  0.08076706
+ 0.04186306 0.4726576  0.40482178 0.376548   0.24591789 0.10619183
+ 0.45172614 0.42827398]
+[2026-04-17 01:38:36,528][root][WARNING] - Only censored events in batch. Evaluating metrics will be unstable.
+[2026-04-17 01:38:36,530][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+[2026-04-17 01:38:36,530][root][WARNING] - lbls=[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]; target_ages=[0.1367672  0.20131512 0.36328775 0.5606575  0.08843841 0.2623562
+ 0.47254792 0.250959   0.4660824  0.29621905 0.42652074 0.30695876
+ 0.32197267 0.47473985 0.09775333 0.31627387 0.39605483 0.11024666
+ 0.17775345 0.07254791 0.17216435 0.10750675 0.4206028  0.08076706
+ 0.04186306 0.4726576  0.40482178 0.376548   0.24591789 0.10619183
+ 0.45172614 0.42827398]
+[2026-04-17 01:38:36,531][root][WARNING] - Only censored events in batch. Evaluating metrics will be unstable.
+[2026-04-17 01:38:36,533][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+[2026-04-17 01:38:36,533][root][WARNING] - lbls=[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]; target_ages=[0.1367672  0.20131512 0.36328775 0.5606575  0.08843841 0.2623562
+ 0.47254792 0.250959   0.4660824  0.29621905 0.42652074 0.30695876
+ 0.32197267 0.47473985 0.09775333 0.31627387 0.39605483 0.11024666
+ 0.17775345 0.07254791 0.17216435 0.10750675 0.4206028  0.08076706
+ 0.04186306 0.4726576  0.40482178 0.376548   0.24591789 0.10619183
+ 0.45172614 0.42827398]
+Testing DataLoader 0:  87%|████████▋ | 226/260 [07:17<01:05,  0.52it/s]Testing DataLoader 0:  87%|████████▋ | 227/260 [07:19<01:03,  0.52it/s][2026-04-17 01:38:40,168][root][WARNING] - Only censored events in batch. Evaluating metrics will be unstable.
+[2026-04-17 01:38:40,170][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+[2026-04-17 01:38:40,170][root][WARNING] - lbls=[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]; target_ages=[0.19517823 0.23715076 0.09041099 0.37906855 0.10410957 0.51912326
+ 0.22334251 0.06772594 0.25830135 0.42542475 0.17358895 0.23221913
+ 0.32021904 0.26772612 0.16273975 0.29194507 0.2530411  0.40821916
+ 0.18290405 0.3938631  0.41227418 0.25260276 0.20230141 0.39178067
+ 0.2969862  0.3087124  0.16997261 0.10005474 0.2673973  0.5406025
+ 0.28372613 0.02980804]
+Testing DataLoader 0:  88%|████████▊ | 228/260 [07:21<01:01,  0.52it/s]Testing DataLoader 0:  88%|████████▊ | 229/260 [07:23<00:59,  0.52it/s]Testing DataLoader 0:  88%|████████▊ | 230/260 [07:24<00:58,  0.52it/s]Testing DataLoader 0:  89%|████████▉ | 231/260 [07:26<00:56,  0.52it/s][2026-04-17 01:38:47,516][root][WARNING] - Only censored events in batch. Evaluating metrics will be unstable.
+[2026-04-17 01:38:47,518][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+[2026-04-17 01:38:47,519][root][WARNING] - lbls=[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]; target_ages=[0.3507944  0.05884933 0.31758898 0.09019184 0.41939718 0.44854814
+ 0.2888767  0.23397255 0.31221923 0.17863007 0.1822466  0.24898624
+ 0.11934242 0.43079472 0.42279452 0.39046592 0.14860268 0.37413692
+ 0.1770958  0.27002734 0.36756173 0.14345208 0.29545194 0.15057544
+ 0.07802735 0.08076725 0.08241101 0.54268515 0.07452068 0.28767127
+ 0.18016453 0.29490414]
+Testing DataLoader 0:  89%|████████▉ | 232/260 [07:28<00:54,  0.52it/s][2026-04-17 01:38:49,342][root][WARNING] - Only censored events in batch. Evaluating metrics will be unstable.
+[2026-04-17 01:38:49,351][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+[2026-04-17 01:38:49,351][root][WARNING] - lbls=[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]; target_ages=[0.17512341 0.15846577 0.3625206  0.13501358 0.27265757 0.51232874
+ 0.32065755 0.15517807 0.04679451 0.27484933 0.37545204 0.07846566
+ 0.0871233  0.06860276 0.50860274 0.2679453  0.14268494 0.21863022
+ 0.09961643 0.37161636 0.55704117 0.29238358 0.29676723 0.19101372
+ 0.15726033 0.35901356 0.29621926 0.23342457 0.48635617 0.53271216
+ 0.2440548  0.24799995]
+[2026-04-17 01:38:49,353][root][WARNING] - Only censored events in batch. Evaluating metrics will be unstable.
+[2026-04-17 01:38:49,355][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+[2026-04-17 01:38:49,355][root][WARNING] - lbls=[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]; target_ages=[0.17512341 0.15846577 0.3625206  0.13501358 0.27265757 0.51232874
+ 0.32065755 0.15517807 0.04679451 0.27484933 0.37545204 0.07846566
+ 0.0871233  0.06860276 0.50860274 0.2679453  0.14268494 0.21863022
+ 0.09961643 0.37161636 0.55704117 0.29238358 0.29676723 0.19101372
+ 0.15726033 0.35901356 0.29621926 0.23342457 0.48635617 0.53271216
+ 0.2440548  0.24799995]
+[2026-04-17 01:38:49,356][root][WARNING] - Only censored events in batch. Evaluating metrics will be unstable.
+[2026-04-17 01:38:49,358][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+[2026-04-17 01:38:49,358][root][WARNING] - lbls=[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]; target_ages=[0.17512341 0.15846577 0.3625206  0.13501358 0.27265757 0.51232874
+ 0.32065755 0.15517807 0.04679451 0.27484933 0.37545204 0.07846566
+ 0.0871233  0.06860276 0.50860274 0.2679453  0.14268494 0.21863022
+ 0.09961643 0.37161636 0.55704117 0.29238358 0.29676723 0.19101372
+ 0.15726033 0.35901356 0.29621926 0.23342457 0.48635617 0.53271216
+ 0.2440548  0.24799995]
+Testing DataLoader 0:  90%|████████▉ | 233/260 [07:30<00:52,  0.52it/s][2026-04-17 01:38:51,093][root][WARNING] - Only censored events in batch. Evaluating metrics will be unstable.
+[2026-04-17 01:38:51,094][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+[2026-04-17 01:38:51,095][root][WARNING] - lbls=[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]; target_ages=[0.28164387 0.1087122  0.3831234  0.15715066 0.3517809  0.4398903
+ 0.32449302 0.43495902 0.03495903 0.470356   0.3063015  0.25402737
+ 0.26104107 0.23857518 0.19649315 0.35572585 0.24854794 0.34597263
+ 0.07484932 0.07649307 0.26772612 0.5583561  0.3835617  0.2753973
+ 0.12000008 0.55671215 0.2688219  0.10049305 0.08909588 0.43550664
+ 0.38465747 0.2814247 ]
+Testing DataLoader 0:  90%|█████████ | 234/260 [07:32<00:50,  0.52it/s]Testing DataLoader 0:  90%|█████████ | 235/260 [07:33<00:48,  0.52it/s][2026-04-17 01:38:54,702][root][WARNING] - Only censored events in batch. Evaluating metrics will be unstable.
+[2026-04-17 01:38:54,704][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+[2026-04-17 01:38:54,704][root][WARNING] - lbls=[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]; target_ages=[0.21347943 0.21249314 0.03704109 0.2051508  0.4975342  0.19923306
+ 0.22509594 0.25369853 0.30432874 0.41008204 0.2384657  0.38663006
+ 0.23430137 0.0243288  0.23956165 0.43101367 0.27747935 0.33545208
+ 0.11123276 0.0936987  0.26158905 0.17227402 0.20306854 0.22334251
+ 0.36986312 0.30520535 0.5589043  0.27693138 0.04767132 0.40854797
+ 0.09709587 0.43736973]
+Testing DataLoader 0:  91%|█████████ | 236/260 [07:35<00:46,  0.52it/s][2026-04-17 01:38:56,584][root][WARNING] - Only censored events in batch. Evaluating metrics will be unstable.
+[2026-04-17 01:38:56,585][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+[2026-04-17 01:38:56,586][root][WARNING] - lbls=[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]; target_ages=[0.06794529 0.21260281 0.2806576  0.5460823  0.32273978 0.04854793
+ 0.22717819 0.31682187 0.21665744 0.25041103 0.41139737 0.4323288
+ 0.4234518  0.53424644 0.23452052 0.29534245 0.2997261  0.17161636
+ 0.30421925 0.29632893 0.07572613 0.4041643  0.29665738 0.3114521
+ 0.1400549  0.31561643 0.52219164 0.2557808  0.3293152  0.16920567
+ 0.08076725 0.5446577 ]
+Testing DataLoader 0:  91%|█████████ | 237/260 [07:37<00:44,  0.52it/s]Testing DataLoader 0:  92%|█████████▏| 238/260 [07:39<00:42,  0.52it/s][2026-04-17 01:39:00,102][root][WARNING] - Only censored events in batch. Evaluating metrics will be unstable.
+[2026-04-17 01:39:00,104][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+[2026-04-17 01:39:00,104][root][WARNING] - lbls=[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]; target_ages=[0.5560547  0.10838356 0.2645479  0.26969853 0.28306848 0.04339733
+ 0.15024662 0.5110136  0.15747948 0.34904116 0.34312326 0.05753422
+ 0.42926025 0.30619183 0.24120541 0.27199993 0.37983552 0.2964384
+ 0.34235612 0.40065765 0.38662988 0.22487679 0.23583564 0.27616423
+ 0.4350687  0.36756173 0.20405483 0.06926022 0.11791782 0.18400002
+ 0.51605475 0.23671246]
+Testing DataLoader 0:  92%|█████████▏| 239/260 [07:41<00:40,  0.52it/s][2026-04-17 01:39:01,963][root][WARNING] - Only censored events in batch. Evaluating metrics will be unstable.
+[2026-04-17 01:39:01,966][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+[2026-04-17 01:39:01,967][root][WARNING] - lbls=[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]; target_ages=[0.35441113 0.35254782 0.43178082 0.42947942 0.17106839 0.24328785
+ 0.18608227 0.27660275 0.07956161 0.19989052 0.2346302  0.47890434
+ 0.41654795 0.4056986  0.50389063 0.09917812 0.35495892 0.23758908
+ 0.10498619 0.19791774 0.08909607 0.25084934 0.35912323 0.29249325
+ 0.07232876 0.0580822  0.44383544 0.52526015 0.29106846 0.23506851
+ 0.12065754 0.07013702]
+[2026-04-17 01:39:01,969][root][WARNING] - Only censored events in batch. Evaluating metrics will be unstable.
+[2026-04-17 01:39:01,970][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+[2026-04-17 01:39:01,971][root][WARNING] - lbls=[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]; target_ages=[0.35441113 0.35254782 0.43178082 0.42947942 0.17106839 0.24328785
+ 0.18608227 0.27660275 0.07956161 0.19989052 0.2346302  0.47890434
+ 0.41654795 0.4056986  0.50389063 0.09917812 0.35495892 0.23758908
+ 0.10498619 0.19791774 0.08909607 0.25084934 0.35912323 0.29249325
+ 0.07232876 0.0580822  0.44383544 0.52526015 0.29106846 0.23506851
+ 0.12065754 0.07013702]
+[2026-04-17 01:39:01,972][root][WARNING] - Only censored events in batch. Evaluating metrics will be unstable.
+[2026-04-17 01:39:01,974][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+[2026-04-17 01:39:01,974][root][WARNING] - lbls=[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]; target_ages=[0.35441113 0.35254782 0.43178082 0.42947942 0.17106839 0.24328785
+ 0.18608227 0.27660275 0.07956161 0.19989052 0.2346302  0.47890434
+ 0.41654795 0.4056986  0.50389063 0.09917812 0.35495892 0.23758908
+ 0.10498619 0.19791774 0.08909607 0.25084934 0.35912323 0.29249325
+ 0.07232876 0.0580822  0.44383544 0.52526015 0.29106846 0.23506851
+ 0.12065754 0.07013702]
+Testing DataLoader 0:  92%|█████████▏| 240/260 [07:43<00:38,  0.52it/s]Testing DataLoader 0:  93%|█████████▎| 241/260 [07:44<00:36,  0.52it/s][2026-04-17 01:39:05,782][root][WARNING] - Only censored events in batch. Evaluating metrics will be unstable.
+[2026-04-17 01:39:05,784][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+[2026-04-17 01:39:05,784][root][WARNING] - lbls=[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]; target_ages=[0.30904102 0.2646576  0.4842741  0.30860272 0.07605495 0.24021931
+ 0.30564386 0.42739716 0.5694246  0.09621906 0.3007124  0.3832329
+ 0.06202736 0.2        0.30739728 0.30838355 0.32887667 0.21983567
+ 0.23430137 0.2716713  0.34323293 0.4978632  0.10794525 0.12416439
+ 0.31210956 0.20317802 0.22827396 0.16646576 0.27090415 0.04931507
+ 0.37928754 0.20942478]
+Testing DataLoader 0:  93%|█████████▎| 242/260 [07:46<00:34,  0.52it/s][2026-04-17 01:39:07,636][root][WARNING] - Only censored events in batch. Evaluating metrics will be unstable.
+[2026-04-17 01:39:07,638][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+[2026-04-17 01:39:07,638][root][WARNING] - lbls=[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]; target_ages=[0.06027393 0.10169868 0.09578095 0.4328766  0.47298622 0.48438358
+ 0.32350674 0.33468515 0.20317802 0.2932602  0.13380814 0.14816436
+ 0.23441105 0.3352329  0.15134259 0.37391776 0.39473972 0.08920555
+ 0.16690426 0.1270136  0.3433422  0.15134259 0.22235623 0.3555069
+ 0.32865754 0.31671238 0.18136998 0.11671238 0.5072878  0.23561649
+ 0.384548   0.5398356 ]
+Testing DataLoader 0:  93%|█████████▎| 243/260 [07:48<00:32,  0.52it/s][2026-04-17 01:39:09,471][root][WARNING] - Only censored events in batch. Evaluating metrics will be unstable.
+[2026-04-17 01:39:09,473][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+[2026-04-17 01:39:09,473][root][WARNING] - lbls=[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]; target_ages=[0.33183557 0.50750697 0.4622465  0.37490425 0.31397265 0.22915077
+ 0.45556164 0.2084383  0.3221918  0.44482213 0.43342456 0.07353421
+ 0.09501362 0.38893145 0.09490414 0.21435623 0.4683836  0.28701383
+ 0.46871242 0.4369316  0.27101383 0.37808228 0.3120001  0.32427388
+ 0.3579178  0.35331517 0.21041088 0.2393425  0.02926025 0.40580827
+ 0.3391781  0.45830137]
+Testing DataLoader 0:  94%|█████████▍| 244/260 [07:50<00:30,  0.52it/s]Testing DataLoader 0:  94%|█████████▍| 245/260 [07:52<00:28,  0.52it/s][2026-04-17 01:39:13,081][root][WARNING] - Only censored events in batch. Evaluating metrics will be unstable.
+[2026-04-17 01:39:13,083][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+[2026-04-17 01:39:13,083][root][WARNING] - lbls=[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]; target_ages=[0.20076713 0.3438902  0.2965479  0.4534796  0.26432878 0.3549587
+ 0.38378087 0.27923298 0.4791235  0.21063022 0.5321642  0.35232887
+ 0.50695914 0.34684926 0.26575357 0.19978085 0.3563837  0.4626848
+ 0.32438374 0.07583561 0.24394512 0.5146303  0.32712325 0.47660273
+ 0.31736985 0.38619176 0.15802746 0.09391785 0.30641097 0.08668499
+ 0.12668495 0.5553972 ]
+Testing DataLoader 0:  95%|█████████▍| 246/260 [07:54<00:26,  0.52it/s]Testing DataLoader 0:  95%|█████████▌| 247/260 [07:56<00:25,  0.52it/s][2026-04-17 01:39:16,943][root][WARNING] - Only censored events in batch. Evaluating metrics will be unstable.
+[2026-04-17 01:39:16,945][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+[2026-04-17 01:39:16,945][root][WARNING] - lbls=[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]; target_ages=[0.20306854 0.35813695 0.09775352 0.16832885 0.03254795 0.02827396
+ 0.07726021 0.16887665 0.12745209 0.44098625 0.3110138  0.3127672
+ 0.36427402 0.0510685  0.13884945 0.27704126 0.286137   0.05578079
+ 0.43967113 0.05490417 0.35726032 0.1868494  0.33468494 0.31495896
+ 0.3396166  0.30224648 0.5012604  0.04646587 0.31178075 0.2763834
+ 0.2590685  0.27638358]
+Testing DataLoader 0:  95%|█████████▌| 248/260 [07:58<00:23,  0.52it/s][2026-04-17 01:39:18,888][root][WARNING] - Only censored events in batch. Evaluating metrics will be unstable.
+[2026-04-17 01:39:18,890][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+[2026-04-17 01:39:18,891][root][WARNING] - lbls=[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]; target_ages=[0.5413696  0.45830154 0.31539726 0.172822   0.21676712 0.29852048
+ 0.46673965 0.5203287  0.4158905  0.294137   0.19024658 0.38619193
+ 0.2646574  0.42465743 0.3221918  0.34323272 0.22421932 0.07145214
+ 0.41567135 0.1868494  0.4678356  0.19682178 0.2374794  0.4759453
+ 0.0613699  0.19232884 0.5083836  0.08087673 0.43999997 0.29665756
+ 0.46421927 0.34498614]
+Testing DataLoader 0:  96%|█████████▌| 249/260 [07:59<00:21,  0.52it/s]Testing DataLoader 0:  96%|█████████▌| 250/260 [08:01<00:19,  0.52it/s][2026-04-17 01:39:22,692][root][WARNING] - Only censored events in batch. Evaluating metrics will be unstable.
+[2026-04-17 01:39:22,694][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+[2026-04-17 01:39:22,694][root][WARNING] - lbls=[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]; target_ages=[0.22235623 0.2416439  0.2229042  0.29205474 0.4421919  0.25654793
+ 0.0309042  0.10323276 0.23813705 0.29030132 0.5180273  0.27638358
+ 0.43265763 0.45873967 0.33293152 0.18838349 0.4252054  0.2570959
+ 0.19956169 0.00821934 0.09961643 0.2871233  0.17983551 0.2477808
+ 0.0492054  0.3971506  0.04263001 0.5077259  0.37358895 0.21786308
+ 0.5559454  0.47386304]
+Testing DataLoader 0:  97%|█████████▋| 251/260 [08:03<00:17,  0.52it/s][2026-04-17 01:39:24,548][root][WARNING] - Only censored events in batch. Evaluating metrics will be unstable.
+[2026-04-17 01:39:24,551][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+[2026-04-17 01:39:24,551][root][WARNING] - lbls=[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]; target_ages=[0.28328782 0.08208217 0.43463    0.2885479  0.04284935 0.21315059
+ 0.18794517 0.40613708 0.17161636 0.45358926 0.5450958  0.39945203
+ 0.40010947 0.3307398  0.37468472 0.36712322 0.1269041  0.4204933
+ 0.3612055  0.14038353 0.25556165 0.4440546  0.05161648 0.20361634
+ 0.49687672 0.1143013  0.4280548  0.22312336 0.14268494 0.2590685
+ 0.3180275  0.2955616 ]
+[2026-04-17 01:39:24,553][root][WARNING] - Only censored events in batch. Evaluating metrics will be unstable.
+[2026-04-17 01:39:24,554][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+[2026-04-17 01:39:24,555][root][WARNING] - lbls=[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]; target_ages=[0.28328782 0.08208217 0.43463    0.2885479  0.04284935 0.21315059
+ 0.18794517 0.40613708 0.17161636 0.45358926 0.5450958  0.39945203
+ 0.40010947 0.3307398  0.37468472 0.36712322 0.1269041  0.4204933
+ 0.3612055  0.14038353 0.25556165 0.4440546  0.05161648 0.20361634
+ 0.49687672 0.1143013  0.4280548  0.22312336 0.14268494 0.2590685
+ 0.3180275  0.2955616 ]
+[2026-04-17 01:39:24,556][root][WARNING] - Only censored events in batch. Evaluating metrics will be unstable.
+[2026-04-17 01:39:24,558][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+[2026-04-17 01:39:24,558][root][WARNING] - lbls=[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]; target_ages=[0.28328782 0.08208217 0.43463    0.2885479  0.04284935 0.21315059
+ 0.18794517 0.40613708 0.17161636 0.45358926 0.5450958  0.39945203
+ 0.40010947 0.3307398  0.37468472 0.36712322 0.1269041  0.4204933
+ 0.3612055  0.14038353 0.25556165 0.4440546  0.05161648 0.20361634
+ 0.49687672 0.1143013  0.4280548  0.22312336 0.14268494 0.2590685
+ 0.3180275  0.2955616 ]
+Testing DataLoader 0:  97%|█████████▋| 252/260 [08:05<00:15,  0.52it/s][2026-04-17 01:39:26,542][root][WARNING] - Only censored events in batch. Evaluating metrics will be unstable.
+[2026-04-17 01:39:26,544][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+[2026-04-17 01:39:26,545][root][WARNING] - lbls=[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]; target_ages=[0.45183563 0.14169864 0.30049324 0.32098636 0.4023014  0.06630135
+ 0.258959   0.28920555 0.07945213 0.09621926 0.09041099 0.06947956
+ 0.15123272 0.3204382  0.38586292 0.17567119 0.07463016 0.30235615
+ 0.32997265 0.07035618 0.32810974 0.28964385 0.16679458 0.08394508
+ 0.06849308 0.30367127 0.05271225 0.30849323 0.25030136 0.5043287
+ 0.12263012 0.36997262]
+Testing DataLoader 0:  97%|█████████▋| 253/260 [08:07<00:13,  0.52it/s][2026-04-17 01:39:28,403][root][WARNING] - Only censored events in batch. Evaluating metrics will be unstable.
+[2026-04-17 01:39:28,405][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+[2026-04-17 01:39:28,405][root][WARNING] - lbls=[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]; target_ages=[0.38389015 0.5304111  0.13512325 0.39079437 0.30520552 0.19134255
+ 0.27024668 0.27375355 0.2603836  0.3011507  0.26115075 0.23978081
+ 0.52394503 0.20460263 0.29446584 0.36361656 0.25205478 0.27057552
+ 0.4562193  0.4084383  0.07506847 0.192      0.37589034 0.37764397
+ 0.15813693 0.09106846 0.37315065 0.41654778 0.06684933 0.18772602
+ 0.3409315  0.2806576 ]
+Testing DataLoader 0:  98%|█████████▊| 254/260 [08:09<00:11,  0.52it/s][2026-04-17 01:39:30,326][root][WARNING] - Only censored events in batch. Evaluating metrics will be unstable.
+[2026-04-17 01:39:30,338][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+[2026-04-17 01:39:30,338][root][WARNING] - lbls=[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]; target_ages=[0.22049312 0.3320547  0.36021918 0.14827386 0.14367123 0.37687665
+ 0.2918356  0.46542454 0.2942465  0.27989024 0.42027378 0.23517819
+ 0.21808223 0.23736992 0.34279442 0.28493157 0.17873974 0.08799992
+ 0.2810959  0.26147938 0.27758902 0.26926023 0.2632328  0.06180821
+ 0.20767136 0.2696987  0.11671219 0.51737005 0.56032884 0.36931515
+ 0.51978076 0.08821926]
+Testing DataLoader 0:  98%|█████████▊| 255/260 [08:11<00:09,  0.52it/s][2026-04-17 01:39:32,222][root][WARNING] - Only censored events in batch. Evaluating metrics will be unstable.
+[2026-04-17 01:39:32,224][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+[2026-04-17 01:39:32,224][root][WARNING] - lbls=[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]; target_ages=[0.34312326 0.06005478 0.26400012 0.05271244 0.3137533  0.4886574
+ 0.50246584 0.3035616  0.07090416 0.34860286 0.5560549  0.1985754
+ 0.21150684 0.4173153  0.24931507 0.22082195 0.04273968 0.4936989
+ 0.43627396 0.3278904  0.30432892 0.07835617 0.34904116 0.07824669
+ 0.12635612 0.36657524 0.1635069  0.27189046 0.5540821  0.03999996
+ 0.30980834 0.28942472]
+Testing DataLoader 0:  98%|█████████▊| 256/260 [08:13<00:07,  0.52it/s][2026-04-17 01:39:34,105][root][WARNING] - Only censored events in batch. Evaluating metrics will be unstable.
+[2026-04-17 01:39:34,107][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+[2026-04-17 01:39:34,108][root][WARNING] - lbls=[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]; target_ages=[0.23978081 0.05939732 0.26476708 0.08613701 0.05446587 0.29479447
+ 0.53928757 0.2722191  0.2721096  0.12164383 0.2660822  0.12515087
+ 0.10038356 0.49939728 0.31726035 0.43298626 0.2791233  0.08515072
+ 0.21019173 0.04416447 0.25939733 0.19868508 0.35254803 0.16975327
+ 0.43320522 0.2688219  0.43156165 0.34454805 0.19989052 0.27232876
+ 0.4556713  0.08120556]
+Testing DataLoader 0:  99%|█████████▉| 257/260 [08:15<00:05,  0.52it/s][2026-04-17 01:39:35,928][root][WARNING] - Only censored events in batch. Evaluating metrics will be unstable.
+[2026-04-17 01:39:35,931][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+[2026-04-17 01:39:35,931][root][WARNING] - lbls=[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]; target_ages=[0.26312333 0.2753973  0.31638354 0.16964379 0.46454793 0.14410953
+ 0.44504127 0.12745209 0.44997254 0.37819177 0.2847124  0.4327669
+ 0.3283287  0.22093162 0.34761637 0.18871231 0.39353448 0.41654778
+ 0.24394512 0.41205484 0.40832883 0.06432877 0.34169847 0.30498618
+ 0.13194522 0.2028492  0.07265759 0.2500822  0.32120553 0.5252603
+ 0.2998356  0.40175343]
+Testing DataLoader 0:  99%|█████████▉| 258/260 [08:16<00:03,  0.52it/s]Testing DataLoader 0: 100%|█████████▉| 259/260 [08:18<00:01,  0.52it/s][2026-04-17 01:39:38,002][root][WARNING] - Only censored events in batch. Evaluating metrics will be unstable.
+[2026-04-17 01:39:38,004][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+[2026-04-17 01:39:38,004][root][WARNING] - lbls=[0 0 0 0]; target_ages=[0.09819183 0.41720563 0.47473985 0.29391783]
+[2026-04-17 01:39:38,006][root][WARNING] - Only censored events in batch. Evaluating metrics will be unstable.
+[2026-04-17 01:39:38,007][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+[2026-04-17 01:39:38,007][root][WARNING] - lbls=[0 0 0 0]; target_ages=[0.09819183 0.41720563 0.47473985 0.29391783]
+[2026-04-17 01:39:38,008][root][WARNING] - Only censored events in batch. Evaluating metrics will be unstable.
+[2026-04-17 01:39:38,010][root][WARNING] - Unable to calculate metrics; this batch will be skipped (bias risk). Exception: ZeroDivisionError: float division by zero
+[2026-04-17 01:39:38,010][root][WARNING] - lbls=[0 0 0 0]; target_ages=[0.09819183 0.41720563 0.47473985 0.29391783]
+Testing DataLoader 0: 100%|██████████| 260/260 [08:19<00:00,  0.52it/s]Testing DataLoader 0: 100%|██████████| 260/260 [08:19<00:00,  0.52it/s]
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+                   Test metric                                     DataLoader 0
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+ Test:OutcomePerformanceMetrics_risk0_31codesctd                0.6835206151008606
+ Test:OutcomePerformanceMetrics_risk0_31codesibs                0.2631420365873335
+Test:OutcomePerformanceMetrics_risk0_31codesinbll               0.7395337307726656
+ Test:OutcomePerformanceMetrics_risk1_1codesctd                 0.9011642932891846
+ Test:OutcomePerformanceMetrics_risk1_1codesibs                  0.125932586924272
+Test:OutcomePerformanceMetrics_risk1_1codesinbll                0.38827281871414376
+        Test:OutcomePerformanceMetricsctd                       0.7896314263343811
+        Test:OutcomePerformanceMetricsibs                       0.14136666562333863
+       Test:OutcomePerformanceMetricsinbll                      0.42815321761008435
+                    test_loss                                   0.16291210055351257
+                test_loss_desurv                                0.16291210055351257
+                test_loss_values                                        0.0
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+[1;34mwandb[0m: 
+[1;34mwandb[0m: 🚀 View run [33mcrPreTrain_small_1337_FineTune_Dementia_CR_hes_fusion[0m at: [34mhttps://wandb.ai/swangek2002-hong-kong-university-of-science-and-technology/SurvivEHR/runs/y86t4p0z[0m
+[1;34mwandb[0m: Find logs at: [1;35m../../../output/wandb/run-20260417_013114-y86t4p0z/logs[0m

@@ -727,6 +727,12 @@ class FoundationalDataset(Dataset):
         yob_standardised = (year - yob_lower) / (yob_upper - yob_lower)
         covariates.append(np.asarray(yob_standardised).reshape((1, -1)))
 
+        # Append extra continuous features from HES_* columns (if present in parquet)
+        hes_cols = sorted(col for col in row_df.index if col.startswith("HES_"))
+        for col in hes_cols:
+            val = float(row_df.get(col, 0.0))
+            covariates.append(np.asarray(val).reshape((1, -1)))
+
         covariates = np.hstack(covariates).squeeze()
 
         return covariates

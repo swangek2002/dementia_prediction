@@ -529,7 +529,35 @@ def setup_finetune_experiment(cfg, dm, mode, risk_model, checkpoint=None, logger
         case "load_from_pretrain":
             assert checkpoint is not None
             logging.info(f"Loading pre-trained model from checkpoint from {checkpoint}.")
-            finetune_experiment = FineTuneExperiment.load_from_checkpoint(checkpoint, cfg=cfg, outcome_tokens=outcome_tokens, risk_model=risk_model, outcome_token_groups=outcome_token_groups, strict=False)
+            # Create model with current config (may have different num_static_covariates)
+            assert vocab_size is not None, "vocab_size must be provided for load_from_pretrain"
+            finetune_experiment = FineTuneExperiment(cfg, outcome_tokens, risk_model=risk_model, outcome_token_groups=outcome_token_groups, vocab_size=vocab_size)
+            # Load checkpoint state dict, handling size mismatches (e.g. static_proj)
+            ckpt = torch.load(checkpoint, map_location='cpu')
+            ckpt_sd = ckpt.get('state_dict', ckpt)
+            model_sd = finetune_experiment.state_dict()
+            filtered = {}
+            skipped = []
+            for k, v in ckpt_sd.items():
+                if k not in model_sd:
+                    continue
+                if v.shape == model_sd[k].shape:
+                    filtered[k] = v
+                elif 'static_proj' in k:
+                    # Partial copy: preserve pretrained weights for original dims, zero-init rest
+                    new_p = model_sd[k].clone()
+                    if v.dim() == 2:
+                        new_p[:v.shape[0], :v.shape[1]] = v
+                    else:
+                        new_p[:v.shape[0]] = v
+                    filtered[k] = new_p
+                    logging.info(f"Partially loaded {k}: ckpt {v.shape} -> model {model_sd[k].shape}")
+                else:
+                    skipped.append(k)
+                    logging.warning(f"Skipping {k}: ckpt {v.shape} vs model {model_sd[k].shape}")
+            missing, unexpected = finetune_experiment.load_state_dict(filtered, strict=False)
+            logging.info(f"Loaded pretrained weights: {len(filtered)} keys loaded, "
+                         f"{len(missing)} missing, {len(skipped)} skipped (size mismatch)")
         case "no_load":
             assert cfg.fine_tuning.PEFT.method is None, "If fine-tuning from scratch do not use any PEFT such as the adapter module."
             assert vocab_size is not None, "vocab_size must be provided when training from scratch (no_load)"
