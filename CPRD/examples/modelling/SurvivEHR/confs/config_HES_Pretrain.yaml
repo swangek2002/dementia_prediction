@@ -55,11 +55,6 @@ fine_tuning:
     learning_rate: 5e-4
   sample_weighting:
     mode: null
-    event_lambda: 1.0
-    alpha: 2.0
-    tau: 0.33
-    w_t_max: 3.0
-    w_total_max: 20.0
 
 optim:
   num_epochs: 15

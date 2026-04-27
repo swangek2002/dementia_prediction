@@ -201,7 +201,7 @@ class DualFineTuneExperiment(pl.LightningModule):
             loss = None
 
         outputs = {"surv": surv_dict}
-        losses = {"loss": loss, "loss_desurv": loss, "loss_values": torch.tensor(0.0)}
+        losses = {"loss": loss, "loss_desurv": loss, "loss_values": torch.tensor(0.0, device=self.device)}
 
         return outputs, losses, h_fused
 
@@ -405,7 +405,7 @@ def setup_dual_finetune_experiment(cfg, dm, mode, checkpoint_gp, checkpoint_hes,
     elif is_interactive():
         strategy = "auto"
     elif USE_GPU:
-        strategy = "ddp"
+        strategy = "ddp_find_unused_parameters_true"
     else:
         strategy = "auto"
 

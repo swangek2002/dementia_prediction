@@ -162,8 +162,9 @@ class GaussianRegressionLayer(torch.nn.Module):
             value_mask = torch.where(shifted_target_values.isnan(), 0, 1)
             atn_mask = attention_mask[:, 1:] if attention_mask is not None else torch.ones_like(shifted_target_tokens)
             
-            # initialise loss
+            # initialise loss and value_dist
             loss = 0
+            value_dist = None
             for token in self.measurement_tokens:
 
                 # Mask based on whether this token belongs to this layer head 

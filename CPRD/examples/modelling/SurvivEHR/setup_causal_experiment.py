@@ -382,7 +382,7 @@ def setup_causal_experiment(cfg, dm, vocab_size, checkpoint=None, logger=None):
         strategy = "auto"
         logging.info(f"Interactive job")
     elif USE_GPU:
-        strategy = "ddp"
+        strategy = pl.strategies.DDPStrategy(find_unused_parameters=True)
         logging.info(f"GPu job")
     else:
         strategy = "auto"

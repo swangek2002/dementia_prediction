@@ -78,6 +78,7 @@ class DualBackboneSurvModel(nn.Module):
 
         self.n_embd = cfg.transformer.n_embd
         self.block_size = cfg.transformer.block_size
+        self.surv_layer = None  # lives on experiment, not model; needed for callback compat
 
         # GP Backbone
         self.gp_transformer = TTETransformer(

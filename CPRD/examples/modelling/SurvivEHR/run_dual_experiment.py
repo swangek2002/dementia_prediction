@@ -118,12 +118,11 @@ def run(cfg: DictConfig):
     # ========================================================
     time_scale = getattr(cfg.data, 'supervised_time_scale', 1.0)
 
-    for split_set in [dm.train_set, dm.val_set, dm.test_set]:
-        original_collate = split_set.collate_fn
-        split_set.collate_fn = DualCollateWrapper(
-            original_collate, hes_cache, hes_tokenizer,
-            hes_block_size=hes_block_size, time_scale=time_scale,
-        )
+    original_collate = dm.collate_fn
+    dm.collate_fn = DualCollateWrapper(
+        original_collate, hes_cache, hes_tokenizer,
+        hes_block_size=hes_block_size, time_scale=time_scale,
+    )
 
     # ========================================================
     # Step 5: Set up experiment

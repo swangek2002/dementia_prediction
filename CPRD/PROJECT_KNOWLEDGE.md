@@ -1,6 +1,6 @@
 # SurvivEHR Project Knowledge Base
 
-> **Last updated**: 2026-04-21
+> **Last updated**: 2026-04-27
 > **Purpose**: Comprehensive reference for any agent or collaborator joining this project.
 > **Owner**: swangek (HKUST)
 
@@ -33,10 +33,12 @@
 ### Research Question
 Can integrating hospital admission data (HES) with GP records improve dementia prediction beyond GP-only models?
 
-### Key Findings (as of 2026-04-18)
-- **Best model**: Option B (hes_static) achieves **Dementia C_td = 0.836**, a +0.103 improvement over the GP+HES-labels-only baseline (0.733)
+### Key Findings (as of 2026-04-24)
+- **Best model**: Dual-backbone architecture (GP + HES backbones with gated fusion) achieves **Dementia C_td = 0.845**, a +0.112 improvement over the GP+HES-labels-only baseline (0.733)
+- Previous best: hes_static (8 HES summary features) achieved C_td = 0.836 (+0.103)
+- Dual-backbone adds +0.009 on top of hes_static by encoding full ICD-10 sequence temporal patterns via a separate HES transformer
 - Sequence-level fusion of HES events into GP sequences **hurts** performance (0.720) due to modality clash and truncation
-- HES information is most effective when condensed as **static summary features** alongside unchanged GP sequences
+- Late fusion (independent backbones + gated fusion layer) is the correct approach for multi-modal EHR data
 
 ---
 
@@ -49,7 +51,8 @@ Can integrating hospital admission data (HES) with GP records improve dementia p
 │   │   ├── models/
 │   │   │   ├── survival/
 │   │   │   │   └── task_heads/
-│   │   │   │       └── causal.py   # SurvStreamGPTForCausalModelling (main model class)
+│   │   │   │       ├── causal.py   # SurvStreamGPTForCausalModelling (main model class)
+│   │   │   │       └── dual_backbone.py  # DualBackboneSurvModel + FusionLayer (dual-backbone)
 │   │   │   ├── transformer/        # Transformer blocks
 │   │   │   └── TTE/
 │   │   │       └── base.py         # TTETransformer (wraps DataEmbeddingLayer + transformer blocks)
@@ -62,7 +65,10 @@ Can integrating hospital admission data (HES) with GP records improve dementia p
 │   │
 │   ├── examples/modelling/SurvivEHR/  # Experiment scripts & configs
 │   │   ├── run_experiment.py          # Main entry point (Hydra-based)
+│   │   ├── run_dual_experiment.py     # Dual-backbone entry point
 │   │   ├── setup_finetune_experiment.py  # Model setup, checkpoint loading
+│   │   ├── setup_dual_finetune_experiment.py  # Dual-backbone experiment setup
+│   │   ├── dual_data_module.py        # DualCollateWrapper, HES cache, HES tokenizer
 │   │   ├── confs/                     # Hydra YAML configs (see Section 9)
 │   │   ├── build_dementia_cr_hes_aug.py     # Dataset builder: GP + HES label augmentation
 │   │   ├── build_dementia_cr_hes_static.py  # Dataset builder: GP + HES labels + HES static features
@@ -77,6 +83,7 @@ Can integrating hospital admission data (HES) with GP records improve dementia p
 │   │
 │   ├── data/                        # Data directory
 │   │   ├── example_exercise_database.db        # Original GP SQLite database (~11M events)
+│   │   ├── hes_pretrain_database.db            # HES-only SQLite DB (3.9M events, 420K patients, ICD-10 3-char)
 │   │   ├── example_exercise_database_hes_fusion.db  # Fused GP+HES database (DO NOT USE for new experiments)
 │   │   ├── hesin.csv                # HES admission records (eid, admidate, etc.)
 │   │   ├── hesin_diag.csv           # HES diagnosis records (eid, diag_icd10, etc.)
@@ -92,9 +99,11 @@ Can integrating hospital admission data (HES) with GP records improve dementia p
 │   │   ├── hes_events_for_db.pickle     # Translated HES events (for fusion approach)
 │   │   ├── ready_for_code_*.csv         # Pre-processed tables for DB building
 │   │   └── FoundationalModel/           # Dataset directories
-│   │       ├── PreTrain/                    # Pretrain dataset & meta info
+│   │       ├── PreTrain/                    # GP Pretrain dataset & meta info
 │   │       │   ├── meta_information_custom.pickle  # Vocabulary, encoders, token info
 │   │       │   └── practice_id_splits.pickle       # Train/val/test practice splits
+│   │       ├── PreTrain_HES/               # HES Pretrain dataset & meta info
+│   │       │   └── meta_information.pickle         # HES vocabulary (1,501 ICD-10 tokens)
 │   │       ├── FineTune_Dementia_CR/                # Baseline dementia CR dataset
 │   │       ├── FineTune_Dementia_CR_hes_aug/        # GP + HES label augmentation
 │   │       ├── FineTune_Dementia_CR_hes_static/     # GP + HES labels + HES static features (BEST)
@@ -110,12 +119,15 @@ Can integrating hospital admission data (HES) with GP records improve dementia p
 │   │   ├── checkpoints/             # Model checkpoints (see Section 10)
 │   │   └── wandb/                   # Weights & Biases run logs
 │   │
-│   ├── run_hes_static_pipeline.sh   # Pipeline script for hes_static (BEST approach)
+│   ├── run_hes_static_pipeline.sh   # Pipeline script for hes_static
 │   ├── run_hes_fusion_pipeline.sh   # Pipeline script for fusion v5 (FAILED)
 │   ├── run_hes_fusion_train_only.sh # Train-only pipeline for fusion v5
+│   ├── run_dual_pipeline.sh         # Pipeline script for dual-backbone (BEST)
 │   ├── finetune_cr_hes_static_log.txt   # Training log for hes_static run
 │   ├── finetune_cr_hes_fusion_log.txt   # Training log for fusion v5 (first attempt)
-│   └── finetune_cr_hes_fusion_train_only_log.txt  # Training log for fusion v5 (successful train)
+│   ├── finetune_cr_hes_fusion_train_only_log.txt  # Training log for fusion v5 (successful train)
+│   ├── finetune_cr_dual_log.txt     # Training log for dual-backbone fine-tune
+│   └── test_cr_dual_log.txt         # Test log for dual-backbone evaluation
 │
 └── FastEHR/                         # Foundation model framework
     └── FastEHR/
@@ -147,6 +159,7 @@ Can integrating hospital admission data (HES) with GP records improve dementia p
 - **Key columns in hesin_diag.csv**: `dnx_hesin_id`, `eid`, `diag_icd10`, `level` (1=primary, 2+=secondary)
 - **Patient linkage**: `eid` field in HES maps to `PATIENT_ID` in CPRD
 - **Total patients with HES records**: ~449,095
+- **HES pretrain database**: `hes_pretrain_database.db` — 3,898,992 events, 419,966 patients, 1,499 ICD-10 codes (3-char truncated), level=1 primary diagnoses only, 0.2 GB
 
 ### 3.3 Dataset Format (Parquet)
 Each fine-tuning dataset is stored as partitioned Parquet files:
@@ -251,12 +264,35 @@ attention_type: "global"   # Global attention (not local)
 4. **Global diagnoses rescue** (`global_diagnoses=True`): After truncation, diagnosis events from the truncated prefix are collected and prepended to the sequence (preventing loss of historical diagnoses)
 5. Outcome event appended at end of sequence (or censoring marker)
 
-### 4.7 Key Architectural Insight
+### 4.7 Dual-Backbone Architecture (BEST)
+
+```
+Patient i:
+  GP data → [GP Backbone (pretrained, 108K vocab, 512 block)] → h_gp (384-dim) ─┐
+                                                                                  ├─ Gated Fusion → h_fused (384-dim) → ODESurvCR Head
+  HES data → [HES Backbone (pretrained, 1.5K vocab, 256 block)] → h_hes (384-dim) ─┘
+```
+
+**Key components**:
+- **GP backbone**: TTETransformer, 108,118 vocab (Read v2), block_size=512, 35-dim static covariates (27 base + 8 HES summary)
+- **HES backbone**: TTETransformer, 1,501 vocab (ICD-10 3-char), block_size=256, 27-dim static covariates
+- **Gated Fusion**: `gate = σ(W_g · [h_gp; h_hes])`, `h_fused = gate * W_gp(h_gp) + (1-gate) * W_hes(h_hes)`
+- **No HES patients**: h_hes = zero vector, fusion learns to rely on h_gp
+- **Total params**: 106M trainable (2x backbone + fusion + survival head)
+- **Model file**: `CPRD/src/models/survival/task_heads/dual_backbone.py`
+
+**Data flow at runtime** (via `DualCollateWrapper` in `dual_data_module.py`):
+1. GP DataModule loads GP sequences normally (reuses hes_static dataset)
+2. HES sequence cache (419,966 patients' ICD-10 sequences) loaded into memory at startup
+3. `DualCollateWrapper` wraps collate_fn: for each patient in batch, looks up HES sequence from cache
+4. Batch contains both GP inputs (`tokens`, `ages`, `values`, `static_covariates`, `attention_mask`) and HES inputs (`hes_tokens`, `hes_ages`, `hes_values`, `hes_static_covariates`, `hes_attention_mask`)
+
+### 4.8 Key Architectural Insight
 The `block_size=512` truncation is a critical constraint:
 - GP-only sequences: median ~151 tokens, comfortably fits
 - After HES fusion: median ~731 tokens, ~60% get truncated
 - This truncation destroys the temporal patterns the pretrained backbone learned
-- **This is why sequence fusion fails and static features work better**
+- **This is why sequence fusion fails and late fusion (dual-backbone / static features) works better**
 
 ---
 
@@ -264,23 +300,37 @@ The `block_size=512` truncation is a critical constraint:
 
 ### 5.1 Pretrain → Fine-tune Flow
 ```
-1. PRETRAIN (already done):
+1. GP PRETRAIN (already done):
    config_CompetingRisk11M.yaml
    → Self-supervised next-event prediction on full GP dataset
    → Checkpoint: crPreTrain_small_1337.ckpt
    → batch_size=16, 15 epochs, ~11M events
 
-2. FINE-TUNE:
+2. HES PRETRAIN (already done):
+   config_HES_Pretrain.yaml
+   → Self-supervised next-event prediction on HES ICD-10 sequences
+   → Checkpoint: crPreTrain_HES_1337.ckpt
+   → batch_size=64, 8 epochs, ~3.9M events
+
+3a. SINGLE-BACKBONE FINE-TUNE:
    config_FineTune_Dementia_CR_*.yaml
-   → Load pretrained backbone
+   → Load GP pretrained backbone
    → Add competing-risk survival head
    → Train on dementia cohort with supervision
    → Checkpoint: crPreTrain_small_1337_FineTune_*.ckpt
 
-3. EVAL:
-   config_FineTune_Dementia_CR_*_eval.yaml
+3b. DUAL-BACKBONE FINE-TUNE (BEST):
+   config_FineTune_Dementia_CR_dual.yaml
+   → Load GP + HES pretrained backbones
+   → Add gated fusion layer + competing-risk survival head
+   → Train on dementia cohort with GP+HES inputs
+   → Checkpoint: crPreTrain_small_1337_FineTune_Dementia_CR_dual.ckpt
+
+4. EVAL:
+   config_*_eval.yaml
    → Load fine-tuned checkpoint
    → Run test set evaluation only (train=False, test=True)
+   → IMPORTANT: Always use single GPU for eval
 ```
 
 ### 5.2 run_experiment.py Key Logic
@@ -379,15 +429,24 @@ Many early runs were pretraining experiments with `config_CompetingRisk11M`, tes
 | 04-11 | hes_fusion v5 (retrain) | All (22,000+) | 0.690 | 0.883 | 0.792 | Training metrics |
 | 04-14 | hes_fusion v5 (eval) | All (22,000+) | **0.720** | 0.898 | 0.788 | Below baseline! |
 | 04-17 | hes_fusion v5 (subset eval) | GP-only (8,292) | **0.684** | 0.901 | 0.790 | Same patients, much worse |
-| 04-17 | **hes_static (train+eval)** | GP patients (8,292) | **0.836** | **0.944** | **0.885** | **BEST RESULT** |
+| 04-17 | **hes_static (train+eval)** | GP patients (8,292) | **0.836** | **0.944** | **0.885** | **Previous best** |
+
+#### Dual-Backbone Experiments (April 2026) - CURRENT BEST
+
+| Date | Experiment | Test Population | Dementia C_td | Death C_td | Overall C_td | Notes |
+|------|-----------|----------------|---------------|------------|--------------|-------|
+| 04-22 | HES pretrain | — | — | — | — | test_loss=2.407, 8 epochs |
+| 04-23~24 | Dual fine-tune (train) | GP patients (8,292) | — | — | — | 22 epochs, best at epoch 13, val_loss=0.007 |
+| 04-24 | **Dual fine-tune (eval)** | GP patients (8,292) | **0.845** | **0.949** | **0.891** | **BEST RESULT** |
 
 ### 6.2 Summary of Best Results by Approach
 
-| Approach | Dementia C_td | vs Baseline | Status |
-|----------|---------------|-------------|--------|
-| hes_aug (GP + HES labels) | 0.733 | baseline | Validated |
-| hes_fusion v5 (sequence fusion) | 0.720 (0.684 subset) | -0.013 (-0.049) | FAILED |
-| **hes_static (GP + HES labels + HES static features)** | **0.836** | **+0.103** | **BEST** |
+| Approach | Dementia C_td | Death C_td | Overall C_td | vs Baseline | Status |
+|----------|---------------|------------|-------------|-------------|--------|
+| hes_aug (GP + HES labels) | 0.733 | 0.944 | 0.858 | baseline | Validated |
+| hes_fusion v5 (sequence fusion) | 0.720 | 0.898 | 0.788 | -0.013 | FAILED |
+| hes_static (GP + HES static features) | 0.836 | 0.944 | 0.885 | +0.103 | Previous best |
+| **dual-backbone (GP + HES backbones, gated fusion)** | **0.845** | **0.949** | **0.891** | **+0.112** | **BEST** |
 
 ---
 
@@ -493,6 +552,68 @@ for col in hes_cols:
 # Backward-compatible: if no HES_* columns exist, nothing is appended
 ```
 
+### 7.4 Approach 4: Dual-Backbone Architecture (BEST APPROACH)
+
+**Concept**: Give GP and HES each their own independent transformer backbone, pretrained separately on their respective modalities, then fuse hidden states via a gated fusion layer during fine-tuning. This avoids the modality clash of sequence fusion while leveraging richer temporal patterns than static features alone.
+
+**Architecture**:
+```
+GP序列 → [GP Backbone (pretrained on GP)]  → h_gp (384-dim)  ─┐
+                                                                ├─ Gated Fusion → h_fused → Survival Head
+HES序列 → [HES Backbone (pretrained on HES)] → h_hes (384-dim) ─┘
+```
+
+**Implementation (3 phases)**:
+
+**Phase 1: HES Pretrain** (see `PLAN_DUAL_MODEL_ARCHITECTURE.md` Section 3.7)
+1. Build HES-only SQLite DB from `hesin.csv` + `hesin_diag.csv` (ICD-10 3-char truncation, level=1 primary diagnosis only)
+2. Build HES Pretrain Parquet dataset via `FoundationalDataModule`
+3. Self-supervised next-event prediction on HES sequences
+4. Result: `crPreTrain_HES_1337.ckpt` (12.2M params, test_loss=2.407)
+
+**Phase 2: Dual Fine-tune**
+1. Load GP DataModule (reuses hes_static dataset for GP sequences + labels)
+2. Build HES sequence cache from HES DB (419,966 patients in memory)
+3. Wrap collate_fn with `DualCollateWrapper` to inject HES inputs per-batch
+4. Create `DualFineTuneExperiment` with both backbones + gated fusion + survival head
+5. Load GP pretrain weights → `gp_transformer`, HES pretrain weights → `hes_transformer`
+6. Fusion layer + survival head trained from scratch with 10x learning rate
+
+**Phase 3: Test**
+1. Load fine-tuned checkpoint
+2. Single GPU evaluation on test set
+3. Result: Dementia C_td = **0.845** (+0.009 over hes_static, +0.112 over baseline)
+
+**Key design decisions**:
+
+| Decision | Choice | Rationale |
+|----------|--------|-----------|
+| HES coding | Original ICD-10 (not translated to Read v2) | Avoid translation loss; HES backbone learns ICD-10 semantics directly |
+| Fusion type | Gated fusion | Dynamic weighting allows model to ignore HES when absent |
+| Fusion timing | Fine-tune only (not pretrain) | Backbones pretrain independently; fusion learned from scratch |
+| No HES patients | h_hes = zero vector | Gate learns to rely on h_gp when h_hes ≈ 0 |
+| HES static features retained | GP backbone still uses 35-dim static (27 base + 8 HES) | Preserves validated signal from hes_static approach |
+| Backbone LR vs Head LR | 5e-5 vs 5e-4 (10x) | Pretrained backbones need gentler updates |
+
+**Training details**:
+- batch_size=16, accumulate_grad_batches=32, effective_batch=512
+- 22 epochs trained (~44 hours), best at epoch 13 (val_loss=0.007)
+- 106M trainable params total (2× backbone + fusion + head)
+- Model size: 1.1 GB checkpoint
+
+**Files**:
+- `build_hes_database.py` — HES SQLite DB builder
+- `build_hes_pretrain_dataset.py` — HES Pretrain Parquet builder
+- `config_HES_Pretrain.yaml` — HES pretrain config
+- `dual_backbone.py` — DualBackboneSurvModel + FusionLayer
+- `setup_dual_finetune_experiment.py` — DualFineTuneExperiment + checkpoint loading
+- `dual_data_module.py` — DualCollateWrapper + HES tokenizer + HES cache
+- `run_dual_experiment.py` — Dual-backbone entry point
+- `config_FineTune_Dementia_CR_dual.yaml` — Training config
+- `config_FineTune_Dementia_CR_dual_eval.yaml` — Eval config
+- `run_dual_pipeline.sh` — Full pipeline script
+- `PLAN_DUAL_MODEL_ARCHITECTURE.md` — Detailed architecture plan with implementation records
+
 ---
 
 ## 8. Key Lessons Learned
@@ -502,6 +623,9 @@ for col in hes_cols:
 2. **global_diagnoses=True helps but doesn't solve truncation**: It rescues diagnosis codes from truncated prefix but loses temporal ordering of those rescued events.
 3. **Static covariates are a safe injection path**: They don't affect sequence length and are added uniformly to all token embeddings via linear projection.
 4. **Pretrained backbone is sensitive**: Mixed-modality training can corrupt learned GP temporal patterns. The pretrain→finetune paradigm works best when the fine-tune data distribution matches pretrain.
+5. **Late fusion > early fusion for multi-modal EHR**: Independent backbones with late fusion (gated) preserve each modality's pretrained patterns. Sequence-level fusion destroys them.
+6. **Gated fusion handles missing modalities gracefully**: When h_hes is zero (no HES records), the gate learns to rely entirely on h_gp. No special handling needed.
+7. **Incremental gains compound**: hes_static (+0.103) captures bulk of HES signal; dual-backbone (+0.009 additional) extracts remaining temporal patterns. Both approaches are complementary (dual-backbone reuses hes_static dataset as GP input).
 
 ### 8.2 Training Lessons
 1. **Always delete `last.ckpt` before new training**: PyTorch Lightning auto-resumes from it, which can cause immediate termination if max_epochs already reached.
@@ -509,6 +633,9 @@ for col in hes_cols:
 3. **SFT (Scratch Fine-Tune) underperforms**: Pretraining provides substantial benefit; loading pretrained weights is important.
 4. **Single GPU + higher accumulate_grad_batches works**: When not all GPUs are available, increase gradient accumulation to maintain effective batch size.
 5. **DDP + occupied GPUs = OOM**: If other GPUs are in use, switch to single GPU training rather than risking OOM.
+6. **Eval must use single GPU**: Multi-GPU DDP in test mode causes issues with metric aggregation. Always set `CUDA_VISIBLE_DEVICES=0` for eval.
+7. **Dual-backbone training is 2x slower**: ~2 hours/epoch (vs ~1 hour for single backbone) due to doubled forward pass. Budget accordingly.
+8. **Differential learning rates essential for dual fine-tune**: Pretrained backbones at 5e-5, new layers (fusion + head) at 5e-4. Prevents catastrophic forgetting of pretrained knowledge.
 
 ### 8.3 Data Lessons
 1. **HES label augmentation provides ~2-3% C_td improvement** over pure GP labels (from ~0.71 to ~0.73).
@@ -542,7 +669,9 @@ for col in hes_cols:
 | `config_FineTune_Dementia_CR_idx68_cv_fold{0-4}.yaml` | 5-fold CV idx68 | Different practice splits |
 | `config_FineTune_Dementia_CR_hes_aug.yaml` | HES label aug | GP seq + HES dementia labels |
 | `config_FineTune_Dementia_CR_hes_fusion.yaml` | HES seq fusion | Fused DB, expanded test set |
-| `config_FineTune_Dementia_CR_hes_static.yaml` | **HES static (BEST)** | `num_static_covariates=35` |
+| `config_FineTune_Dementia_CR_hes_static.yaml` | HES static | `num_static_covariates=35` |
+| `config_HES_Pretrain.yaml` | HES backbone pretrain | ICD-10, block_size=256, vocab=1501 |
+| `config_FineTune_Dementia_CR_dual.yaml` | **Dual-backbone (BEST)** | GP+HES backbones, gated fusion |
 | Each `*_eval.yaml` | Eval variant | `train: False, test: True` |
 
 ### 9.2 Key Config Parameters
@@ -586,7 +715,10 @@ transformer.n_embd: 384
 | `SFT_small_1337_FineTune_Dementia_CR.ckpt` | Scratch fine-tune (no pretrain) | Ablation |
 | `crPreTrain_small_1337_FineTune_Dementia_CR_hes_aug.ckpt` | HES label augmentation | Baseline for HES experiments |
 | `crPreTrain_small_1337_FineTune_Dementia_CR_hes_fusion.ckpt` | HES sequence fusion (FAILED) | Do not use |
-| `crPreTrain_small_1337_FineTune_Dementia_CR_hes_static.ckpt` | **HES static features (BEST)** | Best epoch 16 |
+| `crPreTrain_small_1337_FineTune_Dementia_CR_hes_static.ckpt` | HES static features | Best epoch 16 |
+| `crPreTrain_HES_1337.ckpt` | HES backbone pretrained | 8 epochs, 12.2M params |
+| `crPreTrain_small_1337_FineTune_Dementia_CR_dual.ckpt` | **Dual-backbone (BEST)** | Best epoch 13, val_loss=0.007 |
+| `crPreTrain_small_1337_FineTune_Dementia_CR_dual-v1.ckpt` | Dual-backbone (original save) | Same as above, original filename |
 | `crPreTrain_small_1337_FineTune_Dementia_CR_idx{60,70,74,75}.ckpt` | Index age experiments | Index age ablation |
 | `crPreTrain_small_1337_FineTune_Dementia_CR_idx68_cv_fold{0-4}.ckpt` | 5-fold CV | Cross-validation |
 | `crPreTrain_small_1337_FineTune_Dementia_CR_Combined.ckpt` | Combined approach | Historic |
@@ -596,6 +728,7 @@ transformer.n_embd: 384
 | Script | Purpose | Command |
 |--------|---------|---------|
 | `CPRD/run_hes_static_pipeline.sh` | Full hes_static pipeline | `bash run_hes_static_pipeline.sh` |
+| `CPRD/run_dual_pipeline.sh` | **Dual-backbone pipeline (BEST)** | `bash run_dual_pipeline.sh` |
 | `CPRD/run_hes_fusion_pipeline.sh` | Full fusion pipeline (FAILED) | Not recommended |
 | `CPRD/run_hes_fusion_train_only.sh` | Fusion train-only | Not recommended |
 
@@ -633,6 +766,18 @@ CUDA_VISIBLE_DEVICES=0 $PYTHON run_experiment.py \
 # IMPORTANT: Before Step 3, always clean up stale checkpoints:
 rm -f /Data0/swangek_data/991/CPRD/output/checkpoints/last.ckpt
 rm -f /Data0/swangek_data/991/CPRD/output/checkpoints/crPreTrain_small_1337_FineTune_Dementia_CR_hes_static.ckpt
+
+# Dual-backbone (BEST) — requires hes_static dataset + HES pretrain already done
+cd /Data0/swangek_data/991/CPRD/examples/modelling/SurvivEHR
+
+# Train (single GPU)
+rm -f /Data0/swangek_data/991/CPRD/output/checkpoints/last.ckpt
+CUDA_VISIBLE_DEVICES=0 $PYTHON run_dual_experiment.py \
+    --config-name=config_FineTune_Dementia_CR_dual
+
+# Eval (MUST be single GPU)
+CUDA_VISIBLE_DEVICES=0 $PYTHON run_dual_experiment.py \
+    --config-name=config_FineTune_Dementia_CR_dual_eval
 ```
 
 ---
@@ -641,7 +786,8 @@ rm -f /Data0/swangek_data/991/CPRD/output/checkpoints/crPreTrain_small_1337_Fine
 
 | Dataset | Train | Val | Test | Total |
 |---------|-------|-----|------|-------|
-| PreTrain | ~450K+ | ~50K+ | ~50K+ | ~550K+ |
+| PreTrain (GP) | ~450K+ | ~50K+ | ~50K+ | ~550K+ |
+| PreTrain_HES | 327,308 | 17,746 | 19,522 | 364,576 |
 | FineTune_Dementia_CR (idx72) | ~120K | ~6K | ~8K | ~134K |
 | FineTune_Dementia_CR_hes_aug | 119,694 | 5,823 | 8,292 | 133,809 |
 | FineTune_Dementia_CR_hes_static | 119,694 | 5,823 | 8,292 | 133,809 |

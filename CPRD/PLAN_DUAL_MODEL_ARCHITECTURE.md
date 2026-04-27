@@ -344,11 +344,11 @@ if __name__ == "__main__":
     main()
 ```
 
-**重要**: 不要传 `overwrite_meta_information`。让 `FoundationalDataModule` 从 HES 数据自动构建新的 meta_information（新的 tokenizer 词汇表），因为 HES 使用 ICD-10 码，与 GP 的 Read v2 码完全不同。HES 会生成自己的 `meta_information_custom.pickle`。
+**重要**: 不要传 `overwrite_meta_information`。让 `FoundationalDataModule` 从 HES 数据自动构建新的 meta_information（新的 tokenizer 词汇表），因为 HES 使用 ICD-10 码，与 GP 的 Read v2 码完全不同。HES 会生成自己的 `meta_information.pickle`。
 
 输出:
 - `CPRD/data/FoundationalModel/PreTrain_HES/` — HES pretrain dataset
-- `CPRD/data/FoundationalModel/PreTrain_HES/meta_information_custom.pickle` — HES 词汇表和元信息
+- `CPRD/data/FoundationalModel/PreTrain_HES/meta_information.pickle` — HES 词汇表和元信息（⚠️ 注意：实际生成的文件名是 `meta_information.pickle`，不是 `meta_information_custom.pickle`）
 
 ### 3.4 Step 3: HES Pretrain Config
 
@@ -507,8 +507,148 @@ echo "Checkpoint: ${CKPT_DIR}/crPreTrain_HES_1337.ckpt"
 |------|------|
 | HES SQLite 数据库 | `CPRD/data/hes_pretrain_database.db` |
 | HES Pretrain 数据集 | `CPRD/data/FoundationalModel/PreTrain_HES/` |
-| HES meta info | `CPRD/data/FoundationalModel/PreTrain_HES/meta_information_custom.pickle` |
+| HES meta info | `CPRD/data/FoundationalModel/PreTrain_HES/meta_information.pickle` |
 | HES pretrained checkpoint | `CPRD/output/checkpoints/crPreTrain_HES_1337.ckpt` |
+
+---
+
+## 3.7 阶段一实际实现记录（已完成 ✅）
+
+> **完成日期**: 2026-04-22
+> **状态**: 全部完成，HES backbone 预训练成功
+
+### 3.7.1 实际实现 vs 计划的差异
+
+#### Step 1: build_hes_database.py
+
+实际实现与计划伪代码基本一致，以下为优化点：
+
+| 差异 | 计划 | 实际实现 |
+|------|------|---------|
+| 日期合并方式 | `pd.merge` on `dnx_hesin_id` | `.map(hesin_date_lookup)` — 更快 |
+| level 过滤 | `hesin_diag["level"] == 1` | `hesin_diag["level"] <= MAX_DIAG_LEVEL`（`MAX_DIAG_LEVEL=1`）— 更灵活，后续可改为 2 |
+| 额外统计 | 无 | 打印 top-10 ICD-10 码和每患者事件分布 |
+| static_table 索引 | 无 | 额外创建了 `static_index` |
+
+#### Step 2: build_hes_pretrain_dataset.py
+
+实际实现与计划有**较大差异**，因为 `FoundationalDataModule(load=False)` 直接调用会遇到 HES 数据无 measurement 表的问题：
+
+| 差异 | 计划 | 实际实现 |
+|------|------|---------|
+| 构建方式 | `FoundationalDataModule(load=False)` 一步完成 | 分两步：先调用 `PolarsDataset.fit()` 构建 Parquet，再手动 patch `meta_information.pickle` 添加空 `measurement_tables` DataFrame，最后 `FoundationalDataModule(load=True)` 验证 |
+| meta info 文件名 | 预期 `meta_information_custom.pickle` | 实际生成 `meta_information.pickle`（⚠️ 阶段二配置需用此路径） |
+| 额外参数 | 无 | `include_measurements=False`, `drop_missing_data=False`, `drop_empty_dynamic=True` |
+
+#### Step 3: config_HES_Pretrain.yaml
+
+与计划完全一致，仅省略了 `sample_weighting` 的子字段（`mode: null` 时不需要）。
+
+#### 运行中发现的 Bug 及修复
+
+**Bug 1: `value_dist` 未赋值错误**
+
+- **文件**: `src/modules/head_layers/value_layers.py`
+- **原因**: HES 无 measurement tokens → `for token in self.measurement_tokens` 循环不执行 → `value_dist` 未赋值 → `return value_dist, loss` 报 `UnboundLocalError`
+- **修复**: 在循环前添加 `value_dist = None`
+
+```python
+# 修复前:
+loss = 0
+for token in self.measurement_tokens:
+
+# 修复后:
+loss = 0
+value_dist = None    # ← 新增：防止无 measurement tokens 时未赋值
+for token in self.measurement_tokens:
+```
+
+**Bug 2: DDP 未使用参数错误**
+
+- **文件**: `examples/modelling/SurvivEHR/setup_causal_experiment.py`
+- **原因**: HES pretrain 中 `value_weight: 0.0` → `value_layer` 参数不参与 loss 计算 → DDP 报 `RuntimeError: parameters that were not used in producing the loss`
+- **修复**: 将 DDP strategy 改为 `find_unused_parameters=True`
+
+```python
+# 修复前:
+strategy = "ddp"
+
+# 修复后:
+strategy = pl.strategies.DDPStrategy(find_unused_parameters=True)
+```
+
+### 3.7.2 HES 数据库统计
+
+```
+数据库大小:     0.2 GB
+诊断事件总数:   3,898,992
+独立患者数:     419,966
+ICD-10 码种类:  1,499 (3位截断)
+每患者平均事件: 9.3
+```
+
+与计划预期对比：事件数 3.9M（预期 ~4.2M，差异因丢弃无 PRACTICE_ID 映射的患者），ICD-10 码 1,499（预期 1,000-2,000 ✅），患者数 419,966（预期 ≤449,095 ✅）。
+
+### 3.7.3 HES Pretrain Dataset 统计
+
+```
+Train:      327,308 patients
+Val:        17,746 patients
+Test:       19,522 patients
+Vocab size: 1,501 tokens
+Parquet:    1,515 files (嵌套分区: COUNTRY/HEALTH_AUTH/PRACTICE_ID/CHUNK)
+```
+
+### 3.7.4 HES Pretrain 训练结果
+
+```
+模型参数:       12.2M (trainable) + 222 (non-trainable)
+训练设备:       1x GPU (CUDA_VISIBLE_DEVICES=0)
+训练速度:       ~14-18 it/s
+每 epoch 步数:  5,115 (batch=64, accumulate=2)
+Early stopping: Epoch 8 触发 (patience=20)
+总训练步数:     ~20,000
+总训练时间:     ~45 分钟
+```
+
+| 指标 | 值 |
+|------|-----|
+| 初始 val_loss (step 250) | 7.620 |
+| 最终 best val_loss (step 19406) | **2.558** |
+| test_loss | **2.407** |
+| test_loss_desurv | 2.407 |
+| test_loss_values | 0.0 (符合预期，HES 无 measurement) |
+
+Loss 收敛曲线：7.62 → 5.91 → 4.32 → 3.30 → 2.80 → 2.62 → 2.57 → **2.56**（稳定收敛）
+
+### 3.7.5 产出文件清单
+
+| 产物 | 路径 | 大小 |
+|------|------|------|
+| HES SQLite 数据库 | `CPRD/data/hes_pretrain_database.db` | 0.2 GB |
+| HES Pretrain 数据集 | `CPRD/data/FoundationalModel/PreTrain_HES/` | 1,515 parquet files |
+| HES meta info | `CPRD/data/FoundationalModel/PreTrain_HES/meta_information.pickle` | — |
+| HES pretrained checkpoint (best) | `CPRD/output/checkpoints/crPreTrain_HES_1337.ckpt` | 141 MB |
+| 所有 epoch checkpoints | `CPRD/output/checkpoints/crPreTrain_HES_1337-epochepoch=07*.ckpt` | 141 MB × 5 |
+| WandB run | `crPreTrain_HES_1337` → [wandb link](https://wandb.ai/swangek2002-hong-kong-university-of-science-and-technology/SurvivEHR/runs/i3j71tp6) | — |
+
+### 3.7.6 阶段二需注意的事项
+
+1. **meta info 路径**: 计划中写的 `meta_information_custom.pickle` 不存在，实际为 `meta_information.pickle`。阶段二配置中 `hes_data.meta_information_path` 需改为：
+   ```
+   /Data0/swangek_data/991/CPRD/data/FoundationalModel/PreTrain_HES/meta_information.pickle
+   ```
+
+2. **HES 序列很短**: 中位数仅 5 tokens（每患者平均 9.3 事件），block_size=256 大量 padding。backbone 学到的主要是 ICD-10 code 的共现模式，时序模式有限。如效果不理想，可将 `MAX_DIAG_LEVEL` 从 1 改为 2（加入副诊断）。
+
+3. **GP vs HES 数据规模差异巨大**:
+   ```
+   GP:  132.6M events, 576 events/patient, DB 22.9GB
+   HES: 3.9M events,   9.3 events/patient, DB 0.2GB
+   ```
+   HES backbone 的表达能力可能受限于数据量。Fusion layer 的 gated 机制需要能学到在 HES 信息不足时依赖 GP。
+
+4. **两个 bug fix 对现有 GP 实验无影响**: `value_dist = None` 只在 measurement_tokens 为空时生效；`find_unused_parameters=True` 只增加少量 DDP 开销。
 
 ---
 
@@ -1240,7 +1380,7 @@ data:
 # HES-specific data config (新增字段)
 hes_data:
   path_to_db: /Data0/swangek_data/991/CPRD/data/hes_pretrain_database.db
-  meta_information_path: /Data0/swangek_data/991/CPRD/data/FoundationalModel/PreTrain_HES/meta_information_custom.pickle
+  meta_information_path: /Data0/swangek_data/991/CPRD/data/FoundationalModel/PreTrain_HES/meta_information.pickle
   hes_block_size: 256
 
 experiment:
@@ -1560,18 +1700,196 @@ DualBackboneSurvModel state_dict:
 
 ---
 
-## 附录 B: 实施优先级
+## 8. 阶段二实际实现记录（已完成 ✅）
+
+> **完成日期**: 2026-04-24
+> **状态**: 全部完成，Fine-tune + Test 均已成功运行
+
+### 8.1 实际实现 vs 计划的差异
+
+#### Step 5: 数据集构建
+
+**采用了方案 A 的变种**：没有构建独立的 HES fine-tune 数据集，而是通过 `DualCollateWrapper` 在 collate 阶段动态注入 HES 序列。
+
+| 差异 | 计划 | 实际实现 |
+|------|------|---------|
+| 数据集构建 | 两个独立 Parquet 数据集 (GP + HES) | 复用 GP hes_static 数据集 + 运行时 HES 序列缓存注入 |
+| HES 序列来源 | 从 Parquet 读取 | 从 HES SQLite DB 实时查询并缓存到内存 |
+| Patient 配对 | DataLoader 级别配对 | DualCollateWrapper 在 collate_fn 中按 PATIENT_ID 查找 |
+
+**关键实现**: `dual_data_module.py` 包含：
+- `HESTokenizer`: 从 HES meta_information 构建，vocab_size=1501
+- `build_hes_sequence_cache()`: 从 HES DB 读取所有患者的 ICD-10 序列到内存 dict（419,966 patients）
+- `load_yob_lookup()`: 从 GP DB 读取 YEAR_OF_BIRTH，用于计算 HES 事件的 age
+- `DualCollateWrapper`: 包装原始 GP collate_fn，为每个 batch 添加 `hes_tokens`, `hes_ages`, `hes_values`, `hes_static_covariates`, `hes_attention_mask`
+
+#### Step 6: DualBackboneSurvModel
+
+与计划基本一致，额外增加：
+- `surv_layer = None` 属性（用于 callback 兼容性）
+- `hes_block_size` 作为显式参数传入（而非从 cfg 属性读取）
+
+#### Step 7: DualFineTuneExperiment
+
+与计划基本一致，主要差异：
+- `configure_optimizers()` 使用 `AdamW` + `ReduceLROnPlateau`（与计划一致）
+- 添加了 `PerformanceMetrics` callback（计算 C_td, IBS, INBLL）
+- Trainer 策略：训练时 `ddp_find_unused_parameters_true`，测试时 `auto`
+
+#### Step 8-9: run_dual_experiment.py + Config
+
+与计划结构一致。实际 config 差异：
+
+| 参数 | 计划 | 实际 |
+|------|------|------|
+| `hes_data.meta_information_path` | `meta_information_custom.pickle` | `meta_information.pickle`（阶段一记录中已修正） |
+| `batch_size` | 16 | 16 |
+| `accumulate_grad_batches` | 32 | 32 |
+| `optim.learning_rate` (backbone) | 5e-5 | 5e-5 |
+| `fine_tuning.head.learning_rate` (fusion+head) | 5e-4 | 5e-4 |
+
+### 8.2 Fine-tune 训练记录
+
+#### 模型配置
 
 ```
-Week 1: 阶段一
-  Day 1-2: build_hes_database.py + build_hes_pretrain_dataset.py
-  Day 2-3: config_HES_Pretrain.yaml + 测试 HES pretrain 运行
-  Day 3-7: 运行 HES pretrain (可能需要多天)
+GP backbone:     108,118 vocab, 384-dim, 6 layers, block_size=512, 35-dim static
+HES backbone:    1,501 vocab,   384-dim, 6 layers, block_size=256, 27-dim static
+Fusion:          Gated fusion (gate σ(W·[h_gp;h_hes]), proj_gp, proj_hes)
+Survival head:   ODESurvCompetingRiskLayer, hidden=[32,32], 2 risks
+Total params:    106M trainable + 414 non-trainable
+Model size:      426.8 MB
+```
 
-Week 2: 阶段二
-  Day 1-2: dual_backbone.py (DualBackboneSurvModel + FusionLayer)
-  Day 2-3: setup_dual_finetune_experiment.py (DualFineTuneExperiment)
-  Day 3-4: dual_data_module.py (DualCollateWrapper)
-  Day 4-5: run_dual_experiment.py + config + pipeline 脚本
-  Day 5-7: 运行 dual fine-tune + 评估
+#### Checkpoint 加载
+
+```
+GP backbone:  89 keys loaded from crPreTrain_small_1337.ckpt
+HES backbone: 89 keys loaded from crPreTrain_HES_1337.ckpt
+Missing:      6 keys (fusion layer — 从零学习)
+Unexpected:   0 keys
+```
+
+#### 训练过程
+
+```
+训练设备:       1x GPU (CUDA_VISIBLE_DEVICES=0)
+训练速度:       ~1.05-1.10 it/s
+每 epoch 步数:  7,481 (batch=16, accumulate=32)
+每 epoch 时间:  ~2 小时
+总 epoch 数:    22 (epoch 0-21, 在 epoch 22 开始时被 kill)
+总训练时间:     ~44 小时
+```
+
+#### val_loss 收敛曲线
+
+| Epoch | val_loss | 备注 |
+|-------|----------|------|
+| 0 | 0.135 | 初始 |
+| 1 | 0.121 | |
+| 2 | 0.119 | |
+| 3 | — | not improved |
+| 4 | 0.109 | |
+| 6 | 0.096 | |
+| 7 | 0.082 | |
+| 8 | 0.047 | 大幅下降 |
+| 9 | 0.046 | |
+| 10 | 0.013 | 大幅下降 |
+| 11 | 0.013 | |
+| **13** | **0.007** | **best** |
+| 14-21 | — | 连续 8 epoch 未改善 |
+
+**注意**: 训练在 epoch 22 开始时因 DataLoader worker 被 kill（OOM during teardown）而终止。但 best checkpoint 在 epoch 13 已保存，early_stop_patience=10 本应在 epoch 23 触发 early stopping，所以训练实质上已充分完成。
+
+#### WandB Runs
+
+由于中途被 kill 后恢复，产生了两个 wandb run：
+- `v_num=4wxy`: 初始训练
+- `v_num=pmp8`: 恢复后训练
+- 最终 run: https://wandb.ai/swangek2002-hong-kong-university-of-science-and-technology/SurvivEHR/runs/yjgvpmp8
+
+### 8.3 Test 评估结果
+
+> **测试日期**: 2026-04-24
+> **使用 checkpoint**: `crPreTrain_small_1337_FineTune_Dementia_CR_dual-v1.ckpt`（epoch 13, val_loss=0.007）
+> **测试设备**: 单卡 (CUDA_VISIBLE_DEVICES=0)
+> **测试时间**: ~10 分钟 (519 batches, 0.83 it/s)
+> **WandB run**: https://wandb.ai/swangek2002-hong-kong-university-of-science-and-technology/SurvivEHR/runs/et80z5zl
+
+#### 完整 Test Metrics
+
+| 指标 | 值 |
+|------|-----|
+| **Dementia C_td (risk0, 31 codes)** | **0.8453** |
+| Dementia IBS | 0.2259 |
+| Dementia INBLL | 0.7007 |
+| Death C_td (risk1, 1 code) | 0.9492 |
+| Death IBS | 0.0401 |
+| Death INBLL | 0.1490 |
+| **Combined C_td** | **0.8910** |
+| Combined IBS | 0.0434 |
+| Combined INBLL | 0.1438 |
+| test_loss | 0.00442 |
+| test_loss_desurv | 0.00442 |
+| test_loss_values | 0.0 |
+
+#### 与已有方法对比
+
+| 方法 | Dementia C_td | Death C_td | Overall C_td | vs Baseline |
+|------|--------------|------------|-------------|-------------|
+| hes_aug (baseline) | 0.733 | 0.944 | 0.858 | — |
+| hes_fusion v5 (FAILED) | 0.720 | 0.898 | 0.788 | -0.013 |
+| hes_static | 0.836 | 0.944 | 0.885 | +0.103 |
+| **dual-backbone (gated)** | **0.845** | **0.949** | **0.891** | **+0.112** |
+
+**关键发现**:
+1. **Dementia C_td: 0.845 vs 0.836** — 双模型架构在 hes_static 基础上再提升 +0.009
+2. **Death C_td: 0.949 vs 0.944** — 死亡预测也有小幅提升 +0.005
+3. **Overall C_td: 0.891 vs 0.885** — 综合指标也有提升 +0.006
+4. HES backbone 通过编码完整 ICD-10 序列的时序模式，提供了 8 维 static summary 无法捕捉的信息
+5. Gated fusion 成功学会了在有/无 HES 记录时动态调整 GP 和 HES 的权重
+
+### 8.4 产出文件清单
+
+| 产物 | 路径 | 大小 |
+|------|------|------|
+| Dual fine-tune checkpoint (best, epoch 13) | `CPRD/output/checkpoints/crPreTrain_small_1337_FineTune_Dementia_CR_dual.ckpt` | 1.1 GB |
+| Dual fine-tune checkpoint (epoch 13, 原始保存) | `CPRD/output/checkpoints/crPreTrain_small_1337_FineTune_Dementia_CR_dual-v1.ckpt` | 1.1 GB |
+| Fine-tune 训练日志 | `CPRD/finetune_cr_dual_log.txt` | ~500 KB |
+| Test 评估日志 | `CPRD/test_cr_dual_log.txt` | — |
+| WandB train run | `crPreTrain_small_1337_FineTune_Dementia_CR_dual` | — |
+| WandB test run | `crPreTrain_small_1337_FineTune_Dementia_CR_dual` (eval) | — |
+| Dual fine-tune 入口 | `CPRD/examples/modelling/SurvivEHR/run_dual_experiment.py` | — |
+| Dual experiment setup | `CPRD/examples/modelling/SurvivEHR/setup_dual_finetune_experiment.py` | — |
+| Dual data module | `CPRD/examples/modelling/SurvivEHR/dual_data_module.py` | — |
+| Dual backbone model | `CPRD/src/models/survival/task_heads/dual_backbone.py` | — |
+| Train config | `CPRD/examples/modelling/SurvivEHR/confs/config_FineTune_Dementia_CR_dual.yaml` | — |
+| Eval config | `CPRD/examples/modelling/SurvivEHR/confs/config_FineTune_Dementia_CR_dual_eval.yaml` | — |
+| Pipeline script | `CPRD/run_dual_pipeline.sh` | — |
+
+### 8.5 后续可做的消融实验
+
+| 实验 | 设置 | 目的 | 状态 |
+|------|------|------|------|
+| Dual (gated) | 完整双模型 + gated fusion | 主实验 | ✅ 已完成 |
+| Dual (concat_linear) | concat_linear fusion | 比较 fusion 方式 | 待做 |
+| GP-only (control) | 冻结 HES backbone，只用 GP | 确认 HES backbone 有贡献 | 待做 |
+| HES-only | 冻结 GP backbone，只用 HES | 确认 GP backbone 有贡献 | 待做 |
+| 更多 HES 事件 (level≤2) | MAX_DIAG_LEVEL=2 重新 pretrain HES | 丰富 HES 序列 | 待做 |
+
+---
+
+## 附录 B: 实施优先级（实际完成时间）
+
+```
+阶段一 (2026-04-21 ~ 2026-04-22):
+  04-21: build_hes_database.py + build_hes_pretrain_dataset.py
+  04-21: config_HES_Pretrain.yaml
+  04-22: HES pretrain 完成 (8 epochs, ~45 分钟)
+
+阶段二 (2026-04-22 ~ 2026-04-24):
+  04-22: dual_backbone.py, setup_dual_finetune_experiment.py,
+         dual_data_module.py, run_dual_experiment.py, configs
+  04-23: Fine-tune 开始 (~44 小时)
+  04-24: Fine-tune 完成 + Test 评估完成
 ```

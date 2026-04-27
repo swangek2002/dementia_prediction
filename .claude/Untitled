@@ -1,0 +1,5 @@
+# 确认文件是否存在
+ls -a ~/.config/claude-code/.settings.json
+
+# 查看文件内容，确认是否有你说的 base_url
+cat ~/.config/claude-code/.settings.json
