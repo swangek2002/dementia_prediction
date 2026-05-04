@@ -10,7 +10,7 @@ data:
   path_to_ds: /Data0/swangek_data/991/CPRD/data/FoundationalModel/FineTune_Dementia_CR_hes_static/
   meta_information_path: /Data0/swangek_data/991/CPRD/data/FoundationalModel/PreTrain/meta_information_custom.pickle
   subsample_training: null
-  num_static_covariates: 35
+  num_static_covariates: 49
   supervised_time_scale: 5.0
 
 experiment:

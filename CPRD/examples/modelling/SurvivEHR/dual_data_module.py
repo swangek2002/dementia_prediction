@@ -19,30 +19,44 @@ import logging
 from datetime import datetime
 
 
-def build_hes_sequence_cache(hes_db_path, hes_meta_path, yob_lookup=None):
+def build_hes_sequence_cache(hes_db_path, hes_meta_path, yob_lookup=None,
+                             index_on_age=72):
     """
     Build an in-memory cache of HES sequences for all patients.
+    Only includes events BEFORE the patient's index date (yob + index_on_age)
+    to prevent temporal leakage.
 
     Returns:
         hes_cache: dict {patient_id: {"tokens": list[str], "ages": list[float]}}
         hes_tokenizer: the HES tokenizer from meta_information
     """
     logging.info(f"Building HES sequence cache from {hes_db_path}")
+    logging.info(f"  Temporal filtering: only events before index date (age {index_on_age})")
 
     # Load HES meta information (contains tokenizer)
     with open(hes_meta_path, "rb") as f:
         hes_meta = pickle.load(f)
 
     # Get the tokenizer from the HES meta info
-    # The meta_information stores event frequency table; we need the tokenizer
-    # We'll build a simple tokenizer mapping from the meta info
     hes_event_table = hes_meta.get("event_table", hes_meta.get("diagnosis_table", None))
     if hes_event_table is None:
-        # Try to find the event frequency info
         for key in hes_meta:
             if hasattr(hes_meta[key], 'columns') and 'event' in [c.lower() for c in hes_meta[key].columns]:
                 hes_event_table = hes_meta[key]
                 break
+
+    # Pre-compute index dates for temporal filtering
+    index_dates = {}
+    if yob_lookup is not None:
+        for pid, yob in yob_lookup.items():
+            if hasattr(yob, 'year'):
+                yob_year = yob.year
+            else:
+                try:
+                    yob_year = int(str(yob)[:4])
+                except:
+                    continue
+            index_dates[pid] = datetime(yob_year + index_on_age, 1, 1)
 
     # Read all HES events from database
     conn = sqlite3.connect(hes_db_path)
@@ -57,6 +71,8 @@ def build_hes_sequence_cache(hes_db_path, hes_meta_path, yob_lookup=None):
     current_pid = None
     current_tokens = []
     current_dates = []
+    total_events = 0
+    filtered_events = 0
 
     for row in cursor:
         pid, event, date_str = int(row[0]), row[1], row[2]
@@ -69,6 +85,20 @@ def build_hes_sequence_cache(hes_db_path, hes_meta_path, yob_lookup=None):
             current_pid = pid
             current_tokens = []
             current_dates = []
+
+        total_events += 1
+
+        # Temporal filtering: only keep events BEFORE index date
+        idx_date = index_dates.get(pid)
+        if idx_date is not None:
+            try:
+                evt_date = datetime.strptime(str(date_str)[:10], "%Y-%m-%d")
+                if evt_date >= idx_date:
+                    filtered_events += 1
+                    continue
+            except:
+                pass  # If date parsing fails, keep the event
+
         current_tokens.append(event)
         current_dates.append(date_str)
 
@@ -81,12 +111,16 @@ def build_hes_sequence_cache(hes_db_path, hes_meta_path, yob_lookup=None):
 
     conn.close()
 
+    kept_events = total_events - filtered_events
+    logging.info(f"  Total HES events: {total_events}, kept (pre-index): {kept_events} "
+                 f"({100*kept_events/max(1,total_events):.1f}%), "
+                 f"filtered (post-index): {filtered_events}")
+
     # Convert dates to ages (years since birth) if yob_lookup provided
     if yob_lookup is not None:
         for pid, data in hes_cache.items():
             yob = yob_lookup.get(pid)
             if yob is None:
-                # Use dates as relative values
                 ages = []
                 for d in data["dates"]:
                     try:
@@ -113,7 +147,6 @@ def build_hes_sequence_cache(hes_db_path, hes_meta_path, yob_lookup=None):
                         ages.append(0.0)
                 data["ages"] = ages
     else:
-        # Convert dates to approximate years
         for pid, data in hes_cache.items():
             ages = []
             for d in data["dates"]:
@@ -124,7 +157,7 @@ def build_hes_sequence_cache(hes_db_path, hes_meta_path, yob_lookup=None):
                     ages.append(0.0)
             data["ages"] = ages
 
-    logging.info(f"HES cache built: {len(hes_cache)} patients with HES records")
+    logging.info(f"HES cache built: {len(hes_cache)} patients with pre-index HES records")
 
     return hes_cache, hes_meta
 

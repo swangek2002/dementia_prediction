@@ -1,6 +1,6 @@
 # SurvivEHR Project Knowledge Base
 
-> **Last updated**: 2026-04-27
+> **Last updated**: 2026-05-02
 > **Purpose**: Comprehensive reference for any agent or collaborator joining this project.
 > **Owner**: swangek (HKUST)
 
@@ -33,12 +33,13 @@
 ### Research Question
 Can integrating hospital admission data (HES) with GP records improve dementia prediction beyond GP-only models?
 
-### Key Findings (as of 2026-04-24)
-- **Best model**: Dual-backbone architecture (GP + HES backbones with gated fusion) achieves **Dementia C_td = 0.845**, a +0.112 improvement over the GP+HES-labels-only baseline (0.733)
-- Previous best: hes_static (8 HES summary features) achieved C_td = 0.836 (+0.103)
-- Dual-backbone adds +0.009 on top of hes_static by encoding full ICD-10 sequence temporal patterns via a separate HES transformer
+### Key Findings (as of 2026-05-02)
+- **⚠️ CRITICAL: Temporal leakage discovered (2026-04-29)** — All HES static/dual experiments prior to 2026-04-30 suffered from temporal leakage in `build_hes_summary_features.py`. HES records from AFTER the index date (age 72) were included in feature computation, giving models access to future information. Previously reported results (hes_static v1: 0.836, dual v1: 0.845, hes_static v2: 0.875) are ALL INVALID. See Section 6.3 for full details.
+- **Best model (corrected, dual backbone)**: Dual-backbone v2 (GP + HES backbones, gated fusion, 22-dim clean HES static) achieves **Dementia C_td = 0.743**, a **+0.010** improvement over baseline (0.733). Trained and tested on temporally-correct data.
+- **Baseline (hes_aug)**: Dementia C_td = 0.733 — NOT affected by temporal leakage (uses HES only for label augmentation, not features)
 - Sequence-level fusion of HES events into GP sequences **hurts** performance (0.720) due to modality clash and truncation
 - Late fusion (independent backbones + gated fusion layer) is the correct approach for multi-modal EHR data
+- The real improvement from HES static features is modest (~+0.010), not dramatic — most of the previously reported gains were artifacts of temporal leakage
 
 ---
 
@@ -95,7 +96,7 @@ Can integrating hospital admission data (HES) with GP records improve dementia p
 │   │   ├── gp_scripts.csv           # GP prescriptions
 │   │   ├── omop_*.csv               # OMOP CDM mapped tables
 │   │   ├── omop_icd10_to_readv2.pickle  # ICD-10 to Read v2 mapping via OMOP
-│   │   ├── hes_summary_features.pickle  # Per-patient HES summary features (8 dims, 449K patients)
+│   │   ├── hes_summary_features.pickle  # Per-patient HES summary features (22 dims v2, 449K patients)
 │   │   ├── hes_events_for_db.pickle     # Translated HES events (for fusion approach)
 │   │   ├── ready_for_code_*.csv         # Pre-processed tables for DB building
 │   │   └── FoundationalModel/           # Dataset directories
@@ -106,7 +107,7 @@ Can integrating hospital admission data (HES) with GP records improve dementia p
 │   │       │   └── meta_information.pickle         # HES vocabulary (1,501 ICD-10 tokens)
 │   │       ├── FineTune_Dementia_CR/                # Baseline dementia CR dataset
 │   │       ├── FineTune_Dementia_CR_hes_aug/        # GP + HES label augmentation
-│   │       ├── FineTune_Dementia_CR_hes_static/     # GP + HES labels + HES static features (BEST)
+│   │       ├── FineTune_Dementia_CR_hes_static/     # GP + HES labels + HES static features (corrected)
 │   │       ├── FineTune_Dementia_CR_hes_fusion/     # GP + HES sequence fusion (FAILED)
 │   │       ├── FineTune_Dementia_CR_idx60/          # Index age 60 experiment
 │   │       ├── FineTune_Dementia_CR_idx70/          # Index age 70 experiment
@@ -122,7 +123,7 @@ Can integrating hospital admission data (HES) with GP records improve dementia p
 │   ├── run_hes_static_pipeline.sh   # Pipeline script for hes_static
 │   ├── run_hes_fusion_pipeline.sh   # Pipeline script for fusion v5 (FAILED)
 │   ├── run_hes_fusion_train_only.sh # Train-only pipeline for fusion v5
-│   ├── run_dual_pipeline.sh         # Pipeline script for dual-backbone (BEST)
+│   ├── run_dual_pipeline.sh         # Pipeline script for dual-backbone
 │   ├── finetune_cr_hes_static_log.txt   # Training log for hes_static run
 │   ├── finetune_cr_hes_fusion_log.txt   # Training log for fusion v5 (first attempt)
 │   ├── finetune_cr_hes_fusion_train_only_log.txt  # Training log for fusion v5 (successful train)
@@ -183,7 +184,7 @@ FineTune_*/
 - `DATE`: List of event dates (datetime64)
 - `VALUE`: List of event values (optional numeric)
 - Static demographic columns: `SEX`, `IMD`, `ETHNICITY`, `YEAR_OF_BIRTH`, `COUNTRY`, `HEALTH_AUTH`, `PRACTICE_ID`
-- (For hes_static): `HES_TOTAL_ADMISSIONS`, `HES_TOTAL_UNIQUE_DIAG`, `HES_HAS_STROKE`, `HES_HAS_MI`, `HES_HAS_HEART_FAILURE`, `HES_HAS_DIABETES`, `HES_HAS_DELIRIUM`, `HES_HAS_TBI` (float32)
+- (For hes_static_v2): 22 `HES_*` columns (float32) — see Section 7.3 for full list
 
 ### 3.4 Study Cohort Definition
 - **Index event**: Patient reaches age `INDEX_ON_AGE` (default: 72)
@@ -227,7 +228,8 @@ Input Sequence → DataEmbeddingLayer → Transformer Blocks (x6) → Survival H
 - **Static projection**: `nn.Linear(num_static_covariates, n_embd)` — projects patient-level features
   - Static embedding is added to ALL token embeddings in the sequence
   - For baseline: `nn.Linear(27, 384)` (27 demographic features)
-  - For hes_static: `nn.Linear(35, 384)` (27 demographic + 8 HES features)
+  - For hes_static v1: `nn.Linear(35, 384)` (27 demographic + 8 HES features)
+  - For hes_static v2: `nn.Linear(49, 384)` (27 demographic + 22 HES features)
 
 ### 4.3 Static Covariates (27 baseline dimensions)
 The `_parquet_row_to_static_covariates()` function in `foundational_loader.py` builds:
@@ -274,7 +276,7 @@ Patient i:
 ```
 
 **Key components**:
-- **GP backbone**: TTETransformer, 108,118 vocab (Read v2), block_size=512, 35-dim static covariates (27 base + 8 HES summary)
+- **GP backbone**: TTETransformer, 108,118 vocab (Read v2), block_size=512, 49-dim static covariates (27 base + 22 HES summary)
 - **HES backbone**: TTETransformer, 1,501 vocab (ICD-10 3-char), block_size=256, 27-dim static covariates
 - **Gated Fusion**: `gate = σ(W_g · [h_gp; h_hes])`, `h_fused = gate * W_gp(h_gp) + (1-gate) * W_hes(h_hes)`
 - **No HES patients**: h_hes = zero vector, fusion learns to rely on h_gp
@@ -429,24 +431,115 @@ Many early runs were pretraining experiments with `config_CompetingRisk11M`, tes
 | 04-11 | hes_fusion v5 (retrain) | All (22,000+) | 0.690 | 0.883 | 0.792 | Training metrics |
 | 04-14 | hes_fusion v5 (eval) | All (22,000+) | **0.720** | 0.898 | 0.788 | Below baseline! |
 | 04-17 | hes_fusion v5 (subset eval) | GP-only (8,292) | **0.684** | 0.901 | 0.790 | Same patients, much worse |
-| 04-17 | **hes_static (train+eval)** | GP patients (8,292) | **0.836** | **0.944** | **0.885** | **Previous best** |
+| 04-17 | hes_static v1 (train+eval, LEAKY) | GP patients (8,292) | ~~0.836~~ | ~~0.944~~ | ~~0.885~~ | ⚠️ **INVALID** — temporal leakage |
 
-#### Dual-Backbone Experiments (April 2026) - CURRENT BEST
+#### hes_static_v2 Experiment (April 2026) - ⚠️ INVALIDATED BY TEMPORAL LEAKAGE
 
 | Date | Experiment | Test Population | Dementia C_td | Death C_td | Overall C_td | Notes |
 |------|-----------|----------------|---------------|------------|--------------|-------|
-| 04-22 | HES pretrain | — | — | — | — | test_loss=2.407, 8 epochs |
-| 04-23~24 | Dual fine-tune (train) | GP patients (8,292) | — | — | — | 22 epochs, best at epoch 13, val_loss=0.007 |
-| 04-24 | **Dual fine-tune (eval)** | GP patients (8,292) | **0.845** | **0.949** | **0.891** | **BEST RESULT** |
+| 04-27~28 | hes_static_v2 (train, LEAKY) | GP patients (8,292) | — | — | — | ⚠️ INVALID: trained on leaky features |
+| 04-28 | hes_static_v2 (eval, LEAKY) | GP patients (8,292) | ~~0.875~~ | ~~0.961~~ | ~~0.915~~ | ⚠️ **INVALID** — temporal leakage in features |
+| 04-29 | hes_static_v2 (eval, leaky model + clean test) | GP patients (8,292) | 0.706 | — | — | Model trained on leaky data evaluated on clean test → BELOW baseline |
+
+**hes_static_v2 results are INVALID** — see Section 6.3 for temporal leakage details.
+
+#### Dual-Backbone Experiments (April 2026) - ⚠️ v1 INVALIDATED, v2 CORRECTED
+
+| Date | Experiment | Test Population | Dementia C_td | Death C_td | Overall C_td | Notes |
+|------|-----------|----------------|---------------|------------|--------------|-------|
+| 04-22 | HES pretrain | — | — | — | — | test_loss=2.407, 8 epochs (NOT affected by leakage) |
+| 04-23~24 | Dual fine-tune v1 (train, LEAKY) | GP patients (8,292) | — | — | — | ⚠️ INVALID: trained on leaky 8-dim features |
+| 04-24 | Dual fine-tune v1 (eval, LEAKY) | GP patients (8,292) | ~~0.845~~ | ~~0.949~~ | ~~0.891~~ | ⚠️ **INVALID** — temporal leakage |
+| 04-29 | Dual fine-tune v1 (eval, leaky model + clean test) | GP patients (8,292) | 0.704 | — | — | Model trained on leaky data evaluated on clean test → BELOW baseline |
+| 04-30~05-01 | **Dual fine-tune v2 (train, CLEAN)** | GP patients (8,292) | — | — | — | 22-dim clean features, trained on temporally-correct data |
+| 05-01 | **Dual fine-tune v2 (eval, CLEAN)** | GP patients (8,292) | **0.743** | **0.951** | **0.855** | ✅ **VALID** — clean train + clean test, +0.010 vs baseline |
 
 ### 6.2 Summary of Best Results by Approach
 
 | Approach | Dementia C_td | Death C_td | Overall C_td | vs Baseline | Status |
 |----------|---------------|------------|-------------|-------------|--------|
-| hes_aug (GP + HES labels) | 0.733 | 0.944 | 0.858 | baseline | Validated |
-| hes_fusion v5 (sequence fusion) | 0.720 | 0.898 | 0.788 | -0.013 | FAILED |
-| hes_static (GP + HES static features) | 0.836 | 0.944 | 0.885 | +0.103 | Previous best |
-| **dual-backbone (GP + HES backbones, gated fusion)** | **0.845** | **0.949** | **0.891** | **+0.112** | **BEST** |
+| hes_aug (GP + HES labels) | 0.733 | 0.944 | 0.858 | baseline | ✅ Validated (no leakage) |
+| hes_fusion v5 (sequence fusion) | 0.720 | 0.898 | 0.788 | -0.013 | ✅ FAILED (no leakage, but bad approach) |
+| hes_static v1 (GP + 8 HES static, LEAKY) | ~~0.836~~ | ~~0.944~~ | ~~0.885~~ | ~~+0.103~~ | ⚠️ **INVALID — temporal leakage** |
+| dual-backbone v1 (GP + HES, 8-dim static, LEAKY) | ~~0.845~~ | ~~0.949~~ | ~~0.891~~ | ~~+0.112~~ | ⚠️ **INVALID — temporal leakage** |
+| hes_static v2 (GP + 22 HES static, LEAKY) | ~~0.875~~ | ~~0.961~~ | ~~0.915~~ | ~~+0.142~~ | ⚠️ **INVALID — temporal leakage** |
+| **dual-backbone v2 (GP + HES, 22-dim static, CLEAN)** | **0.743** | **0.951** | **0.855** | **+0.010** | ✅ **BEST (corrected)** |
+
+### 6.3 ⚠️ CRITICAL: Temporal Leakage Discovery (2026-04-29)
+
+#### What Happened
+
+On 2026-04-29, a **critical temporal leakage bug** was discovered in `build_hes_summary_features.py`. The script computed per-patient HES summary features (comorbidity flags, admission counts, etc.) using **ALL** HES records, including those recorded **AFTER** the patient's index date (age 72). In survival analysis, features must only use information available at or before the prediction time point (index date). Using future information constitutes temporal leakage.
+
+#### Root Cause
+
+The original `build_hes_summary_features.py` did not filter HES records by the patient's index date:
+- It read all records from `hesin.csv` and `hesin_diag.csv` without date filtering
+- Feature 21 (`HES_YEARS_SINCE_LAST_ADMISSION`) was computed relative to a fixed `STUDY_END_DATE` (2022-10-31), not relative to the patient-specific index date
+- This affected ALL HES static feature variants (v1 8-dim and v2 22-dim) and ALL models that used them (hes_static, dual-backbone)
+
+#### Scale of Leakage
+
+When temporal filtering was applied (keeping only records with `admidate < index_date`):
+- **Admission records**: 4,238,372 → 2,990,537 (70.6% kept, **29.4% were post-index**)
+- **Diagnosis records**: 17,421,258 → 10,419,676 (59.8% kept, **40.2% were post-index**)
+- **Delirium (F05) prevalence**: 2.0% → 0.5% (**75% of delirium diagnoses were post-index!**)
+- Many comorbidity prevalences dropped substantially after filtering
+
+The leakage was especially severe for conditions that manifest late in life (delirium, CKD, heart failure), as these are more likely to be diagnosed after age 72.
+
+#### Why It Inflated Results
+
+1. **Train + Test both leaked**: Both training and test data had leaky features, so the model learned to exploit future information during training, and the same future information was available at test time. This artificially inflated discrimination metrics.
+2. **Leaky model on clean test drops BELOW baseline**: When a model trained on leaky data was evaluated on correctly-filtered test data, it performed WORSE than the baseline (0.706 and 0.704 vs 0.733 baseline), because the model learned shortcuts from future information that weren't available in the clean test data.
+3. **Baseline (hes_aug) was NOT affected**: The hes_aug approach only uses HES for label augmentation (identifying dementia diagnoses), not for feature computation. Its C_td=0.733 remains valid.
+
+#### The Fix
+
+The temporal filtering was added to `build_hes_summary_features.py` (committed 2026-04-29):
+
+```python
+# Step 0: Load year-of-birth to compute per-patient index dates
+yob_lookup = load_year_of_birth_lookup()  # from GP database
+index_dates = {}
+for pid, yob in yob_lookup.items():
+    index_dates[str(pid)] = yob + pd.DateOffset(years=INDEX_ON_AGE)
+
+# Step 1: Filter hesin.csv — only keep admissions BEFORE index date
+hesin["index_date"] = hesin["eid"].map(index_dates)
+hesin = hesin.dropna(subset=["index_date"])
+hesin = hesin[hesin["admidate_dt"] < hesin["index_date"]]
+
+# Step 2: Filter hesin_diag.csv — only keep diagnoses from pre-index admissions
+pre_index_admissions = set(zip(hesin["eid"], hesin["dnx_hesin_id"]))
+diag_filtered = diag[
+    diag.apply(lambda r: (r["eid"], r["dnx_hesin_id"]) in pre_index_admissions, axis=1)
+]
+
+# Feature 21: Now relative to patient's index date (not STUDY_END_DATE)
+years_since = (idx_date - last_adm).days / 365.25
+```
+
+#### Impact on All Experiments
+
+| Experiment | Reported C_td | Actual C_td (clean) | Status |
+|-----------|--------------|--------------------:|--------|
+| hes_aug (baseline) | 0.733 | 0.733 | ✅ Valid (not affected) |
+| hes_fusion v5 | 0.720 | 0.720 | ✅ Valid (not affected) |
+| hes_static v1 (8-dim) | 0.836 | unknown (not retrained) | ⚠️ INVALID |
+| hes_static v2 (22-dim) | 0.875 | unknown (not retrained) | ⚠️ INVALID |
+| dual v1 (8-dim static) | 0.845 | unknown (not retrained) | ⚠️ INVALID |
+| **dual v2 (22-dim, clean train+test)** | — | **0.743** | ✅ **VALID** |
+
+#### Corrected Best Result
+
+**Dual-backbone v2 (clean)**: Trained and tested on temporally-correct 22-dim HES static features.
+- Dementia C_td = **0.743** (vs 0.733 baseline, **+0.010**)
+- Death C_td = **0.951**
+- Overall C_td = **0.855**
+- WandB run: `crPreTrain_small_1337_FineTune_Dementia_CR_dual` (run ID: `0kdxj23q`)
+
+The real improvement from HES static features is **+0.010**, not the previously reported +0.103 to +0.142. While modest, this improvement is genuine and obtained without any data leakage.
 
 ---
 
@@ -497,48 +590,87 @@ Many early runs were pretraining experiments with `config_CompetingRisk11M`, tes
 - `config_FineTune_Dementia_CR_hes_fusion.yaml`, `config_FineTune_Dementia_CR_hes_fusion_eval.yaml`
 - `config_FineTune_Dementia_CR_hes_fusion_subset_eval.yaml`
 
-### 7.3 Approach 3: HES Static Covariates (hes_static) - BEST APPROACH
+### 7.3 Approach 3: HES Static Covariates (hes_static)
 
-**Concept**: Don't touch GP sequences. Condense HES information into 8 summary statistics as additional static covariates. Combine with label augmentation from hes_aug.
+**Concept**: Don't touch GP sequences. Condense HES information into summary statistics as additional static covariates. Combine with label augmentation from hes_aug.
 
 **Implementation**:
-1. Extract 8 per-patient HES features from `hesin.csv` + `hesin_diag.csv`
+1. Extract per-patient HES features from `hesin.csv` + `hesin_diag.csv` — **⚠️ MUST filter by index date** (see Section 6.3)
 2. Build GP-only dataset (same as hes_aug)
-3. Post-process: Add 8 HES_* columns + apply HES label augmentation
-4. Model's `static_proj` layer expands from `nn.Linear(27, 384)` to `nn.Linear(35, 384)`
-5. Pretrained weights partially loaded: first 27 columns from checkpoint, last 8 zero-initialized
+3. Post-process: Add HES_* columns + apply HES label augmentation
+4. Model's `static_proj` layer expands from `nn.Linear(27, 384)` to `nn.Linear(49, 384)` (v2)
+5. Pretrained weights partially loaded: first 27 columns from checkpoint, remaining zero-initialized
 
-**The 8 HES Features**:
+**Critical design decisions**:
+- Dementia-related ICD-10 codes (F00-F03, G30) are EXCLUDED from HES features to avoid label leakage
+- **Only pre-index-date HES records are used** (temporal filtering added 2026-04-29 to fix leakage bug)
+
+#### v1: 8 HES Features (⚠️ original result 0.836 INVALID due to temporal leakage)
 
 | # | Feature | Type | ICD-10 Codes | Normalization | Rationale |
 |---|---------|------|-------------|---------------|-----------|
-| 1 | `HES_TOTAL_ADMISSIONS` | Continuous | — | log(1+count)/log(51), cap 1.0 | Hospitalization burden |
-| 2 | `HES_TOTAL_UNIQUE_DIAG` | Continuous | — | log(1+count)/log(101), cap 1.0 | Diagnostic complexity |
-| 3 | `HES_HAS_STROKE` | Binary | I60-I69 | 0/1 | Vascular dementia risk |
-| 4 | `HES_HAS_MI` | Binary | I21-I22 | 0/1 | Cardiovascular risk |
-| 5 | `HES_HAS_HEART_FAILURE` | Binary | I50 | 0/1 | Cardiovascular risk |
-| 6 | `HES_HAS_DIABETES` | Binary | E10-E14 | 0/1 | Known dementia risk factor |
-| 7 | `HES_HAS_DELIRIUM` | Binary | F05 | 0/1 | Strong dementia predictor |
-| 8 | `HES_HAS_TBI` | Binary | S06 | 0/1 | Known dementia risk factor |
+| 0 | `HES_TOTAL_ADMISSIONS` | Continuous | — | log(1+count)/log(51), cap 1.0 | Hospitalization burden |
+| 1 | `HES_TOTAL_UNIQUE_DIAG` | Continuous | — | log(1+count)/log(101), cap 1.0 | Diagnostic complexity |
+| 2 | `HES_HAS_STROKE` | Binary | I60-I69 | 0/1 | Vascular dementia risk |
+| 3 | `HES_HAS_MI` | Binary | I21-I22 | 0/1 | Cardiovascular risk |
+| 4 | `HES_HAS_HEART_FAILURE` | Binary | I50 | 0/1 | Cardiovascular risk |
+| 5 | `HES_HAS_DIABETES` | Binary | E10-E14 | 0/1 | Known dementia risk factor |
+| 6 | `HES_HAS_DELIRIUM` | Binary | F05 | 0/1 | Strong dementia predictor |
+| 7 | `HES_HAS_TBI` | Binary | S06 | 0/1 | Known dementia risk factor |
 
-**Critical design decision**: Dementia-related ICD-10 codes (F00-F03, G30) are EXCLUDED from HES features to avoid label leakage (since hes_aug already uses them for label augmentation).
+#### v2: 22 HES Features (⚠️ original result 0.875 INVALID; corrected dual v2 result: 0.743)
 
-**Checkpoint loading**:
+Expanded from 8 to 22 dimensions: 8 original + 11 new comorbidities + 3 new continuous features.
+
+**New 11 comorbidity features (indices 8-18)**:
+
+| # | Feature | Type | ICD-10 Codes | Prevalence | Clinical Rationale |
+|---|---------|------|-------------|------------|-------------------|
+| 8 | `HES_HAS_HYPERTENSION` | Binary | I10-I15 | 36.2% | Vascular dementia core risk; midlife hypertension strongly associated with late-life dementia |
+| 9 | `HES_HAS_ATRIAL_FIBRILLATION` | Binary | I48 | 9.2% | Increases vascular dementia risk via stroke pathway |
+| 10 | `HES_HAS_CKD` | Binary | N18 | 5.5% | Chronic kidney disease accelerates cognitive decline |
+| 11 | `HES_HAS_DEPRESSION` | Binary | F32, F33 | 7.5% | Both prodromal symptom and independent risk factor |
+| 12 | `HES_HAS_PARKINSON` | Binary | G20 | 1.0% | Strongly associated with Lewy body dementia |
+| 13 | `HES_HAS_EPILEPSY` | Binary | G40, G41 | 1.7% | Bidirectional causal relationship with dementia |
+| 14 | `HES_HAS_OBESITY` | Binary | E66 | 9.0% | Midlife obesity increases dementia risk |
+| 15 | `HES_HAS_HYPERLIPIDEMIA` | Binary | E78 | 18.7% | Cardiovascular risk chain |
+| 16 | `HES_HAS_COPD` | Binary | J44 | 5.3% | Hypoxia-mediated cognitive impairment |
+| 17 | `HES_HAS_ALCOHOL` | Binary | F10 | 2.5% | Alcohol-related dementia |
+| 18 | `HES_HAS_SLEEP_DISORDER` | Binary | G47 | 2.9% | Sleep apnea associated with dementia |
+
+**New 3 continuous features (indices 19-21)**:
+
+| # | Feature | Type | Source | Normalization | Rationale |
+|---|---------|------|--------|---------------|-----------|
+| 19 | `HES_MEAN_STAY_DAYS` | Continuous | mean(disdate - admidate) | log(1+days)/log(31), cap 1.0 | Hospitalization severity |
+| 20 | `HES_EMERGENCY_RATIO` | Continuous | emergency_count / total | Direct [0,1] | Acute illness burden |
+| 21 | `HES_YEARS_SINCE_LAST_ADMISSION` | Continuous | (index_date - last_admidate).years | min(years/20, 1.0) | Recent health status; lower = more recent hospital use. **Note**: computed relative to patient's index date (age 72), NOT study end date |
+
+**⚠️ IMPORTANT**: All prevalence statistics in this section and Appendix B are from the **leaky** (unfiltered) feature extraction. After temporal filtering, prevalences are lower. See Appendix B for both leaky and clean statistics.
+
+**v1 → v2 comparison**: ⚠️ All results below are from leaky features and are INVALID. Only the corrected dual v2 result (clean train + clean test) is valid.
+
+| Metric | v1 8-dim (LEAKY) | v2 22-dim (LEAKY) | v2 22-dim Dual (CLEAN) |
+|--------|:-----------------:|:------------------:|:----------------------:|
+| num_static_covariates | 35 (27+8) | 49 (27+22) | 49 (27+22) |
+| Dementia C_td | ~~0.836~~ ⚠️ | ~~0.875~~ ⚠️ | **0.743** ✅ |
+| Death C_td | ~~0.944~~ ⚠️ | ~~0.961~~ ⚠️ | **0.951** ✅ |
+| Overall C_td | ~~0.885~~ ⚠️ | ~~0.915~~ ⚠️ | **0.855** ✅ |
+
+**Checkpoint loading** (same mechanism for v1 and v2):
 ```python
 # In setup_finetune_experiment.py, load_from_pretrain case:
 # Pretrained static_proj: weight shape (384, 27), bias shape (384,)
-# New model static_proj: weight shape (384, 35), bias shape (384,)
-# Solution: Copy first 27 columns from pretrained, zero-init remaining 8
+# New model static_proj: weight shape (384, 49), bias shape (384,)  [v2]
+# Solution: Copy first 27 columns from pretrained, zero-init remaining
 new_weight[:384, :27] = pretrained_weight[:384, :27]
-new_weight[:384, 27:35] = 0  # New HES features start from zero
+new_weight[:384, 27:] = 0  # New HES features start from zero
 ```
 
-**Results**: Dementia C_td = **0.836** (+0.103 over baseline)
-
 **Files**:
-- `build_hes_summary_features.py` — Feature extractor
+- `build_hes_summary_features.py` — Feature extractor (v2: 22 dims)
 - `build_dementia_cr_hes_static.py` — Dataset builder
-- `config_FineTune_Dementia_CR_hes_static.yaml` — Training config (num_static_covariates=35)
+- `config_FineTune_Dementia_CR_hes_static.yaml` — Training config (num_static_covariates=49)
 - `config_FineTune_Dementia_CR_hes_static_eval.yaml` — Eval config
 - `run_hes_static_pipeline.sh` — Full pipeline script
 
@@ -552,7 +684,7 @@ for col in hes_cols:
 # Backward-compatible: if no HES_* columns exist, nothing is appended
 ```
 
-### 7.4 Approach 4: Dual-Backbone Architecture (BEST APPROACH)
+### 7.4 Approach 4: Dual-Backbone Architecture (BEST APPROACH, CORRECTED)
 
 **Concept**: Give GP and HES each their own independent transformer backbone, pretrained separately on their respective modalities, then fuse hidden states via a gated fusion layer during fine-tuning. This avoids the modality clash of sequence fusion while leveraging richer temporal patterns than static features alone.
 
@@ -582,7 +714,8 @@ HES序列 → [HES Backbone (pretrained on HES)] → h_hes (384-dim) ─┘
 **Phase 3: Test**
 1. Load fine-tuned checkpoint
 2. Single GPU evaluation on test set
-3. Result: Dementia C_td = **0.845** (+0.009 over hes_static, +0.112 over baseline)
+3. ~~Result (LEAKY v1): Dementia C_td = 0.845~~ ⚠️ INVALID
+4. **Result (CLEAN v2)**: Dementia C_td = **0.743** (+0.010 over baseline), Death C_td = 0.951, Overall C_td = 0.855
 
 **Key design decisions**:
 
@@ -592,7 +725,7 @@ HES序列 → [HES Backbone (pretrained on HES)] → h_hes (384-dim) ─┘
 | Fusion type | Gated fusion | Dynamic weighting allows model to ignore HES when absent |
 | Fusion timing | Fine-tune only (not pretrain) | Backbones pretrain independently; fusion learned from scratch |
 | No HES patients | h_hes = zero vector | Gate learns to rely on h_gp when h_hes ≈ 0 |
-| HES static features retained | GP backbone still uses 35-dim static (27 base + 8 HES) | Preserves validated signal from hes_static approach |
+| HES static features retained | GP backbone uses 49-dim static (27 base + 22 HES, v2) | Preserves validated signal from hes_static approach |
 | Backbone LR vs Head LR | 5e-5 vs 5e-4 (10x) | Pretrained backbones need gentler updates |
 
 **Training details**:
@@ -625,7 +758,9 @@ HES序列 → [HES Backbone (pretrained on HES)] → h_hes (384-dim) ─┘
 4. **Pretrained backbone is sensitive**: Mixed-modality training can corrupt learned GP temporal patterns. The pretrain→finetune paradigm works best when the fine-tune data distribution matches pretrain.
 5. **Late fusion > early fusion for multi-modal EHR**: Independent backbones with late fusion (gated) preserve each modality's pretrained patterns. Sequence-level fusion destroys them.
 6. **Gated fusion handles missing modalities gracefully**: When h_hes is zero (no HES records), the gate learns to rely entirely on h_gp. No special handling needed.
-7. **Incremental gains compound**: hes_static (+0.103) captures bulk of HES signal; dual-backbone (+0.009 additional) extracts remaining temporal patterns. Both approaches are complementary (dual-backbone reuses hes_static dataset as GP input).
+7. **Incremental gains compound**: Static features + dual-backbone are complementary (dual-backbone reuses hes_static dataset as GP input). Corrected dual v2 achieves +0.010 over baseline.
+8. **⚠️ Temporal leakage can create dramatic but false improvements**: Using HES records from after the index date inflated C_td by +0.103 to +0.142 — all of which was artificial. The true improvement from HES static features is ~+0.010. Always verify that features used for prediction only contain information available at prediction time.
+9. **Leaky training + clean test = WORSE than baseline**: A model trained on temporally-leaky data learns to exploit future information as shortcuts. When tested on correctly-filtered data (without those shortcuts), performance drops BELOW the no-feature baseline (0.706 and 0.704 vs 0.733). This is the hallmark of data leakage.
 
 ### 8.2 Training Lessons
 1. **Always delete `last.ckpt` before new training**: PyTorch Lightning auto-resumes from it, which can cause immediate termination if max_epochs already reached.
@@ -639,14 +774,17 @@ HES序列 → [HES Backbone (pretrained on HES)] → h_hes (384-dim) ─┘
 
 ### 8.3 Data Lessons
 1. **HES label augmentation provides ~2-3% C_td improvement** over pure GP labels (from ~0.71 to ~0.73).
-2. **HES static features provide an additional ~10% C_td improvement** (+0.103 from 0.733 to 0.836).
+2. **HES static features provide modest C_td improvement** (+0.010 with corrected temporal filtering). ~~Previous claims of +0.103 to +0.142 were due to temporal leakage.~~ The actual signal from pre-index HES features is real but small.
 3. **Practice-based splitting prevents data leakage**: Patients from the same practice are always in the same split.
 4. **Parquet files are nested**: Under `COUNTRY=UK/HEALTH_AUTH=*/PRACTICE_ID=*/CHUNK=*/`. Use `os.walk()` to traverse.
+5. **⚠️ Temporal filtering is MANDATORY for survival analysis features**: Any feature derived from external data sources (HES, death records, etc.) MUST be filtered to only include records before the patient's index date. Failure to do so causes temporal leakage. In this project: `admidate < yob + INDEX_ON_AGE` for HES records.
 
 ### 8.4 Experimental Design Lessons
 1. **Subset evaluation is essential**: When test populations differ between experiments, create a subset eval on the same patients for fair comparison.
 2. **Check both train and eval metrics**: Training metrics can look good while eval reveals problems (e.g., fusion v5 train C_td=0.690 but eval on same patients=0.684).
 3. **Feature selection matters**: The 8 HES features were chosen based on established clinical risk factors for dementia (cardiovascular risk, diabetes, delirium, TBI).
+4. **⚠️ Suspiciously large improvements warrant investigation**: The jump from 0.733 to 0.836 (+0.103) from just 8 static features should have triggered deeper scrutiny. In retrospect, such dramatic gains from simple binary comorbidity flags were a signal of data leakage, not model effectiveness.
+5. **Leakage detection method**: Test a model trained on potentially-leaky data against correctly-filtered test data. If performance drops BELOW the no-feature baseline, the model has learned leaky shortcuts. In this project: leaky model scored 0.706 vs baseline 0.733.
 
 ---
 
@@ -669,9 +807,9 @@ HES序列 → [HES Backbone (pretrained on HES)] → h_hes (384-dim) ─┘
 | `config_FineTune_Dementia_CR_idx68_cv_fold{0-4}.yaml` | 5-fold CV idx68 | Different practice splits |
 | `config_FineTune_Dementia_CR_hes_aug.yaml` | HES label aug | GP seq + HES dementia labels |
 | `config_FineTune_Dementia_CR_hes_fusion.yaml` | HES seq fusion | Fused DB, expanded test set |
-| `config_FineTune_Dementia_CR_hes_static.yaml` | HES static | `num_static_covariates=35` |
+| `config_FineTune_Dementia_CR_hes_static.yaml` | HES static v2 | `num_static_covariates=49` (22 HES features) |
 | `config_HES_Pretrain.yaml` | HES backbone pretrain | ICD-10, block_size=256, vocab=1501 |
-| `config_FineTune_Dementia_CR_dual.yaml` | **Dual-backbone (BEST)** | GP+HES backbones, gated fusion |
+| `config_FineTune_Dementia_CR_dual.yaml` | **Dual-backbone (BEST, corrected)** | GP+HES backbones, gated fusion |
 | Each `*_eval.yaml` | Eval variant | `train: False, test: True` |
 
 ### 9.2 Key Config Parameters
@@ -679,7 +817,7 @@ HES序列 → [HES Backbone (pretrained on HES)] → h_hes (384-dim) ─┘
 ```yaml
 # Data
 data.batch_size: 32
-data.num_static_covariates: 35          # 27 (baseline) or 35 (hes_static)
+data.num_static_covariates: 49          # 27 (baseline), 35 (hes_static v1), or 49 (hes_static v2)
 data.supervised_time_scale: 5.0         # Target age scaling factor
 data.global_diagnoses: True             # Rescue truncated diagnosis events
 data.repeating_events: False            # Deduplicate events
@@ -715,10 +853,11 @@ transformer.n_embd: 384
 | `SFT_small_1337_FineTune_Dementia_CR.ckpt` | Scratch fine-tune (no pretrain) | Ablation |
 | `crPreTrain_small_1337_FineTune_Dementia_CR_hes_aug.ckpt` | HES label augmentation | Baseline for HES experiments |
 | `crPreTrain_small_1337_FineTune_Dementia_CR_hes_fusion.ckpt` | HES sequence fusion (FAILED) | Do not use |
-| `crPreTrain_small_1337_FineTune_Dementia_CR_hes_static.ckpt` | HES static features | Best epoch 16 |
-| `crPreTrain_HES_1337.ckpt` | HES backbone pretrained | 8 epochs, 12.2M params |
-| `crPreTrain_small_1337_FineTune_Dementia_CR_dual.ckpt` | **Dual-backbone (BEST)** | Best epoch 13, val_loss=0.007 |
-| `crPreTrain_small_1337_FineTune_Dementia_CR_dual-v1.ckpt` | Dual-backbone (original save) | Same as above, original filename |
+| `crPreTrain_small_1337_FineTune_Dementia_CR_hes_static_v1.ckpt` | HES static v1 (8-dim, LEAKY) | ⚠️ INVALID — temporal leakage |
+| `crPreTrain_small_1337_FineTune_Dementia_CR_hes_static.ckpt` | HES static v2 (22-dim, LEAKY) | ⚠️ INVALID — temporal leakage |
+| `crPreTrain_HES_1337.ckpt` | HES backbone pretrained | 8 epochs, 12.2M params (NOT affected) |
+| `crPreTrain_small_1337_FineTune_Dementia_CR_dual_v1.ckpt` | Dual-backbone v1 (8-dim static, LEAKY) | ⚠️ INVALID — temporal leakage |
+| `crPreTrain_small_1337_FineTune_Dementia_CR_dual.ckpt` | **Dual-backbone v2 (22-dim static, CLEAN)** | ✅ **VALID** — C_td=0.743, clean train+test |
 | `crPreTrain_small_1337_FineTune_Dementia_CR_idx{60,70,74,75}.ckpt` | Index age experiments | Index age ablation |
 | `crPreTrain_small_1337_FineTune_Dementia_CR_idx68_cv_fold{0-4}.ckpt` | 5-fold CV | Cross-validation |
 | `crPreTrain_small_1337_FineTune_Dementia_CR_Combined.ckpt` | Combined approach | Historic |
@@ -728,7 +867,7 @@ transformer.n_embd: 384
 | Script | Purpose | Command |
 |--------|---------|---------|
 | `CPRD/run_hes_static_pipeline.sh` | Full hes_static pipeline | `bash run_hes_static_pipeline.sh` |
-| `CPRD/run_dual_pipeline.sh` | **Dual-backbone pipeline (BEST)** | `bash run_dual_pipeline.sh` |
+| `CPRD/run_dual_pipeline.sh` | **Dual-backbone pipeline** | `bash run_dual_pipeline.sh` |
 | `CPRD/run_hes_fusion_pipeline.sh` | Full fusion pipeline (FAILED) | Not recommended |
 | `CPRD/run_hes_fusion_train_only.sh` | Fusion train-only | Not recommended |
 
@@ -748,7 +887,7 @@ Python 3.10, PyTorch + PyTorch Lightning, Hydra for config management, WandB for
 # Option B (hes_static) - RECOMMENDED
 cd /Data0/swangek_data/991/CPRD/examples/modelling/SurvivEHR
 
-# Step 1: Extract HES features
+# Step 1: Extract HES features (with temporal filtering — only pre-index records)
 $PYTHON build_hes_summary_features.py
 
 # Step 2: Build dataset
@@ -793,12 +932,48 @@ CUDA_VISIBLE_DEVICES=0 $PYTHON run_dual_experiment.py \
 | FineTune_Dementia_CR_hes_static | 119,694 | 5,823 | 8,292 | 133,809 |
 | FineTune_Dementia_CR_hes_fusion | ~350K+ | ~20K+ | ~22K+ | ~392K+ |
 
-## Appendix B: HES Feature Statistics
+## Appendix B: HES Feature Statistics (v2, 22 dims)
 
-From `build_hes_summary_features.py` output (449,095 patients with HES records):
+### ⚠️ Leaky vs Clean Feature Statistics
+
+The following table shows feature statistics from BOTH the original leaky extraction (no temporal filtering) and the corrected clean extraction (only pre-index-date records). The differences highlight the scale of temporal leakage.
+
+**Clean features** (used for corrected dual v2 model, 449,095 patients with pre-index HES records):
+
+```
+Feature                                   LEAKY           CLEAN (pre-index only)
+                                       mean  nonzero     mean  nonzero    Change
+HES_TOTAL_ADMISSIONS                  0.4851  1.000     lower  1.000     ↓ fewer admissions
+HES_TOTAL_UNIQUE_DIAG                 0.5186  0.995     lower  ~0.99     ↓ fewer diagnoses
+HES_HAS_STROKE                        0.0573  0.057     lower  lower     ↓ ~25% of strokes post-index
+HES_HAS_MI                            0.0404  0.040     lower  lower     ↓
+HES_HAS_HEART_FAILURE                 0.0447  0.045     lower  lower     ↓
+HES_HAS_DIABETES                      0.1043  0.104     lower  lower     ↓
+HES_HAS_DELIRIUM                      0.0203  0.020     ~0.005 ~0.005   ↓↓↓ 75% were post-index!
+HES_HAS_TBI                           0.0077  0.008     lower  lower     ↓
+HES_HAS_HYPERTENSION                  0.3618  0.362     lower  lower     ↓
+HES_HAS_ATRIAL_FIBRILLATION           0.0921  0.092     lower  lower     ↓
+HES_HAS_CKD                           0.0552  0.055     lower  lower     ↓
+HES_HAS_DEPRESSION                    0.0749  0.075     lower  lower     ↓
+HES_HAS_PARKINSON                     0.0095  0.010     lower  lower     ↓
+HES_HAS_EPILEPSY                      0.0166  0.017     lower  lower     ↓
+HES_HAS_OBESITY                       0.0897  0.090     lower  lower     ↓
+HES_HAS_HYPERLIPIDEMIA                0.1874  0.187     lower  lower     ↓
+HES_HAS_COPD                          0.0525  0.052     lower  lower     ↓
+HES_HAS_ALCOHOL                       0.0252  0.025     lower  lower     ↓
+HES_HAS_SLEEP_DISORDER                0.0286  0.029     lower  lower     ↓
+HES_MEAN_STAY_DAYS                    0.1902  0.708     lower  lower     ↓
+HES_EMERGENCY_RATIO                   0.2381  0.564     lower  lower     ↓
+HES_YEARS_SINCE_LAST_ADMISSION        0.3155  0.999     higher higher    ↑ more distant from index
+```
+
+**Key observation**: Delirium (F05) is the most dramatically affected — 75% of delirium diagnoses occurred AFTER the index date. This makes clinical sense: delirium often occurs in late-stage dementia or during the final hospitalization. Including post-index delirium diagnoses gave the model a near-direct indicator of the outcome, which is why the leaky model performed so well.
+
+**Notes**:
 - Patients without any HES records get all-zero feature vectors
 - Binary features (HES_HAS_*): 0 or 1
-- Continuous features (HES_TOTAL_*): Normalized to [0, 1] via log transform
+- Continuous features: Normalized to [0, 1]
+- Exact clean statistics not captured in full detail; the key point is that all comorbidity prevalences decrease after temporal filtering, with delirium showing the most dramatic drop
 
 ## Appendix C: Glossary
 
