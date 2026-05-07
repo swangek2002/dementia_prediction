@@ -156,8 +156,15 @@ class DualFineTuneExperiment(pl.LightningModule):
                 h_hes[idx] = h_hes_seq[idx, gen_mask_hes[idx] == 1, :]
             # else: h_hes[idx] remains zero — no HES records
 
-        # Fusion
-        h_fused = self.model.fusion(h_gp, h_hes)
+        # Fusion — pass full sequences and masks for cross-attention
+        gp_key_padding_mask = (gp_attention_mask == 0)   # True = padded
+        hes_key_padding_mask = (hes_attention_mask == 0)  # True = padded
+        h_fused = self.model.fusion(
+            h_gp, h_hes,
+            h_gp_seq=h_gp_seq, h_hes_seq=h_hes_seq,
+            gp_key_padding_mask=gp_key_padding_mask,
+            hes_key_padding_mask=hes_key_padding_mask,
+        )
 
         # Survival prediction — DeSurv needs (bsz, seq_len=2, embed_dim)
         in_hidden_state = torch.stack((h_fused, h_fused), dim=1)
@@ -225,6 +232,25 @@ class DualFineTuneExperiment(pl.LightningModule):
             if v is not None:
                 self.log(f"test_{k}", v, prog_bar=False, logger=True, sync_dist=True)
         return loss_dict['loss']
+
+    def on_train_epoch_start(self):
+        """Freeze/unfreeze backbones based on fusion_warmup_epochs."""
+        warmup = getattr(self.cfg, 'fusion_warmup_epochs', 0)
+        if warmup > 0 and self.current_epoch < warmup:
+            # Freeze backbones during warmup — only train fusion + head
+            for p in self.model.gp_transformer.parameters():
+                p.requires_grad = False
+            for p in self.model.hes_transformer.parameters():
+                p.requires_grad = False
+            if self.current_epoch == 0:
+                logging.info(f"Fusion warmup: freezing backbones for first {warmup} epochs")
+        elif warmup > 0 and self.current_epoch == warmup:
+            # Unfreeze backbones after warmup
+            for p in self.model.gp_transformer.parameters():
+                p.requires_grad = True
+            for p in self.model.hes_transformer.parameters():
+                p.requires_grad = True
+            logging.info(f"Fusion warmup complete: unfreezing backbones at epoch {warmup}")
 
     def configure_optimizers(self):
         # Differential learning rates:

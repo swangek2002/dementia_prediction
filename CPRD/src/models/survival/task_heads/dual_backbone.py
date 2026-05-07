@@ -36,14 +36,35 @@ class FusionLayer(nn.Module):
             )
             self.proj_gp = nn.Linear(embed_dim, embed_dim)
             self.proj_hes = nn.Linear(embed_dim, embed_dim)
+        elif fusion_type == "cross_attention":
+            # GP last token attends to HES full sequence, and vice versa
+            self.cross_attn_gp2hes = nn.MultiheadAttention(
+                embed_dim, num_heads=6, batch_first=True, dropout=0.1
+            )
+            self.cross_attn_hes2gp = nn.MultiheadAttention(
+                embed_dim, num_heads=6, batch_first=True, dropout=0.1
+            )
+            self.norm_gp = nn.LayerNorm(embed_dim)
+            self.norm_hes = nn.LayerNorm(embed_dim)
+            self.out_proj = nn.Sequential(
+                nn.Linear(embed_dim * 2, embed_dim),
+                nn.ReLU(),
+                nn.Dropout(0.1),
+            )
         else:
             raise ValueError(f"Unknown fusion type: {fusion_type}")
 
-    def forward(self, h_gp: torch.Tensor, h_hes: torch.Tensor) -> torch.Tensor:
+    def forward(self, h_gp: torch.Tensor, h_hes: torch.Tensor,
+                h_gp_seq=None, h_hes_seq=None,
+                gp_key_padding_mask=None, hes_key_padding_mask=None) -> torch.Tensor:
         """
         Args:
             h_gp:  (bsz, embed_dim) - GP backbone last hidden state
             h_hes: (bsz, embed_dim) - HES backbone last hidden state
+            h_gp_seq:  (bsz, seq_gp, embed_dim) - GP full sequence (for cross_attention)
+            h_hes_seq: (bsz, seq_hes, embed_dim) - HES full sequence (for cross_attention)
+            gp_key_padding_mask:  (bsz, seq_gp) - True where padded (for cross_attention)
+            hes_key_padding_mask: (bsz, seq_hes) - True where padded (for cross_attention)
         Returns:
             h_fused: (bsz, embed_dim)
         """
@@ -52,6 +73,43 @@ class FusionLayer(nn.Module):
         elif self.fusion_type == "gated":
             gate = self.gate(torch.cat([h_gp, h_hes], dim=-1))
             return gate * self.proj_gp(h_gp) + (1 - gate) * self.proj_hes(h_hes)
+        elif self.fusion_type == "cross_attention":
+            bsz = h_gp.shape[0]
+            # Query: last token (bsz, 1, embed_dim)
+            q_gp = h_gp.unsqueeze(1)
+            q_hes = h_hes.unsqueeze(1)
+
+            # GP attends to HES sequence
+            if h_hes_seq is not None and hes_key_padding_mask is not None:
+                # Check for patients with NO HES records (all masked)
+                all_masked = hes_key_padding_mask.all(dim=1)  # (bsz,)
+                # Temporarily unmask one position to avoid MHA error
+                safe_hes_mask = hes_key_padding_mask.clone()
+                safe_hes_mask[all_masked, 0] = False
+
+                enriched_gp, _ = self.cross_attn_gp2hes(
+                    query=q_gp, key=h_hes_seq, value=h_hes_seq,
+                    key_padding_mask=safe_hes_mask,
+                )
+                enriched_gp = enriched_gp.squeeze(1)  # (bsz, embed_dim)
+                # Zero out for patients with no HES
+                enriched_gp[all_masked] = 0.0
+                enriched_gp = self.norm_gp(h_gp + enriched_gp)
+            else:
+                enriched_gp = h_gp
+
+            # HES attends to GP sequence
+            if h_gp_seq is not None and gp_key_padding_mask is not None:
+                enriched_hes, _ = self.cross_attn_hes2gp(
+                    query=q_hes, key=h_gp_seq, value=h_gp_seq,
+                    key_padding_mask=gp_key_padding_mask,
+                )
+                enriched_hes = enriched_hes.squeeze(1)  # (bsz, embed_dim)
+                enriched_hes = self.norm_hes(h_hes + enriched_hes)
+            else:
+                enriched_hes = h_hes
+
+            return self.out_proj(torch.cat([enriched_gp, enriched_hes], dim=-1))
 
 
 class DualBackboneSurvModel(nn.Module):
