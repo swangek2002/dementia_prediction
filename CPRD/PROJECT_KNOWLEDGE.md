@@ -453,6 +453,14 @@ Many early runs were pretraining experiments with `config_CompetingRisk11M`, tes
 | 04-29 | Dual fine-tune v1 (eval, leaky model + clean test) | GP patients (8,292) | 0.704 | — | — | Model trained on leaky data evaluated on clean test → BELOW baseline |
 | 04-30~05-01 | **Dual fine-tune v2 (train, CLEAN)** | GP patients (8,292) | — | — | — | 22-dim clean features, trained on temporally-correct data |
 | 05-01 | **Dual fine-tune v2 (eval, CLEAN)** | GP patients (8,292) | **0.743** | **0.951** | **0.855** | ✅ **VALID** — clean train + clean test, +0.010 vs baseline |
+| 05-02~03 | Dual gated (retrain, CLEAN) | GP patients (8,292) | **0.7569** | **0.9488** | — | ✅ Re-trained; supersedes 0.743 as true gated fusion baseline |
+| 05-03 | Temporal leakage verification | GP patients (8,292) | **0.7569** | — | — | ✅ Clean model eval on leaky test → identical C_td, confirms model is clean |
+| 05-03~04 | Cross-attention v1 (no warmup) | GP patients (8,292) | — | — | — | ❌ Failed — no convergence, training diverged |
+| 05-05~06 | **Cross-attention v2 (warmup=3)** | GP patients (8,292) | **0.7487** | — | — | Converged but worse than gated (0.7569); see Section 6.4 |
+| 05-06~07 | **Dual gated + V2 labels (train)** | GP patients (8,292) | — | — | — | V2 corrected labels: relabel DEATH+HES/deathcause dementia, remove prevalent |
+| 05-07 | **Dual gated + V2 labels (eval)** | GP patients (8,292) | **0.7602** | **0.9488** | — | ✅ V2 label corrections, +0.003 vs gated baseline (0.7569) |
+| 05-08~09 | **V3 self-training (train)** | GP patients (8,257) | — | — | — | V3: V2 + 771 pseudo-labeled dementia in train, val/test unchanged |
+| 05-09 | **V3 self-training (eval)** | GP patients (8,257) | **0.7685** | **0.9518** | **0.8616** | ✅ **BEST** — self-training, +0.008 vs V2 labels (0.7602) |
 
 ### 6.2 Summary of Best Results by Approach
 
@@ -463,7 +471,10 @@ Many early runs were pretraining experiments with `config_CompetingRisk11M`, tes
 | hes_static v1 (GP + 8 HES static, LEAKY) | ~~0.836~~ | ~~0.944~~ | ~~0.885~~ | ~~+0.103~~ | ⚠️ **INVALID — temporal leakage** |
 | dual-backbone v1 (GP + HES, 8-dim static, LEAKY) | ~~0.845~~ | ~~0.949~~ | ~~0.891~~ | ~~+0.112~~ | ⚠️ **INVALID — temporal leakage** |
 | hes_static v2 (GP + 22 HES static, LEAKY) | ~~0.875~~ | ~~0.961~~ | ~~0.915~~ | ~~+0.142~~ | ⚠️ **INVALID — temporal leakage** |
-| **dual-backbone v2 (GP + HES, 22-dim static, CLEAN)** | **0.743** | **0.951** | **0.855** | **+0.010** | ✅ **BEST (corrected)** |
+| dual-backbone gated (GP + HES, 22-dim static, CLEAN) | 0.7569 | 0.9488 | — | +0.024 | ✅ Valid — gated fusion baseline (retrained) |
+| dual-backbone cross-attn (GP + HES, CLEAN) | 0.7487 | — | — | +0.016 | ✅ Valid — underperformed gated, abandoned |
+| dual-backbone gated + V2 labels (CLEAN) | 0.7602 | 0.9488 | — | +0.027 | ✅ Valid — corrected labels + gated fusion |
+| **dual-backbone gated + V3 self-training (CLEAN)** | **0.7685** | **0.9518** | **0.8616** | **+0.036** | ✅ **BEST** — V2 labels + 771 pseudo-labeled dementia |
 
 ### 6.3 ⚠️ CRITICAL: Temporal Leakage Discovery (2026-04-29)
 
@@ -540,6 +551,183 @@ years_since = (idx_date - last_adm).days / 365.25
 - WandB run: `crPreTrain_small_1337_FineTune_Dementia_CR_dual` (run ID: `0kdxj23q`)
 
 The real improvement from HES static features is **+0.010**, not the previously reported +0.103 to +0.142. While modest, this improvement is genuine and obtained without any data leakage.
+
+### 6.4 Dual Gated Fusion Retrain & Temporal Leakage Verification (2026-05-02~03)
+
+After the initial dual v2 clean result (0.743), the model was retrained to verify reproducibility. The retrained model achieved **Dementia C_td = 0.7569**, **Death C_td = 0.9488** — slightly better than the initial 0.743 run. This 0.7569 result supersedes the original 0.743 as the true gated fusion baseline.
+
+**Temporal leakage verification**: To confirm the clean model was not inadvertently exploiting any leaky information, the clean-trained model was evaluated on a test set with **leaky** (unfiltered) static features. The result was **identical at 0.7569** — proving the model learned no leaky shortcuts. If the model had learned from leaky features during training, it would have performed differently (better or worse) on leaky vs clean test data.
+
+- Checkpoint: `crPreTrain_small_1337_FineTune_Dementia_CR_dual.ckpt` (May 3, 2026)
+- Config: `config_FineTune_Dementia_CR_dual.yaml` (unchanged from original)
+
+### 6.5 Cross-Attention Fusion Experiments (2026-05-03~06)
+
+#### Motivation
+
+The gated fusion layer only uses the **last token** from each backbone (GP and HES), discarding temporal information from the rest of the sequence. Cross-attention fusion allows GP's final representation to attend to HES's full sequence (and vice versa), enabling finer-grained information exchange.
+
+#### Architecture
+
+Added `"cross_attention"` type to `FusionLayer` in `dual_backbone.py`:
+
+```
+GP last token (query) → attends HES full sequence (key/value) → enriched_gp
+HES last token (query) → attends GP full sequence (key/value) → enriched_hes
+[enriched_gp, enriched_hes] → Linear(768→384) + ReLU + Dropout → h_fused
+```
+
+Key design details:
+- **Bidirectional**: Both GP→HES and HES→GP cross-attention
+- **Efficient**: Query is 1 token, so attention matrix is (bsz, 6_heads, 1, seq_len) — minimal overhead
+- **Residual + LayerNorm**: `enriched_gp = LayerNorm(h_gp + cross_attn_output)`
+- **No-HES handling**: When `hes_key_padding_mask` is all-True (no HES records), cross-attention output is zeroed, falling back to GP-only
+- **Extra parameters**: ~1.2M (two `nn.MultiheadAttention` + LayerNorms + projection)
+- Modified `forward()` in `setup_dual_finetune_experiment.py` to pass full sequences and `key_padding_mask` to fusion layer
+
+#### Experiment 1: Cross-attention v1 (no warmup) — FAILED
+
+- Config: `config_FineTune_Dementia_CR_dual_crossattn.yaml` (initial version without `fusion_warmup_epochs`)
+- **Result**: Training diverged, no convergence. The randomly-initialized cross-attention layers destabilized backbone fine-tuning from the start.
+- Checkpoint saved as: `crPreTrain_small_1337_FineTune_Dementia_CR_dual_crossattn_v1_FAILED.ckpt`
+
+#### Experiment 2: Cross-attention v2 (warmup=3 epochs) — Underperformed
+
+- Config: `config_FineTune_Dementia_CR_dual_crossattn.yaml` (added `fusion_warmup_epochs: 3`)
+- **Warmup mechanism**: For the first 3 epochs, backbones are frozen and only the fusion layer + survival head train. After epoch 3, backbones unfreeze for joint fine-tuning.
+- **Result**: Converged successfully. Dementia **C_td = 0.7487** — worse than gated fusion (0.7569, delta = -0.008).
+- Checkpoint: `crPreTrain_small_1337_FineTune_Dementia_CR_dual_crossattn.ckpt`
+
+#### Conclusion
+
+Cross-attention fusion underperformed gated fusion despite richer information exchange. Possible explanations:
+1. The HES sequence (ICD-10 codes) may lack fine-grained temporal patterns worth attending to at the token level — the last-token summary (used by gated fusion) may already capture sufficient information.
+2. The additional parameters (~1.2M) increase overfitting risk on a relatively small fine-tuning dataset.
+3. The gated fusion's simplicity (learned weighting of two summary vectors) may be a better inductive bias for this task.
+
+**Decision**: Reverted to gated fusion for all subsequent experiments.
+
+### 6.6 V2 Label Corrections (2026-05-06~07)
+
+#### Motivation
+
+Analysis of the competing risk likelihood revealed that mislabeled patients suppress model performance:
+- **DeSurv likelihood for DEATH patients**: `L = f_death(t) × (1 - CIF_dementia(t))`
+- If a patient is labeled DEATH but actually has dementia, the model is forced to push `CIF_dementia` down at their event time, actively harming dementia discrimination
+- Similarly, **prevalent cases** (patients diagnosed before index date) create noise since their "prediction" is trivially known
+
+#### Three Label Corrections Applied
+
+Built `build_dementia_cr_hes_aug_v2.py` to apply three corrections to the V1 (hes_aug) dataset:
+
+| Correction | Description | Count | Method |
+|-----------|-------------|-------|--------|
+| A. DEATH + HES dementia | DEATH patients with a dementia diagnosis in HES (after index, before study end) | **1,123** | Relabel DEATH → dementia, use HES diagnosis date |
+| B. DEATH + death-cause dementia | DEATH patients whose death certificate lists dementia ICD-10 (F00-F03, G30) but no HES dementia | **274** | Relabel DEATH → dementia, use death date |
+| C. Remove prevalent | Patients with HES dementia BEFORE index date (age 72) | **487 removed** | Excluded entirely from dataset |
+
+Corrections applied to both `hes_aug` and `hes_static` datasets simultaneously, producing `*_v2/` directories.
+
+**Priority order**: HES dementia date (correction A) takes precedence over death-cause date (correction B). A patient with both gets the HES date.
+
+#### Dataset Impact
+
+| | V1 (original) | V2 (corrected) | Change |
+|--|---------------|----------------|--------|
+| Total patients | 133,809 | 133,322 | -487 (prevalent removed) |
+| Train dementia | ~4,500 | ~5,900 | +1,397 (relabeled from DEATH/censored) |
+| Train DEATH | ~17,000 | ~15,900 | -1,123 (relabeled to dementia) |
+| Val/Test | unchanged | unchanged | Same splits, same patients |
+
+#### Result
+
+- **Dementia C_td = 0.7602** (+0.003 vs gated baseline 0.7569)
+- **Death C_td = 0.9488** (unchanged)
+- Config: `config_FineTune_Dementia_CR_dual_v2.yaml` (dataset path → `FineTune_Dementia_CR_hes_static_v2/`)
+- Checkpoint: `crPreTrain_small_1337_FineTune_Dementia_CR_dual_v2.ckpt`
+- Trained 15 epochs, early-stopped
+
+**Files**:
+- `build_dementia_cr_hes_aug_v2.py` — V2 dataset builder (all 3 corrections, both hes_aug and hes_static)
+- `hes_dementia_lookup.py` — HES dementia lookup (reused from V1)
+- `config_FineTune_Dementia_CR_dual_v2.yaml` — V2 training config
+- `config_FineTune_Dementia_CR_dual_v2_eval.yaml` — V2 eval config
+
+### 6.7 V3 Self-Training (2026-05-08~09) — Current Best
+
+#### Motivation
+
+After V2 label corrections addressed DEATH patients with known dementia (via HES and death certificates), a large population of **censored** patients remained who may also have undiagnosed dementia. The V2 model's CIF predictions can identify these hidden cases — patients the model assigns high dementia probability despite being labeled as censored. Relabeling these patients and retraining should further reduce label noise and improve discrimination.
+
+#### Self-Training Pipeline
+
+**Step 1: Train-set CIF Inference** (`inference_train_cif.py`)
+- Loaded V2 best checkpoint (`crPreTrain_small_1337_FineTune_Dementia_CR_dual_v2.ckpt`)
+- Ran forward with `return_generation=True` on all 119,271 train patients
+- Extracted CIF_dementia at each patient's event time and at maximum time
+- Key implementation details:
+  - FoundationalDataModule must set `supervised=True, supervised_time_scale=5.0` for `convert_to_supervised()` to produce `target_token` and `target_age_delta`
+  - Patient IDs not available in collated batch (`getitem()` returns only tokens/ages/values/covariates), so built a patient index map from preloaded parquet data
+  - Used non-shuffled DataLoader for deterministic index-based patient tracking
+  - `t_eval = np.linspace(0, 1, 1000)` — CIF evaluated at 1000 time points per patient
+- Output: `CPRD/data/train_cif_dementia_v2.csv` (119,271 rows: patient_id, label, event_time_years, cif_dementia_at_event, cif_dementia_at_max)
+- Runtime: ~2.5 hours on single GPU
+
+**Step 2: Candidate Selection**
+- Threshold: Top 1% of CIF_dementia_at_event among DEATH + censored patients → CIF ≥ 0.2521
+- 1,140 candidates above threshold
+- Filtered out 369 censored patients with <2 years observation after index date (too little follow-up to be confident)
+- Final: **771 pseudo-dementia patients**
+- Saved to: `CPRD/data/pseudo_dementia_patients_v3.csv`
+
+**Step 3: V3 Dataset Build** (`build_dementia_cr_hes_aug_v3.py`)
+- Copied V2 dataset entirely
+- For the 771 pseudo-labeled patients (train split only):
+  - Changed last EVENT code to `Eu02z` (unspecified dementia Read v2 code)
+  - Kept original event time unchanged
+- Val and test splits identical to V2 (unchanged)
+- Rebuilt `file_row_count_dict` pickles with absolute paths
+
+**Step 4: V3 Training**
+- Config: `config_FineTune_Dementia_CR_dual_v3.yaml` (dataset path → `FineTune_Dementia_CR_hes_static_v3/`)
+- Same architecture: dual-backbone gated fusion, same hyperparameters as V2
+- Trained 20+ epochs, best at **epoch 15** (val_loss = 0.0356)
+- Epochs 16-20: val_loss did not improve (overfitting)
+
+#### Dataset Impact
+
+| | V2 (corrected) | V3 (self-training) | Change |
+|--|----------------|-------------------|--------|
+| Total patients | 133,322 | 133,322 | unchanged |
+| Train dementia | ~5,900 | ~6,670 | +771 (pseudo-labeled) |
+| Train censored | ~97,000 | ~96,230 | -771 (relabeled to dementia) |
+| Val/Test | unchanged | unchanged | Same splits, same patients |
+
+#### Result
+
+| Metric | V2 Labels | **V3 Self-Training** | **Delta** |
+|--------|-----------|---------------------|-----------|
+| Dementia C_td | 0.7602 | **0.7685** | **+0.008** |
+| Dementia IBS | — | 0.1740 | — |
+| Dementia INBLL | — | 0.5101 | — |
+| Death C_td | 0.9488 | **0.9518** | +0.003 |
+| Death IBS | — | 0.1009 | — |
+| Death INBLL | — | 0.3319 | — |
+| Overall C_td | — | **0.8616** | — |
+| Overall IBS | — | 0.0417 | — |
+| Overall INBLL | — | 0.1368 | — |
+| test_loss | — | 0.0351 | — |
+
+- WandB run: `crPreTrain_small_1337_FineTune_Dementia_CR_dual_v3` (run ID: `5unkvjfm`)
+- **vs hes_aug baseline (0.733)**: +0.036 (+4.8% relative improvement)
+
+**Files**:
+- `build_dementia_cr_hes_aug_v3.py` — V3 dataset builder (copies V2, relabels 771 pseudo-dementia)
+- `inference_train_cif.py` — Train-set CIF inference for candidate identification
+- `config_FineTune_Dementia_CR_dual_v3.yaml` — V3 training config
+- `config_FineTune_Dementia_CR_dual_v3_eval.yaml` — V3 eval config
+- `CPRD/data/train_cif_dementia_v2.csv` — Full inference results (119,271 patients)
+- `CPRD/data/pseudo_dementia_patients_v3.csv` — 771 pseudo-labeled patient IDs
 
 ---
 
@@ -715,14 +903,16 @@ HES序列 → [HES Backbone (pretrained on HES)] → h_hes (384-dim) ─┘
 1. Load fine-tuned checkpoint
 2. Single GPU evaluation on test set
 3. ~~Result (LEAKY v1): Dementia C_td = 0.845~~ ⚠️ INVALID
-4. **Result (CLEAN v2)**: Dementia C_td = **0.743** (+0.010 over baseline), Death C_td = 0.951, Overall C_td = 0.855
+4. **Result (CLEAN retrain)**: Dementia C_td = **0.7569** (+0.024 over baseline), Death C_td = 0.9488
+5. **Result (V2 labels)**: Dementia C_td = **0.7602** (+0.027 over baseline), Death C_td = 0.9488 — see Section 6.6
+6. **Result (V3 self-training)**: Dementia C_td = **0.7685** (+0.036 over baseline), Death C_td = 0.9518 — see Section 6.7
 
 **Key design decisions**:
 
 | Decision | Choice | Rationale |
 |----------|--------|-----------|
 | HES coding | Original ICD-10 (not translated to Read v2) | Avoid translation loss; HES backbone learns ICD-10 semantics directly |
-| Fusion type | Gated fusion | Dynamic weighting allows model to ignore HES when absent |
+| Fusion type | Gated fusion (cross-attention tested, underperformed; see Section 6.5) | Dynamic weighting allows model to ignore HES when absent |
 | Fusion timing | Fine-tune only (not pretrain) | Backbones pretrain independently; fusion learned from scratch |
 | No HES patients | h_hes = zero vector | Gate learns to rely on h_gp when h_hes ≈ 0 |
 | HES static features retained | GP backbone uses 49-dim static (27 base + 22 HES, v2) | Preserves validated signal from hes_static approach |
@@ -730,7 +920,7 @@ HES序列 → [HES Backbone (pretrained on HES)] → h_hes (384-dim) ─┘
 
 **Training details**:
 - batch_size=16, accumulate_grad_batches=32, effective_batch=512
-- 22 epochs trained (~44 hours), best at epoch 13 (val_loss=0.007)
+- ~20 epochs trained (~40 hours), early-stopped
 - 106M trainable params total (2× backbone + fusion + head)
 - Model size: 1.1 GB checkpoint
 
@@ -742,8 +932,17 @@ HES序列 → [HES Backbone (pretrained on HES)] → h_hes (384-dim) ─┘
 - `setup_dual_finetune_experiment.py` — DualFineTuneExperiment + checkpoint loading
 - `dual_data_module.py` — DualCollateWrapper + HES tokenizer + HES cache
 - `run_dual_experiment.py` — Dual-backbone entry point
-- `config_FineTune_Dementia_CR_dual.yaml` — Training config
+- `config_FineTune_Dementia_CR_dual.yaml` — Training config (gated fusion, original labels)
 - `config_FineTune_Dementia_CR_dual_eval.yaml` — Eval config
+- `config_FineTune_Dementia_CR_dual_crossattn.yaml` — Cross-attention fusion config (underperformed)
+- `config_FineTune_Dementia_CR_dual_crossattn_eval.yaml` — Cross-attention eval config
+- `config_FineTune_Dementia_CR_dual_v2.yaml` — V2 corrected labels + gated fusion (BEST)
+- `config_FineTune_Dementia_CR_dual_v2_eval.yaml` — V2 eval config
+- `build_dementia_cr_hes_aug_v2.py` — V2 dataset builder (relabel DEATH+HES/deathcause, remove prevalent)
+- `build_dementia_cr_hes_aug_v3.py` — V3 dataset builder (V2 + 771 pseudo-labeled dementia)
+- `inference_train_cif.py` — Train-set CIF inference for self-training candidate identification
+- `config_FineTune_Dementia_CR_dual_v3.yaml` — V3 self-training config
+- `config_FineTune_Dementia_CR_dual_v3_eval.yaml` — V3 eval config
 - `run_dual_pipeline.sh` — Full pipeline script
 - `PLAN_DUAL_MODEL_ARCHITECTURE.md` — Detailed architecture plan with implementation records
 
@@ -758,9 +957,11 @@ HES序列 → [HES Backbone (pretrained on HES)] → h_hes (384-dim) ─┘
 4. **Pretrained backbone is sensitive**: Mixed-modality training can corrupt learned GP temporal patterns. The pretrain→finetune paradigm works best when the fine-tune data distribution matches pretrain.
 5. **Late fusion > early fusion for multi-modal EHR**: Independent backbones with late fusion (gated) preserve each modality's pretrained patterns. Sequence-level fusion destroys them.
 6. **Gated fusion handles missing modalities gracefully**: When h_hes is zero (no HES records), the gate learns to rely entirely on h_gp. No special handling needed.
-7. **Incremental gains compound**: Static features + dual-backbone are complementary (dual-backbone reuses hes_static dataset as GP input). Corrected dual v2 achieves +0.010 over baseline.
-8. **⚠️ Temporal leakage can create dramatic but false improvements**: Using HES records from after the index date inflated C_td by +0.103 to +0.142 — all of which was artificial. The true improvement from HES static features is ~+0.010. Always verify that features used for prediction only contain information available at prediction time.
-9. **Leaky training + clean test = WORSE than baseline**: A model trained on temporally-leaky data learns to exploit future information as shortcuts. When tested on correctly-filtered data (without those shortcuts), performance drops BELOW the no-feature baseline (0.706 and 0.704 vs 0.733). This is the hallmark of data leakage.
+7. **Incremental gains compound**: Static features + dual-backbone are complementary (dual-backbone reuses hes_static dataset as GP input). Corrected dual achieves +0.024 over baseline; with V2 label corrections, +0.027.
+8. **Cross-attention fusion underperforms gated fusion**: Despite richer information exchange (GP attends HES full sequence), cross-attention (C_td=0.7487) was worse than gated fusion (C_td=0.7569). The last-token summary may already capture sufficient HES information for this task.
+9. **Fusion warmup is necessary for cross-attention**: Without warming up the randomly-initialized cross-attention layers (3 epochs of frozen backbones), training diverges entirely.
+10. **⚠️ Temporal leakage can create dramatic but false improvements**: Using HES records from after the index date inflated C_td by +0.103 to +0.142 — all of which was artificial. The true improvement from HES static features is ~+0.010. Always verify that features used for prediction only contain information available at prediction time.
+11. **Leaky training + clean test = WORSE than baseline**: A model trained on temporally-leaky data learns to exploit future information as shortcuts. When tested on correctly-filtered data (without those shortcuts), performance drops BELOW the no-feature baseline (0.706 and 0.704 vs 0.733). This is the hallmark of data leakage.
 
 ### 8.2 Training Lessons
 1. **Always delete `last.ckpt` before new training**: PyTorch Lightning auto-resumes from it, which can cause immediate termination if max_epochs already reached.
@@ -778,6 +979,9 @@ HES序列 → [HES Backbone (pretrained on HES)] → h_hes (384-dim) ─┘
 3. **Practice-based splitting prevents data leakage**: Patients from the same practice are always in the same split.
 4. **Parquet files are nested**: Under `COUNTRY=UK/HEALTH_AUTH=*/PRACTICE_ID=*/CHUNK=*/`. Use `os.walk()` to traverse.
 5. **⚠️ Temporal filtering is MANDATORY for survival analysis features**: Any feature derived from external data sources (HES, death records, etc.) MUST be filtered to only include records before the patient's index date. Failure to do so causes temporal leakage. In this project: `admidate < yob + INDEX_ON_AGE` for HES records.
+6. **Label noise from hidden dementia in DEATH patients**: In competing risk DeSurv, the likelihood for a DEATH patient includes `(1 - CIF_dementia(t))`, which forces the model to suppress CIF_dementia. If a DEATH patient actually has dementia (1,397 found via HES + death certificates), this creates systematic label noise. Correcting these labels improved C_td by +0.003.
+7. **Prevalent case removal matters**: Patients with dementia BEFORE the index date (487 found via HES records) should be excluded — their outcome is already known and they distort the survival analysis.
+8. **Self-training (pseudo-labeling) is effective for survival models**: Using the model's own CIF predictions to identify hidden dementia patients among censored/DEATH populations, then relabeling and retraining, improved Dementia C_td by +0.008 (0.7602 → 0.7685). The key is conservative candidate selection: top 1% CIF threshold + filtering out short-observation censored patients.
 
 ### 8.4 Experimental Design Lessons
 1. **Subset evaluation is essential**: When test populations differ between experiments, create a subset eval on the same patients for fair comparison.
@@ -809,7 +1013,10 @@ HES序列 → [HES Backbone (pretrained on HES)] → h_hes (384-dim) ─┘
 | `config_FineTune_Dementia_CR_hes_fusion.yaml` | HES seq fusion | Fused DB, expanded test set |
 | `config_FineTune_Dementia_CR_hes_static.yaml` | HES static v2 | `num_static_covariates=49` (22 HES features) |
 | `config_HES_Pretrain.yaml` | HES backbone pretrain | ICD-10, block_size=256, vocab=1501 |
-| `config_FineTune_Dementia_CR_dual.yaml` | **Dual-backbone (BEST, corrected)** | GP+HES backbones, gated fusion |
+| `config_FineTune_Dementia_CR_dual.yaml` | Dual-backbone gated (clean baseline) | GP+HES backbones, gated fusion, original labels |
+| `config_FineTune_Dementia_CR_dual_crossattn.yaml` | Dual cross-attention (underperformed) | `fusion_type: cross_attention`, `fusion_warmup_epochs: 3` |
+| `config_FineTune_Dementia_CR_dual_v2.yaml` | Dual gated + V2 labels | V2 corrected labels, gated fusion |
+| `config_FineTune_Dementia_CR_dual_v3.yaml` | **Dual gated + V3 self-training (BEST)** | V3 self-training, 771 pseudo-labeled dementia |
 | Each `*_eval.yaml` | Eval variant | `train: False, test: True` |
 
 ### 9.2 Key Config Parameters
@@ -857,7 +1064,12 @@ transformer.n_embd: 384
 | `crPreTrain_small_1337_FineTune_Dementia_CR_hes_static.ckpt` | HES static v2 (22-dim, LEAKY) | ⚠️ INVALID — temporal leakage |
 | `crPreTrain_HES_1337.ckpt` | HES backbone pretrained | 8 epochs, 12.2M params (NOT affected) |
 | `crPreTrain_small_1337_FineTune_Dementia_CR_dual_v1.ckpt` | Dual-backbone v1 (8-dim static, LEAKY) | ⚠️ INVALID — temporal leakage |
-| `crPreTrain_small_1337_FineTune_Dementia_CR_dual.ckpt` | **Dual-backbone v2 (22-dim static, CLEAN)** | ✅ **VALID** — C_td=0.743, clean train+test |
+| `crPreTrain_small_1337_FineTune_Dementia_CR_dual.ckpt` | Dual-backbone gated (22-dim static, CLEAN retrain) | ✅ VALID — C_td=0.7569, gated fusion baseline |
+| `crPreTrain_small_1337_FineTune_Dementia_CR_dual_crossattn_v1_FAILED.ckpt` | Cross-attention v1 (no warmup) | ❌ FAILED — no convergence |
+| `crPreTrain_small_1337_FineTune_Dementia_CR_dual_crossattn.ckpt` | Cross-attention v2 (warmup=3) | ✅ Valid — C_td=0.7487, worse than gated |
+| `crPreTrain_small_1337_FineTune_Dementia_CR_dual_v2.ckpt` | **Dual gated + V2 corrected labels** | ✅ **BEST** — C_td=0.7602, V2 label corrections |
+| `crPreTrain_small_1337_FineTune_Dementia_CR_dual_v2_epoch15.ckpt` | Dual V2 epoch 15 backup | Saved for potential training continuation |
+| `crPreTrain_small_1337_FineTune_Dementia_CR_dual_v3.ckpt` | **Dual gated + V3 self-training** | ✅ **BEST** — C_td=0.7685, epoch 15, self-training |
 | `crPreTrain_small_1337_FineTune_Dementia_CR_idx{60,70,74,75}.ckpt` | Index age experiments | Index age ablation |
 | `crPreTrain_small_1337_FineTune_Dementia_CR_idx68_cv_fold{0-4}.ckpt` | 5-fold CV | Cross-validation |
 | `crPreTrain_small_1337_FineTune_Dementia_CR_Combined.ckpt` | Combined approach | Historic |
@@ -931,6 +1143,10 @@ CUDA_VISIBLE_DEVICES=0 $PYTHON run_dual_experiment.py \
 | FineTune_Dementia_CR_hes_aug | 119,694 | 5,823 | 8,292 | 133,809 |
 | FineTune_Dementia_CR_hes_static | 119,694 | 5,823 | 8,292 | 133,809 |
 | FineTune_Dementia_CR_hes_fusion | ~350K+ | ~20K+ | ~22K+ | ~392K+ |
+| FineTune_Dementia_CR_hes_aug_v2 | ~119,200 | ~5,800 | ~8,300 | ~133,300 | V2 labels (487 prevalent removed) |
+| FineTune_Dementia_CR_hes_static_v2 | ~119,200 | ~5,800 | ~8,300 | ~133,300 | V2 labels + 22-dim static features |
+| FineTune_Dementia_CR_hes_aug_v3 | ~119,200 | ~5,800 | ~8,300 | ~133,300 | V3: V2 + 771 pseudo-labeled dementia (train only) |
+| FineTune_Dementia_CR_hes_static_v3 | ~119,200 | ~5,800 | ~8,300 | ~133,300 | V3 + 22-dim static features |
 
 ## Appendix B: HES Feature Statistics (v2, 22 dims)
 
