@@ -1,0 +1,13 @@
+{
+  "source": "V1-Type-C (alive censored \u2192 V1 relabeled via HES, identified via HES lookup match)",
+  "n_typeC": 3637,
+  "mean_years": 8.647366587643877,
+  "std_years": 3.3305288913060025,
+  "median_years": 8.796714579055442,
+  "p5_years": 2.9037645448323066,
+  "p25_years": 6.239561943874059,
+  "p75_years": 11.293634496919918,
+  "p95_years": 13.668446269678302,
+  "min_years": 0.03559206023271732,
+  "max_years": 16.164271047227928
+}
