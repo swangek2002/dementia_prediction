@@ -142,7 +142,7 @@ Dementia event prevalence across the full cohort = 5,958 / 133,322 = **4.47%**; 
 
 (Note: 5,958 incident dementia events vs 6,158 patients with any dementia code in GP/HES history — see §2.3 — differ by ~200. The gap is patients whose dementia code occurs before the prediction point, or who die from another cause first; these are not labeled as "incident dementia event" in the V2 dataset.)
 
-**⚠️ Important caveat about train/val/test cleanliness**: The 246 GP-prevalent dementia patients (213 train / 17 val / 16 test) — i.e., patients whose dementia code appears **before** the prediction point — are present in the V2 dataset and were used to train all five clean post-leakage models (Single-GP + HESstatic through Dual + HESstatic + SST5%). **Only the test set is filtered** to the canonical 8,241 = 8,257 − 16 for evaluation. The "leakage-fixed" base dataset that removes all 246 patients is used only by the in-progress model (last row of §5). All test-cohort metrics in §7.1 are therefore on the same canonical 8,241 patients; training-set leakage of 213+17 = 230 patients (0.18% of train+val) was tolerated to keep model comparisons consistent with our historical experimental record.
+**⚠️ Important caveat about train/val/test cleanliness**: The 246 GP-prevalent dementia patients (213 train / 17 val / 16 test) — i.e., patients whose dementia code appears **before** the prediction point — are present in the V2 dataset and were used to train all five "V2 clean labels" post-leakage models (Single-GP + HESstatic through Dual + HESstatic + SST5%). **Only the test set is filtered** to the canonical 8,241 = 8,257 − 16 for evaluation. The "leakage-fixed" base dataset that removes all 246 patients is used by the most recent model **Single-GP + HESstatic + leak-fix** (§5, §7.1). All test-cohort metrics in §7.1 are therefore on the same canonical 8,241 patients; training-set leakage of 213+17 = 230 patients (0.18% of train+val) was tolerated in the V2-labelled comparison set to keep model comparisons consistent with our historical experimental record.
 
 ---
 
@@ -286,20 +286,21 @@ We use the **SurvivEHR architecture** (Gadd et al., 2025) and pretrain it from s
 - Self-supervised next-event prediction with competing-risk time-to-event objective
 - Data: full UKB-linked GP `example_exercise_database.db` (≈502K patients in `static_table`, ~230K with diagnostic records)
 - Vocabulary: 108,118 tokens (Read v2 / CTV3)
-- Architecture: 6 transformer layers, 6 heads, 384 embedding dim, block size 512 — same as SurvivEHR "small"
-- Pretrain config: `config_CompetingRisk11M.yaml` (batch 64, see file for details)
+- Architecture: 6 transformer layers, 6 heads, 384 embedding dim
+- Block size: **256** at pretrain (matches `config_CompetingRisk11M.yaml`); the same checkpoint is re-used at block size 512 in fine-tune (positional encoding generalises)
+- Pretrain hyperparameters: batch 64, see config file for further details
 
 **HES backbone pretrain** (`crPreTrain_HES_1337.ckpt`):
-- 419,966 patient HES sequences (3.9M event total)
+- 419,966 patient HES sequences, ~3.9M events total
 - 1,499-token vocabulary (ICD-10, 3-character truncated)
-- Same transformer architecture but block size 256
-- 8 epochs, batch 64
+- Same transformer architecture, block size 256
+- Trained for 8 epochs with early-stopping (config target was 15, best checkpoint = `crPreTrain_HES_1337-epochepoch=07.ckpt`), batch 64
 
 ### 4.2 Fine-tuning architectures
 
 Two backbone configurations:
 
-**Single-backbone (GP-only) fine-tune** (used in **Single-GP + HESstatic** and the in-progress **Single-GP + HESstatic + SST1% + leak-fix** runs):
+**Single-backbone (GP-only) fine-tune** (used in **Single-GP + HESstatic**, the just-trained **Single-GP + HESstatic + leak-fix**, and the planned SST1% extension):
 
 ```
 GP token sequence (≤512 tokens) → GP Backbone (pretrained, frozen-then-LR-warmed)
@@ -359,27 +360,27 @@ Round 3 (SST5%): - Use Round-2 model to infer.
 
 For each pseudo-positive, the event time is set as `prediction_point + sampled_lag`, where the lag is drawn (with seed=1337) from the empirical alive-censored lag distribution. CIF is queried at the model's maximum supervised horizon (`t_eval[-1]`, normalised → 25 years) for ranking.
 
-The currently-training model (§5, last row) applies the same procedure but **only Round 1** on top of the **single GP backbone** (no dual) **and uses the leakage-fixed base dataset** (246 GP-prevalent patients removed).
+The just-trained "Single-GP + HESstatic + leak-fix" model (§7.1) is the leakage-cleaned base on top of which the single-round SST will be applied next (planned, §5 last row).
 
 ### 4.5 Training hyperparameters
 
 | | Value |
 |---|---|
-| Per-GPU batch size | 16-32 |
-| Effective batch (grad-accum) | 256-512 |
+| Per-GPU batch size | 16 (dual) / 32 (single) |
+| Effective batch (after grad-accum) | 16×32 = 512 (dual), or 32×16 = 512 (single) |
 | Learning rate (backbone) | 5e-5 |
 | Learning rate (survival head) | 5e-4 (10× backbone) |
 | Optimizer | AdamW |
 | Scheduler | ReduceOnPlateau (factor 0.8) |
 | Epochs | up to 25, early-stop patience 10 |
 | Seed | 1337 |
-| Hardware | 4× 24GB NVIDIA GPUs (DDP) |
+| Hardware | 1× NVIDIA GPU (24 GB), 48 CPUs |
 
 ---
 
 ## 5. Experiments
 
-Each experiment is identified below by its architecture configuration. We deliberately avoid generic version numbers (V1/V2/V3/V4/V5/V6); each name encodes whether the GP-only or dual backbone is used, whether HES static features are included, and whether self-training pseudo-labels are added.
+Each experiment is identified below by its architecture configuration. Each name encodes whether the GP-only or dual backbone is used, whether HES static features are included, and whether self-training pseudo-labels are added.
 
 | Short name | Architecture | Label dataset | Self-training |
 |---|---|---|---|
@@ -388,7 +389,8 @@ Each experiment is identified below by its architecture configuration. We delibe
 | **Dual + HESstatic + SST1%** | Above + top-1% pseudo-positive SST round | V2 clean + 771 pseudo | 1% top |
 | **Dual + HESstatic + SST2%** | Above + top-2% SST round | V2 clean + 1,595 pseudo | 2% top |
 | **Dual + HESstatic + SST5%** | Above + top-5% SST round | V2 clean + 3,814 pseudo | 5% top |
-| **Single-GP + HESstatic + SST1% + leak-fix** *(in progress)* | Single + SST round, with GP-prevalent leakage removed | V2 cleanest (246 leaky patients removed) | 1% top |
+| **Single-GP + HESstatic + leak-fix** *(just trained)* | Single GP + 22-dim HES static, **GP-prevalent leakage removed** (246 leaky patients) | V2 cleanest | — |
+| **Single-GP + HESstatic + leak-fix + SST1%** *(planned)* | Above + top-1% SST round | V2 cleanest + new pseudo-labels | 1% top |
 
 Several earlier (pre-clean) experiments were conducted on V1 labels and with pre-index HES temporal leakage. We do not include them in the main results; they appear in **Appendix B** with the `-leak` suffix for transparency about the project's methodological progression.
 
@@ -444,12 +446,15 @@ All metrics computed on the canonical 8,241-patient test cohort with V2 clean la
 
 | Model (architecture) | Dementia C_td | Death C_td | Overall C_td | IBS dem | IBS death | 5y AUROC | PPV@1% | PPV@5% | PPV@10% |
 |---|---|---|---|---|---|---|---|---|---|
+| **GP-only 5-fold CV** *(idx age **68** — baseline, different cohort)* | 0.8240 ± 0.027 | — | — | — | — | 0.8108 ± 0.031 | 1.43% ± 0.96% | 1.22% ± 0.31% | 0.93% ± 0.27% |
 | Single-GP + HESstatic | 0.8451 | **0.9622** | 0.9017 | **0.3152** | **0.0932** | 0.9236 | **68.89%** | 27.88% | 19.03% |
 | Dual-gated + HESstatic | 0.8447 | 0.9582 | 0.9005 | 0.3395 | **0.0805** | 0.9284 | 71.11% | 27.88% | 19.25% |
 | Dual + HESstatic + SST1% | **0.8506** | 0.9589 | 0.9038 | 0.3265 | 0.1241 | 0.9271 | 55.56% | 29.65% | 19.25% |
 | Dual + HESstatic + SST2% | 0.8487 | 0.9590 | 0.9017 | 0.2773 | 0.1972 | 0.9288 | 62.22% | 28.76% | 18.81% |
 | Dual + HESstatic + SST5% | 0.8467 | 0.9603 | 0.9066 | **0.2713** | 0.3194 | 0.9219 | 53.33% | **30.97%** | 18.58% |
-| Single-GP + HESstatic + SST1% + leak-fix *(in progress)* | TBD | TBD | TBD | TBD | TBD | TBD | TBD | TBD | TBD |
+| **Single-GP + HESstatic + leak-fix** *(just finished — leakage-cleaned V6 base, no SST yet)* | 0.8443 | 0.9599 | 0.8962 | **0.2887** | 0.1153 | 0.9246 | 64.44% | **30.09%** | 18.81% |
+
+**Caveat on the idx68 GP-only 5-fold CV baseline**: This row uses a **different cohort** (index age 68 instead of 72, single-GP-backbone, no HES static, no SST). 5-year prevalence in its evaluable subset is ~0.32% (vs 2.68% for the idx72 cohort), so its PPV @ top X% is not directly comparable to the other rows. C_td and AUROC are more comparable but still see a different prediction task. The idx72 GP-only 5-fold CV (which would be directly comparable) is currently in progress and will replace this row when finished. A pending idx=72 5-fold CV replacement is planned in §10.1.
 
 ### 7.2 Clean-model comparison figure
 
@@ -617,14 +622,13 @@ TRADE is the only directly comparable foundation-model EHR work on a dementia um
 
 ## 10. Open Questions and Next Steps
 
-### 10.1 Re-run prior experiments on clean data
+### 10.1 Re-run prior experiments on clean data + complete the leak-fixed SST round + idx72 GP-only CV
 
-The five pre-leakage experiments (Dual-HESaug, GP+HESseq-fusion, Dual-gated, Dual-XAttn, GP-only-5foldCV) were trained with V1 labels and the pre-fix HES temporal leakage. Their C_td numbers in §7.5 are re-evaluated against V2 labels but **the models themselves were still trained on leaky data**, so the discrimination is not directly comparable to V2-clean models. We should:
-
-1. **Retrain the dual-gated model on V2 clean dataset** ✅ — already done (this is the "Dual-gated + HESstatic" row in §7.1).
-2. **Retrain the dual-cross-attention model on V2 clean dataset** — not yet done; would isolate whether cross-attention vs gated fusion matters on clean data. The pre-leakage comparison (Dual-XAttn ≈ Dual-gated within 0.001) suggests no, but should be verified.
-3. **Retrain Dual-HESaug on V2 clean dataset** — could match or surpass Single-GP + HESstatic since HESaug used a slightly different label augmentation strategy.
-4. **Retrain GP+HESseq-fusion on V2 clean dataset** — even if it still fails on clean data, the negative result is publishable evidence that sequence fusion of two long EHR token streams is not the right strategy.
+1. **GP-only 5-fold CV at idx age 72** *(in progress)* — replacement for the current idx68 row in §7.1, on the matching cohort. Each of 5 folds will be trained with single GP backbone, no HES at all, idx age 72, V2 clean labels. Will be the cleanest non-HES baseline.
+2. **Run the SST1% round on top of the leakage-fixed base model** — the base is already trained and tested (Single-GP + HESstatic + leak-fix in §7.1: C_td dem 0.8443, AUROC 0.9246, IBS dem 0.2887). Next step: run inference on the leakage-cleaned training set, select top-1% censored as pseudo-positives with empirical-lag-sampled event times, retrain. Expected to slightly improve PPV@5% and IBS dem (matches V2-Dual → SST1% trajectory).
+3. **Retrain the dual-cross-attention model on V2 clean dataset** — not yet done; would isolate whether cross-attention vs gated fusion matters on clean data. The pre-leakage comparison (Dual-XAttn-leak ≈ Dual-gated-leak within 0.001) suggests no, but should be verified.
+4. **Retrain Dual-HESaug on V2 clean dataset** — could match or surpass Single-GP + HESstatic since HESaug used a slightly different label augmentation strategy.
+5. **Retrain GP+HESseq-fusion on V2 clean dataset** — even if it still fails on clean data, the negative result is publishable evidence that sequence fusion of two long EHR token streams is not the right strategy.
 
 ### 10.2 Extend the dementia code definition
 
@@ -715,7 +719,7 @@ The default Lightning training callback aggregates C_td **per batch** then avera
 
 In the V1 dataset, **246 test/train/val patients had a GP dementia code recorded before their cohort entry date** (idx age 72) but were still included as candidates for the dementia event. This is a temporal leakage: they were prevalent cases, not incident cases.
 
-**Fix**: The in-progress run uses a rebuilt base dataset that removes these 246 patients (213 train / 17 val / 16 test). Test-set numbers in §7 already exclude the 16 test-set leaky patients (canonical 8,241 cohort).
+**Fix**: The latest "Single-GP + HESstatic + leak-fix" model uses a rebuilt base dataset that removes these 246 patients (213 train / 17 val / 16 test). Test-set numbers in §7 already exclude the 16 test-set leaky patients (canonical 8,241 cohort).
 
 ### A.3 25-year horizon clarification
 
@@ -725,7 +729,7 @@ We initially believed the model predicted a 5-year horizon. After investigating 
 
 In V1 datasets, HES records were not strictly filtered to `admidate < index_date`. This meant patients whose dementia diagnosis was recorded in HES after age 72 could still have features influenced by post-index admissions — a form of temporal data leakage.
 
-**Fix**: The V2 clean dataset rebuilds the 22-dim HES static feature vector with strict pre-index filtering (`admidate < index_date`, plus dementia codes excluded). V2 clean labels also use cleaner cause-of-death coding. The pre-leakage experiments (Dual-HESaug, GP+HESseq-fusion, Dual-gated, Dual-XAttn, GP-only-5foldCV) were trained before this fix.
+**Fix**: The V2 clean dataset rebuilds the 22-dim HES static feature vector with strict pre-index filtering (`admidate < index_date`, plus dementia codes excluded). V2 clean labels also use cleaner cause-of-death coding. The pre-leakage experiments (Dual-HESaug, GP+HESseq-fusion, Dual-gated, Dual-XAttn) were trained before this fix. The GP-only 5-fold CV baseline (idx age 68) does not have HES temporal leakage (uses no HES data) but is on a different cohort — see §7.1.
 
 ---
 
@@ -735,7 +739,6 @@ The following experiments were trained on the V1 dataset, where pre-index HES de
 
 | Short name | Architecture |
 |---|---|
-| **GP-only-5foldCV-leak** | Single GP backbone, no HES at all, 5-fold cross-validation at index age 68 (different idx age — not directly comparable to V2 idx 72 cohort) |
 | **Dual-HESaug-leak** | Single GP backbone + HES label augmentation + 22-dim HES static |
 | **GP+HESseq-fusion-leak** | Single backbone with HES events fused INTO the GP token sequence (failed approach — sequence becomes too long and 60% gets truncated) |
 | **Dual-gated-leak** | Dual GP+HES backbones, gated fusion, + 22-dim HES static |
@@ -749,7 +752,6 @@ Cohort-level C_td (dementia) on V2 canonical 8,241 test cohort, V2 labels overla
 | GP+HESseq-fusion-leak | V2 canonical 8,241 | **0.7098** | sequence-fusion approach fails: −0.10 vs Dual-HESaug-leak |
 | Dual-gated-leak | V2 canonical (V2 labels) | **0.8416** | dual backbone trained on V1 labels |
 | Dual-XAttn-leak | V2 canonical (V2 labels) | **0.8428** | cross-attn ≈ gated |
-| GP-only-5foldCV-leak (idx age 68) | own per-fold | **0.8240 ± 0.027** | different idx age, NOT directly comparable |
 
 Key methodological lessons from these pre-clean experiments:
 - **Sequence fusion of GP + HES into one token stream fails** — the combined sequence median is ~731 tokens vs the model's block size 512, so 60% of patients get truncated. Late fusion (dual backbone or static features) is strictly better.

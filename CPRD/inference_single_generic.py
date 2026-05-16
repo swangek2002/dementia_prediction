@@ -84,6 +84,13 @@ MODEL_CONFIGS = {
         "npz":  f"{NPZ_DIR}/test_cif_idx75_full.npz",
     },
 }
+MODEL_CONFIGS["v6_base"] = {
+    "ckpt": f"{CKPT_DIR}/crPreTrain_small_1337_FineTune_Dementia_CR_v6_base.ckpt",
+    "ds":   f"{DS_DIR}/FineTune_Dementia_CR_hes_static_v6_base/",
+    "db":   DEFAULT_DB,
+    "npz":  f"{NPZ_DIR}/test_cif_v6_base_full.npz",
+}
+
 # Add 5 CV folds
 for k in range(5):
     MODEL_CONFIGS[f"idx68_cv_fold{k}"] = {
